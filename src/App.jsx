@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Rocket, ExternalLink, Copy, CheckCircle, Menu, X } from 'lucide-react';
-
+import VladiG1 from './assets/VladiG1.png';
 // --- UI Components ---
 
 // Reusable Glass Card Wrapper
@@ -88,7 +88,7 @@ const Hero = () => (
       
       {/* Image Placeholder */}
       <div className="w-80 h-[500px] bg-gray-200 rounded-2xl shadow-2xl relative overflow-hidden border-4 border-white flex items-center justify-center">
-        <span className="text-gray-400 font-bold">[Your Image Here]</span>
+        <img src={VladiG1} alt="Vladi Georgiev" />
       </div>
     </div>
   </section>
