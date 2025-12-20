@@ -280,7 +280,7 @@ export default function App() {
       <Contact />
       
       <footer className="text-center py-8 text-gray-400 text-sm">
-        © 2025 Vladi Georgiev. All rights reserved.
+        © 2025 Vladi Georgiev. All rights reseerved.
       </footer>
     </div>
   );
