@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { 
   ExternalLink, 
   Copy, 
@@ -9,7 +9,8 @@ import {
   Code2,      
   Database,   
   Layout,     
-  Terminal    
+  Terminal,
+  ChevronDown 
 } from 'lucide-react';
 
 // --- IMAGES ---
@@ -18,7 +19,69 @@ import Vladi2 from './assets/Vladi2.jpg'; // About Me Image
 
 // --- Helper Components ---
 
-// 1. Section Title: Matches the "ABOUT ME ( 01 )" style exactly
+// 1. TiltedCard Component (Smaller Blue Spotlight)
+const TiltedCard = ({ children }) => {
+  const ref = useRef(null);
+  const [rotate, setRotate] = useState({ x: 0, y: 0 });
+  const [glarePos, setGlarePos] = useState({ x: 50, y: 50 }); 
+  const [opacity, setOpacity] = useState(0);
+
+  const handleMouseMove = (e) => {
+    if (!ref.current) return;
+
+    const { top, left, width, height } = ref.current.getBoundingClientRect();
+    const x = e.clientX - left;
+    const y = e.clientY - top;
+
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const rotateX = ((y - centerY) / centerY) * -10; 
+    const rotateY = ((x - centerX) / centerX) * 10;
+
+    const xPct = (x / width) * 100;
+    const yPct = (y / height) * 100;
+
+    setRotate({ x: rotateX, y: rotateY });
+    setGlarePos({ x: xPct, y: yPct });
+    setOpacity(1); 
+  };
+
+  const handleMouseLeave = () => {
+    setRotate({ x: 0, y: 0 });
+    setOpacity(0); 
+  };
+
+  return (
+    <div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        transform: `perspective(1000px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) scale3d(1.02, 1.02, 1.02)`,
+        transition: "transform 0.1s ease-out",
+      }}
+      className="relative h-full transition-all duration-200 ease-out group"
+    >
+      {/* Dynamic Glare Effect */}
+      <div 
+        className="absolute inset-0 w-full h-full pointer-events-none z-10 rounded-2xl overflow-hidden"
+        style={{
+          opacity: opacity,
+          transition: 'opacity 0.3s ease',
+          background: `radial-gradient(
+            300px circle at ${glarePos.x}% ${glarePos.y}%, 
+            rgba(14, 165, 233, 0.3), 
+            transparent 100%
+          )`
+        }}
+      />
+      
+      {children}
+    </div>
+  );
+};
+
+// 2. Section Title
 const SectionTitle = ({ title, num }) => (
   <div className="flex items-baseline gap-4 mb-16">
     <h2 className="text-5xl md:text-6xl font-black text-gray-900 uppercase tracking-tight">{title}</h2>
@@ -26,7 +89,7 @@ const SectionTitle = ({ title, num }) => (
   </div>
 );
 
-// 2. Button: The specific blue pill button from the Hero
+// 3. Primary Button
 const PrimaryButton = ({ children, className = "" }) => (
   <button className={`bg-[#0EA5E9] text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:bg-sky-500 hover:-translate-y-1 transition-all duration-300 ${className}`}>
     {children}
@@ -46,7 +109,6 @@ const Navbar = () => {
           Vladi Georgiev
         </h1>
         
-        {/* Desktop Menu - Clean, Uppercase, Spaced */}
         <div className="hidden md:flex gap-8 lg:gap-12">
           {links.map((link) => (
             <a key={link} href={`#${link.toLowerCase()}`} className="text-xs lg:text-sm font-semibold text-gray-600 hover:text-[#0EA5E9] tracking-widest uppercase transition-colors">
@@ -60,7 +122,6 @@ const Navbar = () => {
         </button>
       </div>
       
-      {/* Mobile Menu */}
       {isOpen && (
         <div className="absolute top-full left-0 w-full bg-white border-b border-gray-100 p-6 flex flex-col gap-4 shadow-xl">
            {links.map((link) => (
@@ -83,7 +144,6 @@ const Hero = () => (
         Building Digital <br />
         <span className="relative inline-block">
           Experiences.
-          {/* The light blue underline */}
           <span className="absolute bottom-2 left-0 w-full h-3 bg-sky-200/50 -z-10"></span>
         </span>
       </h1>
@@ -103,14 +163,11 @@ const Hero = () => (
       </div>
     </div>
 
-    {/* Hero Image (Vladi1) with Bottom Fade Mask */}
     <div className="flex-1 relative flex justify-center">
       <div className="relative w-full max-w-md">
-        {/* CSS Mask to fade the bottom of the image into white */}
         <div className="relative z-10" style={{ maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)' }}>
             <img src={Vladi1} alt="Vladi Georgiev" className="w-full h-auto object-cover" />
         </div>
-        {/* Subtle blue glow behind the person */}
         <div className="absolute top-20 left-10 w-[80%] h-[80%] bg-sky-200 rounded-full blur-[80px] -z-10 opacity-60"></div>
       </div>
     </div>
@@ -135,7 +192,6 @@ const About = () => (
         </button>
       </div>
       
-      {/* About Image (Vladi2) */}
       <div className="flex-1 relative">
          <div className="w-full max-w-sm ml-auto relative">
              <img src={Vladi2} alt="About Vladi" className="rounded-[40px] shadow-2xl w-full object-cover bg-gray-100" />
@@ -170,7 +226,6 @@ const Skills = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {skillCategories.map((cat, idx) => (
-          // Added shadow-md for better pop against new background
           <div key={idx} className="bg-white rounded-3xl p-8 shadow-md border border-gray-100 hover:shadow-xl hover:border-sky-100 transition-all duration-300 group">
             <div className="bg-sky-50 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
               {cat.icon}
@@ -227,7 +282,6 @@ const Projects = () => {
             className="sticky top-32" 
             style={{ marginTop: index === 0 ? 0 : '0px', marginBottom: `${(projects.length - index) * 20}px` }}
           >
-            {/* The Glass Stack Card - Increased shadow for contrast */}
             <div className="bg-white/90 backdrop-blur-xl border border-white/50 shadow-xl rounded-3xl p-8 md:p-12 flex flex-col md:flex-row gap-12 transition-transform hover:scale-[1.02] duration-500">
               
               <div className="w-full md:w-1/2">
@@ -273,68 +327,186 @@ const Certificates = () => {
     <section id="certificates" className="py-20 px-6 max-w-7xl mx-auto">
       <SectionTitle title="Certificates" num="04" />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {certs.map((cert, idx) => (
-          // Added shadow-md for better pop against new background
-          <div key={idx} className="bg-white rounded-2xl p-8 shadow-md hover:shadow-xl transition-all border border-gray-100 flex flex-col h-full">
-              <div className="flex items-center gap-2 mb-6">
-                  <div className="font-bold text-[#0EA5E9] text-xl flex items-center gap-1">
-                    <span className="text-2xl">∞</span> Meta
+          <TiltedCard key={idx}>
+            <div className="bg-white rounded-2xl p-8 shadow-md border border-gray-100 flex flex-col h-full relative z-0">
+                <div className="flex items-center gap-2 mb-6">
+                    <div className="font-bold text-[#0EA5E9] text-xl flex items-center gap-1">
+                      <span className="text-2xl">∞</span> Meta
+                    </div>
+                </div>
+                
+                <h4 className="font-bold text-xl text-gray-900 mb-2">{cert.title}</h4>
+                <p className="text-xs text-gray-400 mb-6">authorized by Meta and offered through Coursera</p>
+                
+                <div className="mt-auto space-y-6">
+                  <div className="flex flex-wrap gap-2">
+                    {cert.tags.map(t => (
+                      <span key={t} className="px-3 py-1 bg-yellow-400 text-black text-xs font-bold rounded-md">{t}</span>
+                    ))}
+                    <span className="ml-auto text-green-500 flex items-center gap-1 text-xs font-bold">Verified <CheckCircle size={14}/></span>
                   </div>
-              </div>
-              
-              <h4 className="font-bold text-xl text-gray-900 mb-2">{cert.title}</h4>
-              <p className="text-xs text-gray-400 mb-6">authorized by Meta and offered through Coursera</p>
-              
-              <div className="mt-auto space-y-6">
-                <div className="flex flex-wrap gap-2">
-                  {cert.tags.map(t => (
-                    <span key={t} className="px-3 py-1 bg-yellow-400 text-black text-xs font-bold rounded-md">{t}</span>
-                  ))}
-                  <span className="ml-auto text-green-500 flex items-center gap-1 text-xs font-bold">Verified <CheckCircle size={14}/></span>
-                </div>
 
-                <div className="flex gap-3">
-                  <button className="flex-1 bg-[#0EA5E9] text-white py-2 rounded-lg text-sm font-bold">VIEW</button>
-                  <button className="flex-1 border border-gray-300 text-gray-600 py-2 rounded-lg text-sm font-bold">Download PDF</button>
+                  <div className="flex gap-3">
+                    <button className="flex-1 bg-[#0EA5E9] text-white py-2 rounded-lg text-sm font-bold hover:bg-sky-500 transition-colors">VIEW</button>
+                    <button className="flex-1 border border-gray-300 text-gray-600 py-2 rounded-lg text-sm font-bold hover:bg-gray-50 transition-colors">Download PDF</button>
+                  </div>
                 </div>
-              </div>
-          </div>
+            </div>
+          </TiltedCard>
         ))}
       </div>
     </section>
   );
 };
 
-const Journey = () => {
-  const timeline = [
-    { year: "2019", title: "Specialty: Electronic Trade", desc: "Started a multidisciplinary high school program combining Economy, Business, and Web Development." },
-    { year: "2023", title: "International Exhibition", desc: "Participated in TF-FEST. Earned foundational certificates in Version Control and Front-End." },
-    { year: "2024", title: "Meta Certifications", desc: "Solidified front-end expertise by mastering HTML, CSS, JS. Earned specialized Meta certificates in React." },
-    { year: "2025", title: "Fontys University (ICT)", desc: "Expanding into full-stack development with C#, Razor, and Blazor. Focusing on UI/UX design." },
-  ];
+// --- ANIMATED JOURNEY SECTION ---
+// --- NEW HELPER: Handles the "Appear/Disappear" logic based on line height ---
+const TimelineItem = ({ item, index, parentLineHeight, parentRef }) => {
+  const itemRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [offsetTop, setOffsetTop] = useState(0);
+
+  // 1. Calculate exactly where this item sits on the page
+  React.useLayoutEffect(() => {
+    if (itemRef.current && parentRef.current) {
+      // Get the distance from the top of the Journey section to this specific item
+      const itemTop = itemRef.current.offsetTop;
+      // Trigger visibility when the line is 50px past the start of the item
+      setOffsetTop(itemTop + 50); 
+    }
+  }, [parentRef]);
+
+  // 2. Check every time the Blue Line grows or shrinks
+  useEffect(() => {
+    // If Blue Line is taller than this item -> SHOW
+    // If Blue Line shrinks (scroll up) and becomes shorter -> HIDE
+    if (parentLineHeight > offsetTop) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  }, [parentLineHeight, offsetTop]);
 
   return (
-    <section id="journey" className="py-20 px-6 max-w-7xl mx-auto">
-       <div className="flex items-baseline gap-2 mb-16 text-[#0EA5E9]">
+    <div ref={itemRef} className="flex group relative z-10 mb-24">
+      
+      {/* Year Column (Left) - Slides in/out */}
+      <div 
+        className={`w-24 md:w-32 flex-shrink-0 text-right pr-8 pt-2 transition-all duration-500 ease-out 
+        ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
+      >
+        <span className="text-3xl font-bold text-[#0EA5E9]">{item.year}</span>
+      </div>
+      
+      {/* Dot Column (Center) */}
+      <div className="relative flex flex-col items-center w-0 md:w-auto">
+         {/* The Blue Dot 
+             - z-20: Puts it ON TOP of the line
+             - border-white: Creates the gap effect
+             - scale-0/100: Pops in and out
+         */}
+         <div 
+            className={`hidden md:flex absolute top-3 -left-[9px] w-5 h-5 rounded-full border-4 border-white bg-[#0EA5E9] shadow-md z-20 transition-transform duration-300 ease-back-out 
+            ${isVisible ? 'scale-100' : 'scale-0'}`}
+         ></div>
+      </div>
+      
+      {/* Text Column (Right) - Slides in/out */}
+      <div 
+        className={`pl-8 md:pl-12 pt-1 border-l-2 border-gray-100 md:border-none transition-all duration-500 ease-out delay-75
+        ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+      > 
+        <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
+        <p className="text-gray-600 leading-relaxed">{item.desc}</p>
+      </div>
+
+    </div>
+  );
+};
+
+// --- UPDATED JOURNEY SECTION ---
+const Journey = () => {
+  const sectionRef = useRef(null);
+  const [lineHeight, setLineHeight] = useState(0);
+
+  const timeline = [
+    { year: "2019", title: "Specialty: Electronic Trade", desc: "Started a multidisciplinary high school program combining Economy, Business, and Web Development. Graduated with a diploma as an Organizer of Internet Applications." },
+    { year: "2023", title: "International Exhibition & Fundamentals", desc: "Participated in the TF-FEST International Exhibition. Earned foundational professional certificates in Version Control and Introduction to Front-End." },
+    { year: "2024", title: "Graduation & Meta Certifications", desc: "Solidified front-end expertise by mastering HTML, CSS, and JavaScript. Earned specialized Meta certificates in React Basics and Advanced React." },
+    { year: "2025", title: "Fontys University (ICT)", desc: "Expanding into full-stack development with C#, Razor, and Blazor. Focusing on UI/UX design, Wireframing, and collaborative open learning in agile teams." },
+  ];
+
+  // Logic: Calculate Blue Line Height based on Scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (sectionRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        
+        // Start drawing line when the section is in the middle of the screen
+        const startOffset = windowHeight / 2; 
+        const relativeY = windowHeight - rect.top - startOffset;
+        
+        // Clamp: Ensure height is never negative
+        const newHeight = Math.max(0, relativeY);
+        
+        setLineHeight(newHeight);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <section id="journey" className="py-20 px-6 max-w-7xl mx-auto" ref={sectionRef}>
+       <div className="flex items-baseline gap-2 mb-20 text-[#0EA5E9]">
           <h2 className="text-4xl font-black uppercase tracking-tight">JOURNEY</h2>
        </div>
 
-       <div className="border-l-2 border-gray-200 ml-4 md:ml-12 space-y-16">
-         {timeline.map((item, index) => (
-           <div key={index} className="relative pl-8 md:pl-12 group">
-             {/* Blue Dot */}
-             <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-[#0EA5E9] ring-4 ring-white"></div>
-             
-             <div className="flex flex-col md:flex-row gap-4 md:gap-16">
-               <span className="text-3xl font-bold text-[#0EA5E9] min-w-[80px]">{item.year}</span>
-               <div>
-                 <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                 <p className="text-gray-600 max-w-2xl leading-relaxed">{item.desc}</p>
-               </div>
-             </div>
-           </div>
-         ))}
+       <div className="max-w-4xl relative">
+         
+         {/* --- THE SCROLLING LINE TRACK --- */}
+         <div className="absolute left-[96px] md:left-[128px] top-2 bottom-0 w-[2px] h-full z-0 hidden md:block">
+            {/* 1. Gray Background Line (The Track) */}
+            <div className="absolute top-0 left-0 w-full h-full bg-gray-200"></div>
+            
+            {/* 2. Blue Animated Line */}
+            <div 
+              className="absolute top-0 left-0 w-full bg-[#0EA5E9] transition-all duration-75 ease-linear shadow-[0_0_10px_#0EA5E9]"
+              style={{ height: `${lineHeight}px`, maxHeight: '100%' }} 
+            >
+                {/* 3. THE ARROW HEAD (Sticks to the bottom of the blue line) */}
+                <div className={`absolute -bottom-4 -left-[9px] text-[#0EA5E9] transition-opacity duration-300 ${lineHeight > 10 ? 'opacity-100' : 'opacity-0'}`}>
+                   <ChevronDown size={20} strokeWidth={3} />
+                </div>
+            </div>
+         </div>
+
+         {/* --- TIMELINE ITEMS --- */}
+         {/* We pass the 'lineHeight' to every item so it knows when to appear/disappear */}
+         <div className="relative pb-24">
+            {timeline.map((item, index) => (
+              <TimelineItem 
+                key={index} 
+                item={item} 
+                index={index} 
+                parentLineHeight={lineHeight} 
+                parentRef={sectionRef} 
+              />
+            ))}
+         </div>
+         
+         {/* Static End Dot */}
+         <div className="flex opacity-20">
+            <div className="w-24 md:w-32 flex-shrink-0 pr-8"></div>
+            <div className="relative flex flex-col items-center pl-3">
+               <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+            </div>
+         </div>
        </div>
     </section>
   );
@@ -342,7 +514,6 @@ const Journey = () => {
 
 const Contact = () => (
   <section id="contact" className="py-20 px-6 max-w-7xl mx-auto">
-    {/* Light Blue Container matching screenshot */}
     <div className="bg-[#E0F2FE] rounded-3xl p-8 md:p-16 flex flex-col md:flex-row gap-12 items-center shadow-lg">
       
       <div className="flex-1 space-y-6">
@@ -373,8 +544,6 @@ const Contact = () => (
 
 export default function App() {
   return (
-    // UPDATED BACKGROUND: Changed from 'from-white via-white to-sky-50'
-    // to 'from-gray-50 via-gray-50 to-sky-100' for better contrast with white cards.
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-gray-50 to-sky-100 font-sans selection:bg-[#0EA5E9] selection:text-white">
       <Navbar />
       <Hero />
