@@ -1,63 +1,70 @@
-import React, { useState } from 'react';
-import { Rocket, ExternalLink, Copy, CheckCircle, Menu, X } from 'lucide-react';
-import Vladi1 from './assets/Vladi1.png';
+import React from 'react';
+import { 
+  ExternalLink, 
+  Copy, 
+  Menu, 
+  X, 
+  Rocket, 
+  CheckCircle,
+  Code2,      
+  Database,   
+  Layout,     
+  Terminal    
+} from 'lucide-react';
 
-// --- UI Components ---
+// --- IMAGES ---
+import Vladi1 from './assets/Vladi1.png'; // Hero Image
+import Vladi2 from './assets/Vladi2.jpg'; // About Me Image
 
-// 1. NEW: Glow Component for the hero background effects
-const GlowOrb = ({ className = "" }) => (
-  <div className={`absolute rounded-full blur-[100px] -z-10 ${className}`}></div>
+// --- Helper Components ---
+
+// 1. Section Title: Matches the "ABOUT ME ( 01 )" style exactly
+const SectionTitle = ({ title, num }) => (
+  <div className="flex items-baseline gap-4 mb-16">
+    <h2 className="text-5xl md:text-6xl font-black text-gray-900 uppercase tracking-tight">{title}</h2>
+    <span className="text-2xl text-gray-500 font-normal">({num})</span>
+  </div>
 );
 
-// 2. OLD: Your original GlassCard (kept strictly as requested)
-const GlassCard = ({ children, className = "" }) => (
-  <div className={`bg-white/30 backdrop-blur-md border border-white/50 shadow-glass rounded-3xl ${className}`}>
+// 2. Button: The specific blue pill button from the Hero
+const PrimaryButton = ({ children, className = "" }) => (
+  <button className={`bg-[#0EA5E9] text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:bg-sky-500 hover:-translate-y-1 transition-all duration-300 ${className}`}>
     {children}
-  </div>
-);
-
-// 3. OLD: Your original SectionHeading (kept strictly as requested)
-const SectionHeading = ({ title, num }) => (
-  <div className="flex items-baseline gap-2 mb-12">
-    <h2 className="text-5xl md:text-6xl font-black text-gray-900 tracking-tight uppercase">{title}</h2>
-    <span className="text-xl md:text-2xl font-light text-gray-500">({num})</span>
-  </div>
+  </button>
 );
 
 // --- Sections ---
 
-// UPDATED: High Fidelity Navbar (Cleaner look)
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const links = ["About", "Projects", "Certificates", "Contact"];
+  const [isOpen, setIsOpen] = React.useState(false);
+  const links = ["ABOUT", "SKILLS", "PROJECTS", "CERTIFICATES", "JOURNEY", "CONTACT"];
 
   return (
-    <nav className="fixed w-full z-50 top-0 left-0 bg-white/70 backdrop-blur-lg border-b border-white/40 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tighter">
-          Vladi <span className="text-brand-accent">Georgiev</span>
+    <nav className="fixed w-full z-50 top-0 left-0 bg-white/80 backdrop-blur-md py-6 transition-all border-b border-gray-100/50">
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+          Vladi Georgiev
         </h1>
         
-        {/* Desktop Menu */}
-        <div className="hidden md:flex gap-10">
+        {/* Desktop Menu - Clean, Uppercase, Spaced */}
+        <div className="hidden md:flex gap-8 lg:gap-12">
           {links.map((link) => (
-            <a key={link} href={`#${link.toLowerCase()}`} className="text-sm font-bold text-gray-500 hover:text-brand-accent tracking-widest uppercase transition-colors">
+            <a key={link} href={`#${link.toLowerCase()}`} className="text-xs lg:text-sm font-semibold text-gray-600 hover:text-[#0EA5E9] tracking-widest uppercase transition-colors">
               {link}
             </a>
           ))}
         </div>
 
-        {/* Mobile Menu Toggle */}
-        <button className="md:hidden p-2 text-gray-700" onClick={() => setIsOpen(!isOpen)}>
+        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X /> : <Menu />}
         </button>
       </div>
-
-      {/* Mobile Menu Dropdown */}
+      
+      {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl p-6 flex flex-col gap-6 shadow-2xl border-t border-gray-100 animate-fade-in-down">
-          {links.map((link) => (
-            <a key={link} href={`#${link.toLowerCase()}`} onClick={() => setIsOpen(false)} className="text-2xl font-bold text-gray-800">
+        <div className="absolute top-full left-0 w-full bg-white border-b border-gray-100 p-6 flex flex-col gap-4 shadow-xl">
+           {links.map((link) => (
+            <a key={link} href={`#${link.toLowerCase()}`} onClick={() => setIsOpen(false)} className="text-lg font-bold text-gray-800">
               {link}
             </a>
           ))}
@@ -67,54 +74,44 @@ const Navbar = () => {
   );
 };
 
-// UPDATED: High Fidelity Hero (Glows, Fading Image, Better Typography)
 const Hero = () => (
-  <section className="pt-40 pb-20 px-6 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 min-h-screen relative overflow-visible">
-    
-    {/* NEW: Background Glows */}
-    <GlowOrb className="w-[500px] h-[500px] bg-sky-200/40 -top-20 -left-20" />
-    <GlowOrb className="w-[400px] h-[400px] bg-blue-200/30 bottom-0 right-0" />
-
-    <div className="flex-1 space-y-8 animate-fade-in-up z-10">
-      <div className="inline-block px-4 py-2 bg-sky-50 rounded-full border border-sky-100">
-        <h3 className="text-brand-accent font-bold tracking-widest text-xs uppercase">Front-End Developer & UI/UX Designer</h3>
-      </div>
+  <section className="pt-40 pb-20 px-6 max-w-7xl mx-auto min-h-screen flex flex-col md:flex-row items-center gap-12">
+    <div className="flex-1 space-y-6 z-10">
+      <h3 className="text-[#0EA5E9] font-bold tracking-widest text-xs uppercase mb-2">Front-End Developer & UI/UX Designer</h3>
       
       <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-[1.1]">
         Building Digital <br />
-        <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-700">
+        <span className="relative inline-block">
           Experiences.
-          {/* Decorative Underline */}
-          <span className="absolute bottom-3 left-0 w-full h-4 bg-brand-accent/20 -z-10 -rotate-1"></span>
+          {/* The light blue underline */}
+          <span className="absolute bottom-2 left-0 w-full h-3 bg-sky-200/50 -z-10"></span>
         </span>
       </h1>
       
-      <p className="text-gray-500 text-lg md:text-xl max-w-lg leading-relaxed">
-        Design driven by logic. Code inspired by art. Creating seamless web solutions.
+      <p className="text-gray-500 text-lg max-w-lg leading-relaxed pt-4">
+        Design driven by logic. Code inspired by art.
       </p>
       
-      <div className="flex flex-wrap gap-4">
-        <button className="bg-brand-accent text-white px-10 py-4 rounded-xl font-bold shadow-lg shadow-sky-300/50 hover:bg-sky-400 hover:shadow-sky-400/50 hover:-translate-y-1 transition-all duration-300">
-          See My Work
-        </button>
+      <div className="pt-6">
+        <PrimaryButton>See My Work</PrimaryButton>
       </div>
 
-      <div className="mt-12 border-l-4 border-brand-accent pl-6 py-1">
-        <p className="text-xl md:text-2xl text-gray-800 font-medium leading-relaxed italic">
-          "Developing modern solutions in <span className="text-brand-accent font-bold not-italic">Eindhoven</span> with a foundation in technical precision."
+      <div className="mt-16 border-l-4 border-[#0EA5E9] pl-6 py-2">
+        <p className="text-xl text-gray-800 font-medium leading-relaxed">
+          "Developing modern solutions in <span className="text-[#0EA5E9]">Eindhoven</span> with a foundation in technical precision."
         </p>
       </div>
     </div>
 
-    <div className="flex-1 relative flex justify-center z-10">
-      {/* Intense Glow behind image */}
-      <div className="absolute w-[120%] h-[120%] bg-gradient-to-tr from-sky-200/50 to-white/0 rounded-full blur-3xl -z-10 top-10"></div>
-      
-      {/* NEW: Image with Bottom Fade Mask */}
+    {/* Hero Image (Vladi1) with Bottom Fade Mask */}
+    <div className="flex-1 relative flex justify-center">
       <div className="relative w-full max-w-md">
-        <div className="relative rounded-3xl overflow-hidden" style={{ maskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)' }}>
-            <img src={Vladi1} alt="Vladi Georgiev" className="w-full h-auto object-cover transform hover:scale-105 transition-duration-700" />
+        {/* CSS Mask to fade the bottom of the image into white */}
+        <div className="relative z-10" style={{ maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)' }}>
+            <img src={Vladi1} alt="Vladi Georgiev" className="w-full h-auto object-cover" />
         </div>
+        {/* Subtle blue glow behind the person */}
+        <div className="absolute top-20 left-10 w-[80%] h-[80%] bg-sky-200 rounded-full blur-[80px] -z-10 opacity-60"></div>
       </div>
     </div>
   </section>
@@ -122,94 +119,145 @@ const Hero = () => (
 
 const About = () => (
   <section id="about" className="py-20 px-6 max-w-7xl mx-auto">
-    <SectionHeading title="About Me" num="01" />
+    <SectionTitle title="About Me" num="01" />
     
-    <div className="flex flex-col-reverse md:flex-row items-center gap-12">
-      <div className="flex-1 space-y-6 text-lg text-gray-600 leading-relaxed">
+    <div className="flex flex-col-reverse md:flex-row items-center gap-16">
+      <div className="flex-1 space-y-6 text-gray-600 text-lg leading-relaxed">
         <p>
           I'm Vladi Georgiev from Bulgaria. After studying electronic trades in high school, I earned seven professional certificates in front-end development from Meta.
         </p>
         <p>
           I've built websites with HTML, CSS, Bootstrap, JavaScript, React, and UI/UX design, and worked on several C# projects using Razor and Blazor.
         </p>
-        <button className="mt-6 flex items-center gap-2 text-brand-accent font-bold hover:underline">
-          Download Full Resume <ExternalLink size={18} />
+        
+        <button className="mt-8 px-8 py-3 border-2 border-sky-100 text-[#0EA5E9] font-bold rounded-full hover:bg-sky-50 transition-colors flex items-center gap-2">
+          Download Full Resume <span className="text-xl">→</span>
         </button>
       </div>
       
-      <div className="flex-1 flex justify-center">
-         <div className="w-80 h-80 bg-gray-200 rounded-3xl shadow-lg flex items-center justify-center text-gray-400 rotate-3 transition-transform hover:rotate-0">
-             [About Image]
+      {/* About Image (Vladi2) */}
+      <div className="flex-1 relative">
+         <div className="w-full max-w-sm ml-auto relative">
+             <img src={Vladi2} alt="About Vladi" className="rounded-[40px] shadow-2xl w-full object-cover bg-gray-100" />
          </div>
       </div>
     </div>
   </section>
 );
 
-const Journey = () => {
-  const timeline = [
-    { year: "2019", title: "Specialty: Electronic Trade", desc: "Started a multidisciplinary high school program combining Economy, Business, and Web Development." },
-    { year: "2023", title: "International Exhibition & Fundamentals", desc: "Participated in TF-FEST. Earned foundational certificates in Version Control and Front-End." },
-    { year: "2024", title: "Graduation & Meta Certifications", desc: "Solidified front-end expertise by mastering HTML, CSS, JS. Earned specialized Meta certificates in React." },
-    { year: "2025", title: "Fontys University (ICT)", desc: "Expanding into full-stack development with C#, Razor, and Blazor. Focusing on UI/UX design." },
+const Skills = () => {
+  const skillCategories = [
+    {
+      title: "Frontend",
+      icon: <Layout className="w-8 h-8 text-[#0EA5E9]" />,
+      skills: ["React", "JavaScript (ES6+)", "Tailwind CSS", "HTML5 & CSS3", "Bootstrap", "Blazor"]
+    },
+    {
+      title: "Backend & Logic",
+      icon: <Database className="w-8 h-8 text-[#0EA5E9]" />,
+      skills: ["C#", "Razor Pages", "Python", "RESTful APIs", "SQL Basics"]
+    },
+    {
+      title: "Tools & Design",
+      icon: <Code2 className="w-8 h-8 text-[#0EA5E9]" />,
+      skills: ["Git & GitHub", "Figma (UI/UX)", "VS Code", "Responsive Design", "Agile"]
+    }
   ];
 
   return (
-    <section id="journey" className="py-20 px-6 max-w-7xl mx-auto">
-       <div className="flex items-baseline gap-2 mb-12 text-brand-accent">
-          <h2 className="text-4xl font-black uppercase tracking-tight">Journey</h2>
-       </div>
-
-       <div className="border-l-2 border-gray-200 ml-4 md:ml-12 space-y-12">
-         {timeline.map((item, index) => (
-           <div key={index} className="relative pl-8 md:pl-12 group">
-             {/* Dot */}
-             <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-gray-300 group-hover:bg-brand-accent ring-4 ring-white transition-colors duration-300"></div>
-             
-             <div className="flex flex-col md:flex-row gap-2 md:gap-12">
-               <span className="text-3xl font-bold text-brand-accent min-w-[100px]">{item.year}</span>
-               <div>
-                 <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                 <p className="text-gray-600 max-w-2xl">{item.desc}</p>
-               </div>
-             </div>
-           </div>
-         ))}
-       </div>
+    <section id="skills" className="py-20 px-6 max-w-7xl mx-auto">
+      <SectionTitle title="Tech Stack" num="02" />
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {skillCategories.map((cat, idx) => (
+          // Added shadow-md for better pop against new background
+          <div key={idx} className="bg-white rounded-3xl p-8 shadow-md border border-gray-100 hover:shadow-xl hover:border-sky-100 transition-all duration-300 group">
+            <div className="bg-sky-50 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              {cat.icon}
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">{cat.title}</h3>
+            <ul className="space-y-3">
+              {cat.skills.map((skill) => (
+                <li key={skill} className="flex items-center gap-3 text-gray-600 font-medium">
+                  <span className="w-2 h-2 rounded-full bg-[#0EA5E9]"></span>
+                  {skill}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </section>
   );
 };
 
-const Projects = () => (
-  <section id="projects" className="py-20 px-6 max-w-7xl mx-auto">
-    <SectionHeading title="Projects" num="02" />
+const Projects = () => {
+  const projects = [
+    {
+      title: "Mario's Pizza",
+      desc: "A fully responsive e-commerce platform for a pizza restaurant. Features include menu browsing, cart management, and a seamless checkout process.",
+      tags: ["Python", "React", "Tailwind"],
+      bg: "bg-[#1f2937]", 
+      text: "white"
+    },
+    {
+      title: "Finance Tracker",
+      desc: "Comprehensive dashboard for tracking personal expenses with chart visualizations and export capabilities.",
+      tags: ["Next.js", "TypeScript", "ChartJS"],
+      bg: "bg-white",
+      text: "gray-900"
+    },
+    {
+      title: "Portfolio v1",
+      desc: "The first iteration of my personal portfolio showcasing my early work in HTML and CSS.",
+      tags: ["HTML", "CSS", "JS"],
+      bg: "bg-white",
+      text: "gray-900"
+    }
+  ];
 
-    {/* Project Card */}
-    <GlassCard className="p-8 md:p-12 flex flex-col md:flex-row gap-12 items-center hover:shadow-2xl transition-shadow duration-300">
-      <div className="w-full md:w-1/2">
-        <div className="bg-gray-100 rounded-xl overflow-hidden shadow-inner aspect-video flex items-center justify-center text-gray-400 group">
-           <span className="group-hover:scale-105 transition-transform">[Project Screenshot]</span>
-        </div>
+  return (
+    <section id="projects" className="py-20 px-6 max-w-7xl mx-auto relative">
+      <SectionTitle title="Projects" num="03" />
+
+      <div className="flex flex-col gap-8 pb-20">
+        {projects.map((project, index) => (
+          <div 
+            key={index} 
+            className="sticky top-32" 
+            style={{ marginTop: index === 0 ? 0 : '0px', marginBottom: `${(projects.length - index) * 20}px` }}
+          >
+            {/* The Glass Stack Card - Increased shadow for contrast */}
+            <div className="bg-white/90 backdrop-blur-xl border border-white/50 shadow-xl rounded-3xl p-8 md:p-12 flex flex-col md:flex-row gap-12 transition-transform hover:scale-[1.02] duration-500">
+              
+              <div className="w-full md:w-1/2">
+                <div className={`${project.bg} rounded-2xl overflow-hidden shadow-inner aspect-[4/3] flex items-center justify-center relative group`}>
+                   <span className="text-gray-400 font-bold">[ Project Screenshot ]</span>
+                </div>
+              </div>
+              
+              <div className="w-full md:w-1/2 flex flex-col justify-center space-y-6">
+                <h3 className="text-4xl font-black text-gray-900">{project.title}</h3>
+                <p className="text-gray-600 leading-relaxed text-lg">
+                  {project.desc}
+                </p>
+                
+                <div className="flex flex-wrap gap-3">
+                  {project.tags.map(tag => (
+                    <span key={tag} className="px-4 py-1.5 bg-sky-50 text-[#0EA5E9] rounded-full text-sm font-bold border border-sky-100">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-gray-400 text-sm font-medium pt-4">Front-End Developer & UX/UI</p>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
-      
-      <div className="w-full md:w-1/2 space-y-6">
-        <h3 className="text-3xl font-bold text-gray-900">Mario's Pizza</h3>
-        <p className="text-gray-600 leading-relaxed">
-          A fully responsive e-commerce platform for a pizza restaurant. Features include menu browsing, cart management, and a seamless checkout process designed with a mobile-first approach.
-        </p>
-        
-        <div className="flex flex-wrap gap-3">
-          {['Python', 'React', 'Tailwind'].map(tag => (
-            <span key={tag} className="px-4 py-1 bg-sky-50 text-brand-accent border border-sky-100 rounded-full text-sm font-medium">
-              {tag}
-            </span>
-          ))}
-        </div>
-        <p className="text-gray-400 text-sm font-medium pt-2">Front-End Developer & UX/UI</p>
-      </div>
-    </GlassCard>
-  </section>
-);
+    </section>
+  );
+};
 
 const Certificates = () => {
   const certs = [
@@ -223,35 +271,34 @@ const Certificates = () => {
 
   return (
     <section id="certificates" className="py-20 px-6 max-w-7xl mx-auto">
-      <SectionHeading title="Certificates" num="03" />
+      <SectionTitle title="Certificates" num="04" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {certs.map((cert, idx) => (
-          <div key={idx} className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all border border-gray-100 flex flex-col justify-between h-full group">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                 {/* Fake Meta Logo */}
-                 <div className="font-bold text-blue-600 text-xl tracking-tight flex items-center gap-1">
+          // Added shadow-md for better pop against new background
+          <div key={idx} className="bg-white rounded-2xl p-8 shadow-md hover:shadow-xl transition-all border border-gray-100 flex flex-col h-full">
+              <div className="flex items-center gap-2 mb-6">
+                  <div className="font-bold text-[#0EA5E9] text-xl flex items-center gap-1">
                     <span className="text-2xl">∞</span> Meta
-                 </div>
+                  </div>
               </div>
-              <h4 className="font-bold text-lg text-gray-900 mb-2 group-hover:text-brand-accent transition-colors">{cert.title}</h4>
-              <p className="text-xs text-gray-400 mb-4">authorized by Meta and offered through Coursera</p>
               
-              <div className="flex flex-wrap gap-2 mb-6">
-                {cert.tags.map(t => (
-                  <span key={t} className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded">{t}</span>
-                ))}
-                <span className="ml-auto flex items-center text-green-500 text-xs font-bold gap-1">
-                  Verified <CheckCircle size={12} />
-                </span>
-              </div>
-            </div>
+              <h4 className="font-bold text-xl text-gray-900 mb-2">{cert.title}</h4>
+              <p className="text-xs text-gray-400 mb-6">authorized by Meta and offered through Coursera</p>
+              
+              <div className="mt-auto space-y-6">
+                <div className="flex flex-wrap gap-2">
+                  {cert.tags.map(t => (
+                    <span key={t} className="px-3 py-1 bg-yellow-400 text-black text-xs font-bold rounded-md">{t}</span>
+                  ))}
+                  <span className="ml-auto text-green-500 flex items-center gap-1 text-xs font-bold">Verified <CheckCircle size={14}/></span>
+                </div>
 
-            <div className="flex gap-3 mt-auto">
-              <button className="flex-1 bg-brand-accent text-white py-2 rounded-lg text-sm font-bold hover:bg-sky-500 transition-colors">VIEW</button>
-              <button className="flex-1 border border-gray-300 text-gray-600 py-2 rounded-lg text-sm font-bold hover:bg-gray-50 transition-colors">PDF</button>
-            </div>
+                <div className="flex gap-3">
+                  <button className="flex-1 bg-[#0EA5E9] text-white py-2 rounded-lg text-sm font-bold">VIEW</button>
+                  <button className="flex-1 border border-gray-300 text-gray-600 py-2 rounded-lg text-sm font-bold">Download PDF</button>
+                </div>
+              </div>
           </div>
         ))}
       </div>
@@ -259,54 +306,87 @@ const Certificates = () => {
   );
 };
 
+const Journey = () => {
+  const timeline = [
+    { year: "2019", title: "Specialty: Electronic Trade", desc: "Started a multidisciplinary high school program combining Economy, Business, and Web Development." },
+    { year: "2023", title: "International Exhibition", desc: "Participated in TF-FEST. Earned foundational certificates in Version Control and Front-End." },
+    { year: "2024", title: "Meta Certifications", desc: "Solidified front-end expertise by mastering HTML, CSS, JS. Earned specialized Meta certificates in React." },
+    { year: "2025", title: "Fontys University (ICT)", desc: "Expanding into full-stack development with C#, Razor, and Blazor. Focusing on UI/UX design." },
+  ];
+
+  return (
+    <section id="journey" className="py-20 px-6 max-w-7xl mx-auto">
+       <div className="flex items-baseline gap-2 mb-16 text-[#0EA5E9]">
+          <h2 className="text-4xl font-black uppercase tracking-tight">JOURNEY</h2>
+       </div>
+
+       <div className="border-l-2 border-gray-200 ml-4 md:ml-12 space-y-16">
+         {timeline.map((item, index) => (
+           <div key={index} className="relative pl-8 md:pl-12 group">
+             {/* Blue Dot */}
+             <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-[#0EA5E9] ring-4 ring-white"></div>
+             
+             <div className="flex flex-col md:flex-row gap-4 md:gap-16">
+               <span className="text-3xl font-bold text-[#0EA5E9] min-w-[80px]">{item.year}</span>
+               <div>
+                 <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
+                 <p className="text-gray-600 max-w-2xl leading-relaxed">{item.desc}</p>
+               </div>
+             </div>
+           </div>
+         ))}
+       </div>
+    </section>
+  );
+};
+
 const Contact = () => (
   <section id="contact" className="py-20 px-6 max-w-7xl mx-auto">
-    
-    <GlassCard className="max-w-4xl mx-auto p-8 md:p-16 flex flex-col md:flex-row gap-12">
+    {/* Light Blue Container matching screenshot */}
+    <div className="bg-[#E0F2FE] rounded-3xl p-8 md:p-16 flex flex-col md:flex-row gap-12 items-center shadow-lg">
       
       <div className="flex-1 space-y-6">
-        <h2 className="text-4xl font-extrabold text-gray-900">Let's start a <br /> conversation</h2>
-        <div className="flex items-center gap-2 text-gray-500 font-medium">
-          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+        <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900">Let's start a <br /> conversation</h2>
+        <div className="flex items-center gap-2 text-green-600 font-bold">
+          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
           Available for new projects
         </div>
 
-        <div className="inline-flex items-center gap-2 bg-sky-100/50 px-4 py-2 rounded-lg text-brand-accent text-sm font-medium hover:bg-sky-100 transition-colors">
+        <div className="inline-flex items-center gap-2 bg-white/50 px-6 py-3 rounded-full text-gray-600 text-sm font-medium mt-4">
           vladi.georgiev.14@gmail.com
-          <Copy size={16} className="cursor-pointer hover:text-blue-600" />
+          <Copy size={16} className="cursor-pointer hover:text-[#0EA5E9]" />
         </div>
       </div>
 
-      <form className="flex-1 space-y-4" onSubmit={(e) => e.preventDefault()}>
-        <input type="text" placeholder="Name" className="w-full bg-white/50 border border-gray-200 p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white transition-all" />
-        <input type="email" placeholder="Email" className="w-full bg-white/50 border border-gray-200 p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white transition-all" />
-        <textarea placeholder="Message" rows="4" className="w-full bg-white/50 border border-gray-200 p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white resize-none transition-all"></textarea>
+      <form className="flex-1 w-full space-y-4">
+        <input type="text" placeholder="Name" className="w-full bg-[#F0F9FF] border-none p-4 rounded-xl focus:ring-2 focus:ring-[#0EA5E9] outline-none placeholder:text-gray-400" />
+        <input type="email" placeholder="Email" className="w-full bg-[#F0F9FF] border-none p-4 rounded-xl focus:ring-2 focus:ring-[#0EA5E9] outline-none placeholder:text-gray-400" />
+        <textarea placeholder="Message" rows="4" className="w-full bg-[#F0F9FF] border-none p-4 rounded-xl focus:ring-2 focus:ring-[#0EA5E9] outline-none resize-none placeholder:text-gray-400"></textarea>
         
-        <button className="w-full bg-brand-accent text-white font-bold py-4 rounded-xl shadow-lg hover:bg-sky-500 hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
+        <button className="bg-[#0EA5E9] text-white font-bold py-4 px-8 rounded-full shadow-lg hover:bg-sky-50 transition-all flex items-center gap-2">
           Send Message <Rocket size={20} />
         </button>
       </form>
-
-    </GlassCard>
+    </div>
   </section>
 );
 
-// --- Main App ---
-
 export default function App() {
   return (
-    // Main Background Gradient
-    <div className="min-h-screen bg-gradient-to-br from-white via-sky-50 to-sky-100 overflow-x-hidden font-sans selection:bg-brand-accent selection:text-white">
+    // UPDATED BACKGROUND: Changed from 'from-white via-white to-sky-50'
+    // to 'from-gray-50 via-gray-50 to-sky-100' for better contrast with white cards.
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-gray-50 to-sky-100 font-sans selection:bg-[#0EA5E9] selection:text-white">
       <Navbar />
       <Hero />
       <About />
+      <Skills />
       <Projects />
       <Journey />
       <Certificates />
       <Contact />
       
-      <footer className="text-center py-8 text-gray-400 text-sm">
-        © 2025 Vladi Georgiev. All rights reseerved.
+      <footer className="text-center py-12 text-gray-400 text-sm">
+        © 2025 Vladi Georgiev.
       </footer>
     </div>
   );
