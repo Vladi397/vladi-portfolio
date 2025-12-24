@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import { Rocket, ExternalLink, Copy, CheckCircle, Menu, X } from 'lucide-react';
-import VladiG1 from './assets/VladiG1.png';
+import Vladi1 from './assets/Vladi1.png';
+
 // --- UI Components ---
 
-// Reusable Glass Card Wrapper
+// 1. NEW: Glow Component for the hero background effects
+const GlowOrb = ({ className = "" }) => (
+  <div className={`absolute rounded-full blur-[100px] -z-10 ${className}`}></div>
+);
+
+// 2. OLD: Your original GlassCard (kept strictly as requested)
 const GlassCard = ({ children, className = "" }) => (
   <div className={`bg-white/30 backdrop-blur-md border border-white/50 shadow-glass rounded-3xl ${className}`}>
     {children}
   </div>
 );
 
-// Reusable Section Heading
+// 3. OLD: Your original SectionHeading (kept strictly as requested)
 const SectionHeading = ({ title, num }) => (
   <div className="flex items-baseline gap-2 mb-12">
     <h2 className="text-5xl md:text-6xl font-black text-gray-900 tracking-tight uppercase">{title}</h2>
@@ -20,20 +26,23 @@ const SectionHeading = ({ title, num }) => (
 
 // --- Sections ---
 
+// UPDATED: High Fidelity Navbar (Cleaner look)
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const links = ["About", "Projects", "Certificates", "Contact"];
 
   return (
-    <nav className="fixed w-full z-50 top-0 left-0 bg-white/10 backdrop-blur-md border-b border-white/20">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Vladi Georgiev</h1>
+    <nav className="fixed w-full z-50 top-0 left-0 bg-white/70 backdrop-blur-lg border-b border-white/40 transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tighter">
+          Vladi <span className="text-brand-accent">Georgiev</span>
+        </h1>
         
         {/* Desktop Menu */}
-        <div className="hidden md:flex gap-8">
+        <div className="hidden md:flex gap-10">
           {links.map((link) => (
-            <a key={link} href={`#${link.toLowerCase()}`} className="text-gray-600 font-medium hover:text-brand-accent transition-colors">
-              {link.toUpperCase()}
+            <a key={link} href={`#${link.toLowerCase()}`} className="text-sm font-bold text-gray-500 hover:text-brand-accent tracking-widest uppercase transition-colors">
+              {link}
             </a>
           ))}
         </div>
@@ -46,9 +55,9 @@ const Navbar = () => {
 
       {/* Mobile Menu Dropdown */}
       {isOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-lg p-6 flex flex-col gap-4 shadow-xl border-t border-gray-100">
+        <div className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl p-6 flex flex-col gap-6 shadow-2xl border-t border-gray-100 animate-fade-in-down">
           {links.map((link) => (
-            <a key={link} href={`#${link.toLowerCase()}`} onClick={() => setIsOpen(false)} className="text-lg font-bold text-gray-800">
+            <a key={link} href={`#${link.toLowerCase()}`} onClick={() => setIsOpen(false)} className="text-2xl font-bold text-gray-800">
               {link}
             </a>
           ))}
@@ -58,37 +67,54 @@ const Navbar = () => {
   );
 };
 
+// UPDATED: High Fidelity Hero (Glows, Fading Image, Better Typography)
 const Hero = () => (
-  <section className="pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 min-h-screen">
-    <div className="flex-1 space-y-6 animate-fade-in-up">
-      <h3 className="text-brand-accent font-bold tracking-widest text-sm uppercase">Front-End Developer & UI/UX Designer</h3>
-      <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight">
+  <section className="pt-40 pb-20 px-6 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 min-h-screen relative overflow-visible">
+    
+    {/* NEW: Background Glows */}
+    <GlowOrb className="w-[500px] h-[500px] bg-sky-200/40 -top-20 -left-20" />
+    <GlowOrb className="w-[400px] h-[400px] bg-blue-200/30 bottom-0 right-0" />
+
+    <div className="flex-1 space-y-8 animate-fade-in-up z-10">
+      <div className="inline-block px-4 py-2 bg-sky-50 rounded-full border border-sky-100">
+        <h3 className="text-brand-accent font-bold tracking-widest text-xs uppercase">Front-End Developer & UI/UX Designer</h3>
+      </div>
+      
+      <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-[1.1]">
         Building Digital <br />
-        <span className="relative inline-block">
+        <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-700">
           Experiences.
-          <span className="absolute bottom-2 left-0 w-full h-3 bg-brand-accent/20 -z-10"></span>
+          {/* Decorative Underline */}
+          <span className="absolute bottom-3 left-0 w-full h-4 bg-brand-accent/20 -z-10 -rotate-1"></span>
         </span>
       </h1>
-      <p className="text-gray-500 text-lg">Design driven by logic. Code inspired by art.</p>
       
-      <button className="bg-brand-accent text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:shadow-brand-accent/40 hover:-translate-y-1 transition-all duration-300">
-        See My Work
-      </button>
+      <p className="text-gray-500 text-lg md:text-xl max-w-lg leading-relaxed">
+        Design driven by logic. Code inspired by art. Creating seamless web solutions.
+      </p>
+      
+      <div className="flex flex-wrap gap-4">
+        <button className="bg-brand-accent text-white px-10 py-4 rounded-xl font-bold shadow-lg shadow-sky-300/50 hover:bg-sky-400 hover:shadow-sky-400/50 hover:-translate-y-1 transition-all duration-300">
+          See My Work
+        </button>
+      </div>
 
-      <div className="mt-12 border-l-4 border-brand-accent pl-6 py-2">
-        <p className="text-xl md:text-2xl text-gray-800 font-medium leading-relaxed">
-          "Developing modern solutions in <span className="text-brand-accent">Eindhoven</span> with a foundation in technical precision."
+      <div className="mt-12 border-l-4 border-brand-accent pl-6 py-1">
+        <p className="text-xl md:text-2xl text-gray-800 font-medium leading-relaxed italic">
+          "Developing modern solutions in <span className="text-brand-accent font-bold not-italic">Eindhoven</span> with a foundation in technical precision."
         </p>
       </div>
     </div>
 
-    <div className="flex-1 relative flex justify-center">
-      {/* Decorative Glow */}
-      <div className="absolute w-96 h-96 bg-brand-light rounded-full blur-3xl -z-10 opacity-70"></div>
+    <div className="flex-1 relative flex justify-center z-10">
+      {/* Intense Glow behind image */}
+      <div className="absolute w-[120%] h-[120%] bg-gradient-to-tr from-sky-200/50 to-white/0 rounded-full blur-3xl -z-10 top-10"></div>
       
-      {/* Image Placeholder */}
-      <div className="w-80 h-[500px] bg-gray-200 rounded-2xl shadow-2xl relative overflow-hidden border-4 border-white flex items-center justify-center">
-        <img src={VladiG1} alt="Vladi Georgiev" />
+      {/* NEW: Image with Bottom Fade Mask */}
+      <div className="relative w-full max-w-md">
+        <div className="relative rounded-3xl overflow-hidden" style={{ maskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)' }}>
+            <img src={Vladi1} alt="Vladi Georgiev" className="w-full h-auto object-cover transform hover:scale-105 transition-duration-700" />
+        </div>
       </div>
     </div>
   </section>
