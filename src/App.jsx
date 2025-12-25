@@ -22,14 +22,13 @@ import Vladi2 from "./assets/Vladi2.jpg";
 
 // ---------- Helpers ----------
 
-// Smooth scroll to section
 const scrollToId = (id) => {
   const el = document.getElementById(id);
   if (!el) return;
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 };
 
-// 1) TiltedCard Component (your spotlight glare, kept)
+// 1) TiltedCard (kept)
 const TiltedCard = ({ children }) => {
   const ref = useRef(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
@@ -38,7 +37,6 @@ const TiltedCard = ({ children }) => {
 
   const handleMouseMove = (e) => {
     if (!ref.current) return;
-
     const { top, left, width, height } = ref.current.getBoundingClientRect();
     const x = e.clientX - left;
     const y = e.clientY - top;
@@ -48,11 +46,8 @@ const TiltedCard = ({ children }) => {
     const rotateX = ((y - centerY) / centerY) * -10;
     const rotateY = ((x - centerX) / centerX) * 10;
 
-    const xPct = (x / width) * 100;
-    const yPct = (y / height) * 100;
-
     setRotate({ x: rotateX, y: rotateY });
-    setGlarePos({ x: xPct, y: yPct });
+    setGlarePos({ x: (x / width) * 100, y: (y / height) * 100 });
     setOpacity(1);
   };
 
@@ -75,12 +70,12 @@ const TiltedCard = ({ children }) => {
       <div
         className="absolute inset-0 w-full h-full pointer-events-none z-10 rounded-2xl overflow-hidden"
         style={{
-          opacity: opacity,
+          opacity,
           transition: "opacity 0.25s ease",
           background: `radial-gradient(
             320px circle at ${glarePos.x}% ${glarePos.y}%,
             rgba(14,165,233,0.28),
-            transparent 70%
+            transparent 30%
           )`,
         }}
       />
@@ -89,7 +84,7 @@ const TiltedCard = ({ children }) => {
   );
 };
 
-// 2) Reveal-on-scroll (premium, subtle)
+// 2) Reveal-on-scroll (kept)
 const Reveal = ({ children, className = "", delay = 0 }) => {
   const ref = useRef(null);
   const [show, setShow] = useState(false);
@@ -128,18 +123,20 @@ const Reveal = ({ children, className = "", delay = 0 }) => {
 
 // 3) Section Title
 const SectionTitle = ({ title, num, kicker }) => (
-  <div className="flex items-baseline gap-4 mb-12 md:mb-16">
+  <div className="flex items-baseline gap-4 mb-10 md:mb-16">
     <div className="flex-1">
       {kicker && (
         <p className="text-xs tracking-[0.25em] uppercase font-bold text-sky-600 mb-3">
           {kicker}
         </p>
       )}
-      <h2 className="text-5xl md:text-6xl font-black text-gray-900 uppercase tracking-tight">
+      <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 uppercase tracking-tight">
         {title}
       </h2>
     </div>
-    <span className="text-xl md:text-2xl text-gray-500 font-medium">({num})</span>
+    <span className="text-lg sm:text-xl md:text-2xl text-gray-500 font-medium">
+      ({num})
+    </span>
   </div>
 );
 
@@ -149,7 +146,7 @@ const PrimaryButton = ({ children, onClick, className = "", type = "button" }) =
     type={type}
     onClick={onClick}
     className={[
-      "bg-[#0EA5E9] text-white px-8 py-3 rounded-full font-bold text-base md:text-lg",
+      "bg-[#0EA5E9] text-white px-7 sm:px-8 py-3 rounded-full font-bold text-base md:text-lg",
       "shadow-lg hover:bg-sky-500 hover:-translate-y-1 active:translate-y-0",
       "transition-all duration-300 motion-reduce:transition-none",
       "focus:outline-none focus:ring-2 focus:ring-sky-300",
@@ -164,7 +161,7 @@ const SecondaryButton = ({ children, onClick, className = "" }) => (
   <button
     onClick={onClick}
     className={[
-      "px-8 py-3 rounded-full font-bold text-base md:text-lg",
+      "px-7 sm:px-8 py-3 rounded-full font-bold text-base md:text-lg",
       "border border-gray-200 bg-white/70 backdrop-blur",
       "text-gray-800 hover:bg-white hover:-translate-y-1 active:translate-y-0",
       "transition-all duration-300 motion-reduce:transition-none",
@@ -176,27 +173,23 @@ const SecondaryButton = ({ children, onClick, className = "" }) => (
   </button>
 );
 
-// Scrollspy hook for navbar
+// Scrollspy for navbar
 const useActiveSection = (sectionIds) => {
   const [active, setActive] = useState(sectionIds[0] ?? "home");
 
   useEffect(() => {
-    const els = sectionIds
-      .map((id) => document.getElementById(id))
-      .filter(Boolean);
-
+    const els = sectionIds.map((id) => document.getElementById(id)).filter(Boolean);
     if (!els.length) return;
 
     const io = new IntersectionObserver(
       (entries) => {
-        // pick the most visible intersecting entry
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0));
 
         if (visible[0]?.target?.id) setActive(visible[0].target.id);
       },
-      { root: null, threshold: [0.2, 0.35, 0.5, 0.65] }
+      { threshold: [0.2, 0.35, 0.5, 0.65] }
     );
 
     els.forEach((el) => io.observe(el));
@@ -223,6 +216,16 @@ const Navbar = ({ activeId }) => {
     []
   );
 
+  // Lock body scroll when mobile menu is open (mobile polish)
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   const handleNav = (id) => {
     setOpen(false);
     scrollToId(id);
@@ -230,10 +233,10 @@ const Navbar = ({ activeId }) => {
 
   return (
     <nav className="fixed w-full z-50 top-0 left-0 bg-white/70 backdrop-blur-md border-b border-gray-100/60">
-      <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 md:py-5 flex justify-between items-center">
         <button
           onClick={() => scrollToId("home")}
-          className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight"
+          className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 tracking-tight"
         >
           Vladi Georgiev
         </button>
@@ -265,10 +268,9 @@ const Navbar = ({ activeId }) => {
         </button>
       </div>
 
-      {/* Mobile overlay menu (premium) */}
       {open && (
-        <div className="md:hidden fixed inset-0 bg-white/95 backdrop-blur-xl z-50">
-          <div className="max-w-7xl mx-auto px-6 pt-6">
+        <div className="md:hidden fixed inset-0 bg-white/95 backdrop-blur-xl z-50 overflow-y-auto">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-10">
             <div className="flex justify-between items-center">
               <div className="text-2xl font-bold text-gray-900">Menu</div>
               <button onClick={() => setOpen(false)} aria-label="Close menu">
@@ -309,73 +311,73 @@ const Navbar = ({ activeId }) => {
 const Hero = () => (
   <section
     id="home"
-    className="pt-36 md:pt-40 pb-16 md:pb-24 px-6 max-w-7xl mx-auto min-h-[92vh] flex flex-col md:flex-row items-center gap-12"
+    className={[
+      "pt-28 sm:pt-32 md:pt-40 pb-14 sm:pb-16 md:pb-24",
+      "px-4 sm:px-6 max-w-7xl mx-auto",
+      "min-h-[92svh] flex flex-col md:flex-row items-center gap-10 md:gap-12",
+    ].join(" ")}
   >
-    <div className="flex-1 z-10">
+    <div className="flex-1 z-10 text-center md:text-left">
       <Reveal>
-        <h3 className="text-[#0EA5E9] font-bold tracking-[0.25em] text-xs uppercase mb-4">
+        <h3 className="text-[#0EA5E9] font-bold tracking-[0.25em] text-[11px] sm:text-xs uppercase mb-4">
           Front-End Developer • UI/UX
         </h3>
       </Reveal>
 
       <Reveal delay={80}>
-        <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-[1.08]">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-gray-900 leading-[1.08]">
           Building Digital{" "}
           <span className="relative inline-block">
             Experiences
-            <span className="absolute bottom-2 left-0 w-full h-3 bg-sky-200/60 -z-10 rounded-full"></span>
+            <span className="absolute bottom-1.5 md:bottom-2 left-0 w-full h-2.5 md:h-3 bg-sky-200/60 -z-10 rounded-full"></span>
           </span>
           .
         </h1>
       </Reveal>
 
       <Reveal delay={140}>
-        <p className="text-gray-500 text-lg max-w-xl leading-relaxed pt-5">
+        <p className="text-gray-500 text-base sm:text-lg max-w-xl leading-relaxed pt-5 mx-auto md:mx-0">
           I build clean, responsive React interfaces with strong UX and a performance-first mindset.
         </p>
       </Reveal>
 
       <Reveal delay={200}>
-        <div className="pt-7 flex flex-col sm:flex-row gap-3">
+        <div className="pt-7 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
           <PrimaryButton onClick={() => scrollToId("projects")}>
             See My Work <ArrowUpRight className="inline-block ml-2" size={18} />
           </PrimaryButton>
-          <SecondaryButton onClick={() => scrollToId("contact")}>
-            Get in touch
-          </SecondaryButton>
+          <SecondaryButton onClick={() => scrollToId("contact")}>Get in touch</SecondaryButton>
         </div>
       </Reveal>
 
-      {/* Proof row (this is what makes it feel real) */}
       <Reveal delay={260}>
-        <div className="mt-10 flex flex-wrap items-center gap-3 text-sm">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-gray-100 shadow-sm">
+        <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm justify-center md:justify-start">
+          <span className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-full bg-white/80 border border-gray-100 shadow-sm">
             <CheckCircle className="text-sky-600" size={16} />
             7 Meta Certificates
           </span>
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-gray-100 shadow-sm">
+          <span className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-full bg-white/80 border border-gray-100 shadow-sm">
             <MapPin className="text-sky-600" size={16} />
             Eindhoven
           </span>
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-gray-100 shadow-sm">
+          <span className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-full bg-white/80 border border-gray-100 shadow-sm">
             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse motion-reduce:animate-none"></span>
-            Available for projects
+            Available
           </span>
         </div>
       </Reveal>
 
-      {/* Quote becomes lighter and less dominant */}
       <Reveal delay={320}>
-        <div className="mt-10 border-l-4 border-[#0EA5E9] pl-5 py-2">
-          <p className="text-base md:text-lg text-gray-800 font-semibold leading-relaxed">
+        <div className="mt-8 sm:mt-10 border-l-4 border-[#0EA5E9] pl-4 sm:pl-5 py-2 text-left max-w-xl mx-auto md:mx-0">
+          <p className="text-sm sm:text-base md:text-lg text-gray-800 font-semibold leading-relaxed">
             “Modern solutions built with technical precision and clean design.”
           </p>
         </div>
       </Reveal>
     </div>
 
-    <div className="flex-1 relative flex justify-center">
-      <Reveal delay={120} className="w-full max-w-md">
+    <div className="flex-1 relative flex justify-center w-full">
+      <Reveal delay={120} className="w-full max-w-sm sm:max-w-md">
         <div className="relative">
           <div
             className="relative z-10"
@@ -384,12 +386,15 @@ const Hero = () => (
               WebkitMaskImage: "linear-gradient(to bottom, black 72%, transparent 100%)",
             }}
           >
-            <img src={Vladi1} alt="Vladi Georgiev" className="w-full h-auto object-cover select-none" />
+            <img
+              src={Vladi1}
+              alt="Vladi Georgiev"
+              className="w-full h-auto object-cover select-none"
+            />
           </div>
 
-          {/* Cleaner glow, less “fog machine” */}
-          <div className="absolute top-20 left-10 w-[78%] h-[78%] bg-sky-200 rounded-full blur-[70px] -z-10 opacity-55"></div>
-          <div className="absolute -top-6 -right-4 w-28 h-28 bg-sky-100 rounded-full blur-2xl -z-10"></div>
+          <div className="absolute top-16 left-10 w-[78%] h-[78%] bg-sky-200 rounded-full blur-[70px] -z-10 opacity-55"></div>
+          <div className="absolute -top-6 -right-4 w-24 h-24 bg-sky-100 rounded-full blur-2xl -z-10"></div>
         </div>
       </Reveal>
     </div>
@@ -397,11 +402,11 @@ const Hero = () => (
 );
 
 const About = () => (
-  <section id="about" className="py-20 px-6 max-w-7xl mx-auto">
+  <section id="about" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
     <SectionTitle title="About Me" num="01" kicker="Who I am" />
 
-    <div className="flex flex-col-reverse md:flex-row items-center gap-14 md:gap-16">
-      <div className="flex-1 space-y-6 text-gray-600 text-lg leading-relaxed">
+    <div className="flex flex-col-reverse md:flex-row items-center gap-12 md:gap-16">
+      <div className="flex-1 space-y-6 text-gray-600 text-base sm:text-lg leading-relaxed">
         <Reveal>
           <p>
             I’m Vladi Georgiev from Bulgaria. After studying electronic trades in high school, I earned seven
@@ -416,7 +421,7 @@ const About = () => (
         </Reveal>
 
         <Reveal delay={140}>
-          <div className="pt-3 flex flex-wrap gap-3">
+          <div className="pt-3 flex flex-wrap gap-2 sm:gap-3">
             <span className="px-4 py-2 rounded-full bg-sky-50 text-sky-700 border border-sky-100 font-semibold text-sm">
               React + Tailwind
             </span>
@@ -431,11 +436,8 @@ const About = () => (
 
         <Reveal delay={200}>
           <SecondaryButton
-            onClick={() => {
-              // TODO: wire to actual resume file
-              alert("Hook this to your resume PDF link.");
-            }}
-            className="mt-4 inline-flex items-center gap-2"
+            onClick={() => alert("Hook this to your resume PDF link.")}
+            className="mt-4 inline-flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-start"
           >
             Download Full Resume <ArrowUpRight size={18} />
           </SecondaryButton>
@@ -443,13 +445,13 @@ const About = () => (
       </div>
 
       <div className="flex-1 relative w-full">
-        <Reveal className="w-full max-w-sm ml-auto relative">
+        <Reveal className="w-full max-w-sm sm:max-w-md md:max-w-sm ml-auto relative">
           <img
             src={Vladi2}
             alt="About Vladi"
-            className="rounded-[32px] shadow-2xl w-full object-cover bg-gray-100 select-none"
+            className="rounded-[28px] sm:rounded-[32px] shadow-2xl w-full object-cover bg-gray-100 select-none"
           />
-          <div className="absolute -bottom-6 -left-6 w-28 h-28 bg-sky-100 rounded-full blur-2xl -z-10"></div>
+          <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-sky-100 rounded-full blur-2xl -z-10"></div>
         </Reveal>
       </div>
     </div>
@@ -476,13 +478,13 @@ const Skills = () => {
   ];
 
   return (
-    <section id="skills" className="py-20 px-6 max-w-7xl mx-auto">
+    <section id="skills" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
       <SectionTitle title="Skills" num="02" kicker="What I use" />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-7 md:gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
         {skillCategories.map((cat, idx) => (
           <Reveal key={idx} delay={idx * 80}>
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-xl hover:border-sky-100 transition-all duration-300 group">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 hover:shadow-xl hover:border-sky-100 transition-all duration-300 group">
               <div className="bg-sky-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform motion-reduce:transition-none">
                 {cat.icon}
               </div>
@@ -507,18 +509,20 @@ const Projects = () => {
   const projects = [
     {
       title: "Mario’s Pizza",
-      desc:
-        "A responsive e-commerce UI for a restaurant, focused on a clean menu experience and fast checkout flow.",
+      desc: "A responsive e-commerce UI for a restaurant, focused on a clean menu experience and fast checkout flow.",
       role: "Front-End • UI/UX",
-      outcomes: ["Responsive layout for all screens", "Reusable components + clean layout system", "Optimized UI for clarity and speed"],
+      outcomes: [
+        "Responsive layout for all screens",
+        "Reusable components + clean layout system",
+        "Optimized UI for clarity and speed",
+      ],
       tags: ["React", "Tailwind", "JavaScript"],
       liveUrl: "#",
       repoUrl: "#",
     },
     {
       title: "Finance Tracker",
-      desc:
-        "A dashboard concept for tracking expenses with clear visuals and simple monthly insights.",
+      desc: "A dashboard concept for tracking expenses with clear visuals and simple monthly insights.",
       role: "Front-End • Data UI",
       outcomes: ["Dashboard layout with chart components", "Filtering patterns + table UI", "Design for readability"],
       tags: ["React", "Charts", "UI"],
@@ -527,8 +531,7 @@ const Projects = () => {
     },
     {
       title: "Portfolio v1",
-      desc:
-        "My first portfolio iteration, where I learned layout fundamentals and basic interactions.",
+      desc: "My first portfolio iteration, where I learned layout fundamentals and basic interactions.",
       role: "Front-End",
       outcomes: ["Solid HTML/CSS foundation", "Basic JS interactions", "Responsive rework"],
       tags: ["HTML", "CSS", "JS"],
@@ -538,36 +541,31 @@ const Projects = () => {
   ];
 
   return (
-    <section id="projects" className="py-20 px-6 max-w-7xl mx-auto relative">
+    <section id="projects" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto relative scroll-mt-24 md:scroll-mt-32">
       <SectionTitle title="Projects" num="03" kicker="Selected work" />
 
-      <div className="flex flex-col gap-10 pb-20">
+      <div className="flex flex-col gap-10 pb-10 md:pb-20">
         {projects.map((p, index) => (
-          <div key={p.title} className="sticky top-28 md:top-32">
+          <div key={p.title} className="md:sticky md:top-28">
             <Reveal delay={index * 90}>
-              <div className="bg-white/85 backdrop-blur-xl border border-white/60 shadow-xl rounded-3xl p-7 md:p-10 flex flex-col md:flex-row gap-10 transition-transform duration-500 hover:scale-[1.01] motion-reduce:transition-none">
-                {/* Visual */}
+              <div className="bg-white/85 backdrop-blur-xl border border-white/60 shadow-xl rounded-3xl p-6 sm:p-7 md:p-10 flex flex-col md:flex-row gap-8 md:gap-10 transition-transform duration-500 md:hover:scale-[1.01] motion-reduce:transition-none">
                 <div className="w-full md:w-1/2">
                   <div className="rounded-2xl overflow-hidden shadow-inner aspect-[4/3] bg-gradient-to-br from-sky-50 to-white border border-gray-100 flex items-center justify-center relative">
                     <span className="text-gray-400 font-bold">[ Project Screenshot ]</span>
-
-                    {/* tiny premium detail */}
                     <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-sky-100 rounded-full blur-2xl opacity-70"></div>
                   </div>
                 </div>
 
-                {/* Text */}
                 <div className="w-full md:w-1/2 flex flex-col justify-center space-y-5">
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                     <h3 className="text-3xl md:text-4xl font-black text-gray-900">{p.title}</h3>
-                    <span className="text-xs font-bold tracking-widest uppercase text-sky-600 bg-sky-50 border border-sky-100 px-3 py-2 rounded-full">
+                    <span className="text-xs font-bold tracking-widest uppercase text-sky-600 bg-sky-50 border border-sky-100 px-3 py-2 rounded-full w-fit">
                       {p.role}
                     </span>
                   </div>
 
-                  <p className="text-gray-600 leading-relaxed text-lg">{p.desc}</p>
+                  <p className="text-gray-600 leading-relaxed text-base sm:text-lg">{p.desc}</p>
 
-                  {/* Outcomes */}
                   <ul className="space-y-2 text-gray-700">
                     {p.outcomes.map((o) => (
                       <li key={o} className="flex gap-3">
@@ -588,12 +586,12 @@ const Projects = () => {
                     ))}
                   </div>
 
-                  <div className="pt-3 flex flex-wrap gap-3">
+                  <div className="pt-3 flex flex-col sm:flex-row flex-wrap gap-3">
                     <a
                       href={p.liveUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#0EA5E9] text-white font-bold shadow-lg hover:bg-sky-500 hover:-translate-y-1 transition-all duration-300 motion-reduce:transition-none"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#0EA5E9] text-white font-bold shadow-lg hover:bg-sky-500 transition-all duration-300 motion-reduce:transition-none w-full sm:w-auto"
                     >
                       Live <ExternalLink size={18} />
                     </a>
@@ -601,21 +599,17 @@ const Projects = () => {
                       href={p.repoUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-gray-200 text-gray-800 font-bold hover:bg-gray-50 hover:-translate-y-1 transition-all duration-300 motion-reduce:transition-none"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white border border-gray-200 text-gray-800 font-bold hover:bg-gray-50 transition-all duration-300 motion-reduce:transition-none w-full sm:w-auto"
                     >
                       Code <Github size={18} />
                     </a>
                   </div>
-
-                  <p className="text-gray-400 text-sm font-semibold pt-1">
-                    Tip: replace outcomes with real numbers when possible.
-                  </p>
                 </div>
               </div>
             </Reveal>
 
-            {/* spacing for sticky stack depth */}
-            <div style={{ height: `${(projects.length - index) * 22}px` }} />
+            {/* Sticky depth spacing only on md+ (mobile should just scroll normally) */}
+            <div className="hidden md:block" style={{ height: `${(projects.length - index) * 22}px` }} />
           </div>
         ))}
       </div>
@@ -634,14 +628,14 @@ const Certificates = () => {
   ];
 
   return (
-    <section id="certificates" className="py-20 px-6 max-w-7xl mx-auto">
+    <section id="certificates" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
       <SectionTitle title="Certificates" num="04" kicker="Proof" />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 md:gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {certs.map((cert, idx) => (
           <Reveal key={idx} delay={idx * 70}>
             <TiltedCard>
-              <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 flex flex-col h-full relative z-0 hover:shadow-xl transition-all duration-300">
+              <div className="bg-white rounded-2xl p-7 sm:p-8 shadow-sm border border-gray-100 flex flex-col h-full relative z-0 hover:shadow-xl transition-all duration-300">
                 <div className="flex items-center justify-between mb-6">
                   <div className="font-black text-gray-900 text-lg flex items-center gap-2">
                     <span className="text-[#0EA5E9] text-2xl font-black">∞</span> Meta
@@ -657,10 +651,7 @@ const Certificates = () => {
                 <div className="mt-auto space-y-6">
                   <div className="flex flex-wrap gap-2">
                     {cert.tags.map((t) => (
-                      <span
-                        key={t}
-                        className="px-3 py-1 bg-yellow-400 text-black text-xs font-black rounded-md"
-                      >
+                      <span key={t} className="px-3 py-1 bg-yellow-400 text-black text-xs font-black rounded-md">
                         {t}
                       </span>
                     ))}
@@ -690,32 +681,35 @@ const Certificates = () => {
   );
 };
 
-// Journey: keep your growing line + arrow, but make scroll handler smoother
-const TimelineItem = ({ item, parentLineHeight, sectionTop }) => {
+// Journey: keep your animation, but remove “disappear on scroll up” on mobile
+const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
   const itemRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const [trigger, setTrigger] = useState(0);
 
   useLayoutEffect(() => {
     if (!itemRef.current) return;
-    const top = itemRef.current.offsetTop; // relative to section container
-    setTrigger(top + 60);
+    setTrigger(itemRef.current.offsetTop + 60);
   }, []);
 
   useEffect(() => {
-    // show when line passes trigger
-    setIsVisible(parentLineHeight > trigger);
-  }, [parentLineHeight, trigger, sectionTop]);
+    if (parentLineHeight > trigger) {
+      setIsVisible(true);
+      return;
+    }
+    // Only hide again on desktop. On mobile this feels glitchy, so we keep it once shown.
+    if (isDesktop) setIsVisible(false);
+  }, [parentLineHeight, trigger, isDesktop]);
 
   return (
-    <div ref={itemRef} className="flex group relative z-10 mb-20 md:mb-24">
+    <div ref={itemRef} className="flex group relative z-10 mb-16 sm:mb-20 md:mb-24">
       <div
         className={[
-          "w-24 md:w-32 flex-shrink-0 text-right pr-8 pt-2 transition-all duration-500 ease-out",
+          "w-20 sm:w-24 md:w-32 flex-shrink-0 text-right pr-6 sm:pr-8 pt-2 transition-all duration-500 ease-out",
           isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10",
         ].join(" ")}
       >
-        <span className="text-3xl font-black text-[#0EA5E9]">{item.year}</span>
+        <span className="text-2xl sm:text-3xl font-black text-[#0EA5E9]">{item.year}</span>
       </div>
 
       <div className="relative flex flex-col items-center w-0 md:w-auto">
@@ -729,12 +723,12 @@ const TimelineItem = ({ item, parentLineHeight, sectionTop }) => {
 
       <div
         className={[
-          "pl-8 md:pl-12 pt-1 border-l-2 border-gray-100 md:border-none transition-all duration-500 ease-out delay-75",
+          "pl-6 sm:pl-8 md:pl-12 pt-1 border-l-2 border-gray-100 md:border-none transition-all duration-500 ease-out delay-75",
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
         ].join(" ")}
       >
-        <h3 className="text-xl font-black text-gray-900 mb-3">{item.title}</h3>
-        <p className="text-gray-600 leading-relaxed font-medium">{item.desc}</p>
+        <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-2 sm:mb-3">{item.title}</h3>
+        <p className="text-gray-600 leading-relaxed font-medium text-sm sm:text-base">{item.desc}</p>
       </div>
     </div>
   );
@@ -744,7 +738,7 @@ const Journey = () => {
   const sectionRef = useRef(null);
   const rafRef = useRef(null);
   const [lineHeight, setLineHeight] = useState(0);
-  const [sectionTop, setSectionTop] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   const timeline = [
     {
@@ -774,15 +768,21 @@ const Journey = () => {
   ];
 
   useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener?.("change", update);
+    return () => mq.removeEventListener?.("change", update);
+  }, []);
+
+  useEffect(() => {
     const calc = () => {
       if (!sectionRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       const startOffset = windowHeight / 2;
       const relativeY = windowHeight - rect.top - startOffset;
-      const newHeight = Math.max(0, relativeY);
-      setLineHeight(newHeight);
-      setSectionTop(rect.top);
+      setLineHeight(Math.max(0, relativeY));
     };
 
     const onScroll = () => {
@@ -805,11 +805,11 @@ const Journey = () => {
   }, []);
 
   return (
-    <section id="journey" className="py-20 px-6 max-w-7xl mx-auto" ref={sectionRef}>
+    <section id="journey" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32" ref={sectionRef}>
       <SectionTitle title="Journey" num="05" kicker="Timeline" />
 
       <div className="max-w-4xl relative">
-        <div className="absolute left-[96px] md:left-[128px] top-2 bottom-0 w-[2px] h-full z-0 hidden md:block">
+        <div className="absolute left-[80px] sm:left-[96px] md:left-[128px] top-2 bottom-0 w-[2px] h-full z-0 hidden md:block">
           <div className="absolute top-0 left-0 w-full h-full bg-gray-200"></div>
 
           <div
@@ -829,20 +829,8 @@ const Journey = () => {
 
         <div className="relative pb-10 md:pb-16">
           {timeline.map((item, index) => (
-            <TimelineItem
-              key={index}
-              item={item}
-              parentLineHeight={lineHeight}
-              sectionTop={sectionTop}
-            />
+            <TimelineItem key={index} item={item} parentLineHeight={lineHeight} isDesktop={isDesktop} />
           ))}
-        </div>
-
-        <div className="hidden md:flex opacity-20">
-          <div className="w-24 md:w-32 flex-shrink-0 pr-8"></div>
-          <div className="relative flex flex-col items-center pl-3">
-            <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-          </div>
         </div>
       </div>
     </section>
@@ -859,18 +847,17 @@ const Contact = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      // fallback
       alert("Copy failed. Please copy manually.");
     }
   };
 
   return (
-    <section id="contact" className="py-20 px-6 max-w-7xl mx-auto">
+    <section id="contact" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
       <Reveal>
-        <div className="bg-[#E0F2FE] rounded-3xl p-8 md:p-16 flex flex-col md:flex-row gap-12 items-center shadow-lg border border-sky-100">
-          <div className="flex-1 space-y-6">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900">
-              Let’s start a <br /> conversation
+        <div className="bg-[#E0F2FE] rounded-3xl p-6 sm:p-8 md:p-16 flex flex-col md:flex-row gap-10 md:gap-12 items-center shadow-lg border border-sky-100">
+          <div className="flex-1 space-y-6 w-full">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900">
+              Let’s start a <br className="hidden sm:block" /> conversation
             </h2>
 
             <div className="flex items-center gap-2 text-green-700 font-black">
@@ -878,12 +865,12 @@ const Contact = () => {
               Available for new projects
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 pt-2 w-full">
               <button
                 onClick={onCopy}
-                className="inline-flex items-center gap-2 bg-white/70 border border-white/60 px-5 py-3 rounded-full text-gray-700 font-semibold shadow-sm hover:bg-white transition-colors"
+                className="inline-flex items-center justify-between gap-2 bg-white/70 border border-white/60 px-5 py-3 rounded-full text-gray-700 font-semibold shadow-sm hover:bg-white transition-colors w-full sm:w-auto"
               >
-                {email}
+                <span className="truncate max-w-[240px] sm:max-w-none">{email}</span>
                 {copied ? <Check size={16} className="text-green-600" /> : <Copy size={16} className="hover:text-[#0EA5E9]" />}
               </button>
 
@@ -891,7 +878,7 @@ const Contact = () => {
                 href="#"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white/70 border border-white/60 text-gray-700 font-semibold shadow-sm hover:bg-white transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white/70 border border-white/60 text-gray-700 font-semibold shadow-sm hover:bg-white transition-colors w-full sm:w-auto"
               >
                 LinkedIn <ExternalLink size={16} />
               </a>
@@ -900,7 +887,7 @@ const Contact = () => {
                 href="#"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white/70 border border-white/60 text-gray-700 font-semibold shadow-sm hover:bg-white transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white/70 border border-white/60 text-gray-700 font-semibold shadow-sm hover:bg-white transition-colors w-full sm:w-auto"
               >
                 GitHub <Github size={16} />
               </a>
@@ -941,9 +928,8 @@ const Contact = () => {
               ></textarea>
             </div>
 
-            {/* Fixed hover: no more white bg with white text */}
             <button
-              className="w-full bg-[#0EA5E9] text-white font-black py-4 px-8 rounded-full shadow-lg hover:bg-sky-500 hover:-translate-y-1 transition-all duration-300 motion-reduce:transition-none inline-flex items-center justify-center gap-2"
+              className="w-full bg-[#0EA5E9] text-white font-black py-4 px-8 rounded-full shadow-lg hover:bg-sky-500 transition-all duration-300 motion-reduce:transition-none inline-flex items-center justify-center gap-2"
               type="submit"
             >
               Send Message <Rocket size={20} />
@@ -956,13 +942,9 @@ const Contact = () => {
 };
 
 export default function App() {
-  const sectionIds = useMemo(
-    () => ["about", "skills", "projects", "certificates", "journey", "contact"],
-    []
-  );
+  const sectionIds = useMemo(() => ["about", "skills", "projects", "certificates", "journey", "contact"], []);
   const activeId = useActiveSection(sectionIds);
 
-  // “Back to top” small premium usability touch
   const [showTop, setShowTop] = useState(false);
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 800);
@@ -997,7 +979,7 @@ export default function App() {
       {showTop && (
         <button
           onClick={() => scrollToId("home")}
-          className="fixed bottom-6 right-6 bg-white/80 backdrop-blur border border-gray-100 shadow-lg rounded-full w-12 h-12 flex items-center justify-center hover:bg-white transition-colors"
+          className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 bg-white/80 backdrop-blur border border-gray-100 shadow-lg rounded-full w-12 h-12 flex items-center justify-center hover:bg-white transition-colors"
           aria-label="Back to top"
         >
           <ArrowUpRight className="rotate-[-45deg]" size={18} />
