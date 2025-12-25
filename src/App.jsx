@@ -28,8 +28,59 @@ const scrollToId = (id) => {
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 };
 
-// 1) TiltedCard (kept)
-const TiltedCard = ({ children }) => {
+// --- COMPONENT 1: SPOTLIGHT CARD (For Skills) ---
+const SpotlightCard = ({ children, className = "", spotlightColor = "rgba(14, 165, 233, 0.25)" }) => {
+  const divRef = useRef(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [opacity, setOpacity] = useState(0);
+
+  const handleMouseMove = (e) => {
+    if (!divRef.current) return;
+    const div = divRef.current;
+    const rect = div.getBoundingClientRect();
+    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  const handleFocus = () => {
+    setOpacity(1);
+  };
+
+  const handleBlur = () => {
+    setOpacity(0);
+  };
+
+  const handleMouseEnter = () => {
+    setOpacity(1);
+  };
+
+  const handleMouseLeave = () => {
+    setOpacity(0);
+  };
+
+  return (
+    <div
+      ref={divRef}
+      onMouseMove={handleMouseMove}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className={`relative overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-300 ${className}`}
+    >
+      <div
+        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 z-10"
+        style={{
+          opacity,
+          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 40%)`,
+        }}
+      />
+      <div className="relative h-full z-20">{children}</div>
+    </div>
+  );
+};
+
+// --- COMPONENT 2: 3D CERTIFICATE CARD (For Certificates) ---
+const CertificateCard = ({ cert }) => {
   const ref = useRef(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [glarePos, setGlarePos] = useState({ x: 50, y: 50 });
@@ -43,8 +94,10 @@ const TiltedCard = ({ children }) => {
 
     const centerX = width / 2;
     const centerY = height / 2;
-    const rotateX = ((y - centerY) / centerY) * -10;
-    const rotateY = ((x - centerX) / centerX) * 10;
+
+    // High multiplier = Obvious 3D movement (Text moves separate from bg)
+    const rotateX = ((y - centerY) / centerY) * -20;
+    const rotateY = ((x - centerX) / centerX) * 20;
 
     setRotate({ x: rotateX, y: rotateY });
     setGlarePos({ x: (x / width) * 100, y: (y / height) * 100 });
@@ -61,25 +114,93 @@ const TiltedCard = ({ children }) => {
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{
-        transform: `perspective(1000px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) scale3d(1.02, 1.02, 1.02)`,
-        transition: "transform 0.12s ease-out",
-      }}
-      className="relative h-full group motion-reduce:transform-none motion-reduce:transition-none"
+      className="relative h-full w-full group perspective-1000"
     >
       <div
-        className="absolute inset-0 w-full h-full pointer-events-none z-10 rounded-2xl overflow-hidden"
+        className="relative h-full w-full transition-all duration-200 ease-out"
         style={{
-          opacity,
-          transition: "opacity 0.25s ease",
-          background: `radial-gradient(
-            320px circle at ${glarePos.x}% ${glarePos.y}%,
-            rgba(14,165,233,0.28),
-            transparent 30%
-          )`,
+          transform: `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) scale3d(1.05, 1.05, 1.05)`,
+          transformStyle: "preserve-3d", // CRITICAL for the 3D depth
         }}
-      />
-      {children}
+      >
+        {/* LAYER 1: The Card Base (Clean White) */}
+        <div 
+            className="absolute inset-0 bg-white rounded-2xl border border-gray-100 transition-shadow duration-300 shadow-sm group-hover:shadow-2xl group-hover:shadow-sky-100/50"
+            style={{ transform: "translateZ(-10px)" }} // Pushed back slightly
+        ></div>
+
+        {/* LAYER 2: Glare */}
+        <div
+          className="absolute inset-0 w-full h-full pointer-events-none z-10 rounded-2xl overflow-hidden"
+          style={{
+            opacity,
+            transition: "opacity 0.25s ease",
+            transform: "translateZ(1px)",
+            background: `radial-gradient(
+              400px circle at ${glarePos.x}% ${glarePos.y}%,
+              rgba(14,165,233,0.15),
+              transparent 40%
+            )`,
+          }}
+        />
+
+        {/* LAYER 3: Floating Content (The 3D Magic) */}
+        <div 
+          className="relative p-7 sm:p-8 flex flex-col h-full" 
+          style={{ transformStyle: "preserve-3d" }}
+        >
+          
+          {/* Header: High Float */}
+          <div 
+            className="flex items-center justify-between mb-6"
+            style={{ transform: "translateZ(40px)" }}
+          >
+            <div className="font-black text-gray-900 text-lg flex items-center gap-2">
+              <span className="text-[#0EA5E9] text-2xl font-black">∞</span> Meta
+            </div>
+            <span className="text-green-600 flex items-center gap-1 text-xs font-bold bg-green-50 px-2 py-1 rounded-full border border-green-100">
+              Verified <CheckCircle size={14} />
+            </span>
+          </div>
+
+          {/* Title: Mid Float */}
+          <div style={{ transform: "translateZ(30px)" }}>
+            <h4 className="font-black text-xl text-gray-900 mb-2">
+              {cert.title}
+            </h4>
+            <p className="text-xs text-gray-400 mb-6 font-medium">
+              Authorized by Meta and offered through Coursera
+            </p>
+          </div>
+
+          {/* Footer: Low Float */}
+          <div className="mt-auto space-y-6" style={{ transform: "translateZ(20px)" }}>
+            <div className="flex flex-wrap gap-2">
+              {cert.tags.map((t) => (
+                <span key={t} className="px-3 py-1 bg-yellow-400 text-black text-xs font-black rounded-md shadow-sm">
+                  {t}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => alert("Hook VIEW to credential link")}
+                className="flex-1 bg-[#0EA5E9] text-white py-2 rounded-lg text-sm font-black hover:bg-sky-500 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-sky-100"
+              >
+                VIEW
+              </button>
+              <button
+                onClick={() => alert("Hook PDF to download")}
+                className="flex-1 border border-gray-200 text-gray-700 py-2 rounded-lg text-sm font-black hover:bg-gray-50 transition-colors"
+              >
+                PDF
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 };
@@ -484,8 +605,9 @@ const Skills = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
         {skillCategories.map((cat, idx) => (
           <Reveal key={idx} delay={idx * 80}>
-            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 hover:shadow-xl hover:border-sky-100 transition-all duration-300 group">
-              <div className="bg-sky-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform motion-reduce:transition-none">
+            {/* WRAPPED IN SPOTLIGHT CARD */}
+            <SpotlightCard className="p-6 sm:p-8 h-full">
+              <div className="bg-sky-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
                 {cat.icon}
               </div>
               <h3 className="text-2xl font-black text-gray-900 mb-6">{cat.title}</h3>
@@ -497,7 +619,7 @@ const Skills = () => {
                   </li>
                 ))}
               </ul>
-            </div>
+            </SpotlightCard>
           </Reveal>
         ))}
       </div>
@@ -623,59 +745,39 @@ const Certificates = () => {
     { title: "HTML and CSS in depth", tags: ["HTML", "CSS"] },
     { title: "Programming with JavaScript", tags: ["JavaScript"] },
     { title: "React Basics", tags: ["JavaScript", "React"] },
-    { title: "Version Control", tags: ["GIT"] },
-    { title: "Advanced React", tags: ["React"] },
+    { title: "Version Control", tags: ["GIT", "GitHub"] },
+    { title: "Advanced React", tags: ["React", "Hooks"] },
   ];
 
   return (
-    <section id="certificates" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
-      <SectionTitle title="Certificates" num="04" kicker="Proof" />
+    <section 
+      id="certificates" 
+      className="relative py-24 px-4 sm:px-6 scroll-mt-24 md:scroll-mt-32 overflow-hidden"
+    >
+      {/* BACKGROUND: TECHNICAL DOT GRID + FADE */}
+      <div className="absolute inset-0 bg-[#F8FAFC] -z-20"></div>
+      <div 
+        className="absolute inset-0 opacity-[0.4] -z-10" 
+        style={{
+            backgroundImage: "radial-gradient(#CBD5E1 1.5px, transparent 1.5px)",
+            backgroundSize: "24px 24px"
+        }}
+      ></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAFC] via-transparent to-[#F8FAFC] -z-10"></div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-        {certs.map((cert, idx) => (
-          <Reveal key={idx} delay={idx * 70}>
-            <TiltedCard>
-              <div className="bg-white rounded-2xl p-7 sm:p-8 shadow-sm border border-gray-100 flex flex-col h-full relative z-0 hover:shadow-xl transition-all duration-300">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="font-black text-gray-900 text-lg flex items-center gap-2">
-                    <span className="text-[#0EA5E9] text-2xl font-black">∞</span> Meta
-                  </div>
-                  <span className="text-green-600 flex items-center gap-1 text-xs font-bold">
-                    Verified <CheckCircle size={14} />
-                  </span>
-                </div>
+      <div className="max-w-7xl mx-auto relative z-10">
+        <SectionTitle title="Certificates" num="04" kicker="Verified Skills" />
 
-                <h4 className="font-black text-xl text-gray-900 mb-2">{cert.title}</h4>
-                <p className="text-xs text-gray-400 mb-6">Authorized by Meta and offered through Coursera</p>
-
-                <div className="mt-auto space-y-6">
-                  <div className="flex flex-wrap gap-2">
-                    {cert.tags.map((t) => (
-                      <span key={t} className="px-3 py-1 bg-yellow-400 text-black text-xs font-black rounded-md">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => alert("Hook VIEW to credential link")}
-                      className="flex-1 bg-[#0EA5E9] text-white py-2 rounded-lg text-sm font-black hover:bg-sky-500 transition-colors"
-                    >
-                      VIEW
-                    </button>
-                    <button
-                      onClick={() => alert("Hook PDF to download")}
-                      className="flex-1 border border-gray-200 text-gray-700 py-2 rounded-lg text-sm font-black hover:bg-gray-50 transition-colors"
-                    >
-                      PDF
-                    </button>
-                  </div>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
+          {certs.map((cert, idx) => (
+            <Reveal key={idx} delay={idx * 100}>
+              {/* FIXED HEIGHT for consistent 3D effect */}
+              <div className="h-[340px]">
+                <CertificateCard cert={cert} />
               </div>
-            </TiltedCard>
-          </Reveal>
-        ))}
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );
