@@ -630,32 +630,49 @@ const Skills = () => {
 const Projects = () => {
   const projects = [
     {
-      title: "Mario’s Pizza",
-      desc: "A responsive e-commerce UI for a restaurant, focused on a clean menu experience and fast checkout flow.",
-      role: "Front-End • UI/UX",
+      title: "Mario & Luigi's Pizza",
+      desc: "A full-stack restaurant application featuring a dynamic menu, shopping cart, and user authentication. I designed the visual identity in Figma to capture an authentic Italian feel and built the responsive frontend connected to a Flask backend.",
+      role: "UI Designer & Frontend Lead",
       outcomes: [
-        "Responsive layout for all screens",
-        "Reusable components + clean layout system",
-        "Optimized UI for clarity and speed",
+        "Designed the UI/UX & assets in Figma",
+        "Developed the product card grid & cart logic",
+        "Integrated Python Flask for routing & auth",
       ],
-      tags: ["React", "Tailwind", "JavaScript"],
+      tags: ["Figma", "Python Flask", "JavaScript", "HTML/CSS"],
       liveUrl: "#",
       repoUrl: "#",
     },
     {
-      title: "Finance Tracker",
-      desc: "A dashboard concept for tracking expenses with clear visuals and simple monthly insights.",
-      role: "Front-End • Data UI",
-      outcomes: ["Dashboard layout with chart components", "Filtering patterns + table UI", "Design for readability"],
-      tags: ["React", "Charts", "UI"],
+      title: "Fit Fusion",
+      // Description: Updated to mention the team structure (6 people) and the ecosystem
+      desc: "A gamified health ecosystem where physical steps nurture a virtual pet. Leading a cross-functional team of 6 (including backend devs and designers), I oversaw the integration between the Unity game and the Web platform while contributing code and creative assets.",
+      
+      // Role: Highlights Leadership + The mix of Coding (Full Stack) and Art (Assets)
+      role: "Team Lead • Full Stack Web • Asset Designer",
+      
+      // Outcomes: improved division of labor
+      outcomes: [
+        "Led the agile team & coordinated Game/Web backend integration",
+        "Developed the Web Frontend & connected C# Razor Pages", // Shows you worked WITH the backend dev
+        "Designed game characters (Tamagotchis), skins & Web UI", // Shows your creative contribution
+      ],
+      
+      // Tags: Shows the mix of management, code, and design tools
+      tags: ["Team Lead", "C# Razor Pages", "Figma", "Game Art"],
+      
       liveUrl: "#",
       repoUrl: "#",
     },
+    // --- PLACEHOLDER FOR PROJECT 3 ---
     {
       title: "Portfolio v1",
       desc: "My first portfolio iteration, where I learned layout fundamentals and basic interactions.",
       role: "Front-End",
-      outcomes: ["Solid HTML/CSS foundation", "Basic JS interactions", "Responsive rework"],
+      outcomes: [
+        "Solid HTML/CSS foundation",
+        "Basic JS interactions",
+        "Responsive rework",
+      ],
       tags: ["HTML", "CSS", "JS"],
       liveUrl: "#",
       repoUrl: "#",
@@ -671,58 +688,56 @@ const Projects = () => {
           <div key={p.title} className="md:sticky md:top-28">
             <Reveal delay={index * 90}>
               <div className="bg-white/85 backdrop-blur-xl border border-white/60 shadow-xl rounded-3xl p-6 sm:p-7 md:p-10 flex flex-col md:flex-row gap-8 md:gap-10 transition-transform duration-500 md:hover:scale-[1.01] motion-reduce:transition-none">
+                
+                {/* Image Section */}
                 <div className="w-full md:w-1/2">
                   <div className="rounded-2xl overflow-hidden shadow-inner aspect-[4/3] bg-gradient-to-br from-sky-50 to-white border border-gray-100 flex items-center justify-center relative">
-                    <span className="text-gray-400 font-bold">[ Project Screenshot ]</span>
+                    <span className="text-gray-400 font-bold text-center px-4">
+                      [ {p.title} Screenshot ]
+                    </span>
                     <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-sky-100 rounded-full blur-2xl opacity-70"></div>
                   </div>
                 </div>
 
-                <div className="w-full md:w-1/2 flex flex-col justify-center space-y-5">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                    <h3 className="text-3xl md:text-4xl font-black text-gray-900">{p.title}</h3>
-                    <span className="text-xs font-bold tracking-widest uppercase text-sky-600 bg-sky-50 border border-sky-100 px-3 py-2 rounded-full w-fit">
+                {/* Text Section */}
+                <div className="w-full md:w-1/2 flex flex-col justify-center space-y-4">
+                  
+                  {/* Role at the TOP */}
+                  <div className="flex flex-col items-start">
+                    <span className="text-[#0EA5E9] font-black tracking-widest uppercase text-sm mb-2">
                       {p.role}
                     </span>
+                    <h3 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight">
+                      {p.title}
+                    </h3>
                   </div>
 
-                  <p className="text-gray-600 leading-relaxed text-base sm:text-lg">{p.desc}</p>
+                  <p className="text-gray-600 leading-relaxed text-base sm:text-lg">
+                    {p.desc}
+                  </p>
 
-                  <ul className="space-y-2 text-gray-700">
+                  <ul className="space-y-2 text-gray-700 mt-2">
                     {p.outcomes.map((o) => (
-                      <li key={o} className="flex gap-3">
+                      <li key={o} className="flex gap-3 items-start">
                         <span className="mt-2 w-2 h-2 rounded-full bg-[#0EA5E9] flex-shrink-0"></span>
-                        <span className="font-medium">{o}</span>
+                        <span className="font-medium text-sm sm:text-base">{o}</span>
                       </li>
                     ))}
                   </ul>
 
-                  <div className="flex flex-wrap gap-2 pt-2">
+                  <div className="flex flex-wrap gap-2 pt-4">
                     {p.tags.map((t) => (
-                      <span
-                        key={t}
-                        className="px-4 py-1.5 bg-sky-50 text-[#0EA5E9] rounded-full text-sm font-bold border border-sky-100"
-                      >
+                      <span key={t} className="px-4 py-1.5 bg-sky-50 text-[#0EA5E9] rounded-full text-sm font-bold border border-sky-100">
                         {t}
                       </span>
                     ))}
                   </div>
 
-                  <div className="pt-3 flex flex-col sm:flex-row flex-wrap gap-3">
-                    <a
-                      href={p.liveUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#0EA5E9] text-white font-bold shadow-lg hover:bg-sky-500 transition-all duration-300 motion-reduce:transition-none w-full sm:w-auto"
-                    >
+                  <div className="pt-4 flex flex-col sm:flex-row flex-wrap gap-3">
+                    <a href={p.liveUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#0EA5E9] text-white font-bold shadow-lg hover:bg-sky-500 transition-all w-full sm:w-auto">
                       Live <ExternalLink size={18} />
                     </a>
-                    <a
-                      href={p.repoUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white border border-gray-200 text-gray-800 font-bold hover:bg-gray-50 transition-all duration-300 motion-reduce:transition-none w-full sm:w-auto"
-                    >
+                    <a href={p.repoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white border border-gray-200 text-gray-800 font-bold hover:bg-gray-50 transition-all w-full sm:w-auto">
                       Code <Github size={18} />
                     </a>
                   </div>
@@ -730,7 +745,7 @@ const Projects = () => {
               </div>
             </Reveal>
 
-            {/* Sticky depth spacing only on md+ (mobile should just scroll normally) */}
+            {/* Sticky spacer for desktop */}
             <div className="hidden md:block" style={{ height: `${(projects.length - index) * 22}px` }} />
           </div>
         ))}
