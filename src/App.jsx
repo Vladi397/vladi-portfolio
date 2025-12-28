@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 // --- IMAGES ---
+// Ensure these paths match your actual folder structure
 import Vladi1 from "./assets/Vladi1.png";
 import Vladi2 from "./assets/Vladi2.jpg";
 import MetaLogo from "./assets/meta.png";
@@ -29,63 +30,12 @@ const scrollToId = (id) => {
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 };
 
-// --- COMPONENT 1: SPOTLIGHT CARD (For Skills) ---
-const SpotlightCard = ({ children, className = "", spotlightColor = "rgba(14, 165, 233, 0.25)" }) => {
-  const divRef = useRef(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [opacity, setOpacity] = useState(0);
-
-  const handleMouseMove = (e) => {
-    if (!divRef.current) return;
-    const div = divRef.current;
-    const rect = div.getBoundingClientRect();
-    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
-
-  const handleFocus = () => {
-    setOpacity(1);
-  };
-
-  const handleBlur = () => {
-    setOpacity(0);
-  };
-
-  const handleMouseEnter = () => {
-    setOpacity(1);
-  };
-
-  const handleMouseLeave = () => {
-    setOpacity(0);
-  };
-
-  return (
-    <div
-      ref={divRef}
-      onMouseMove={handleMouseMove}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className={`relative overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-300 ${className}`}
-    >
-      <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 z-10"
-        style={{
-          opacity,
-          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 40%)`,
-        }}
-      />
-      <div className="relative h-full z-20">{children}</div>
-    </div>
-  );
-};
-
-// --- COMPONENT 2: 3D CERTIFICATE CARD (Updated with Logo) ---
-const CertificateCard = ({ cert, logo }) => {
+// --- COMPONENT 1: TILTED CARD (For Skills) ---
+// Based on React Bits "Tilted Card" logic but adapted for your content
+const TiltedCard = ({ children, className = "" }) => {
   const ref = useRef(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
-  const [glarePos, setGlarePos] = useState({ x: 50, y: 50 });
-  const [opacity, setOpacity] = useState(0);
+  const [scale, setScale] = useState(1);
 
   const handleMouseMove = (e) => {
     if (!ref.current) return;
@@ -96,117 +46,160 @@ const CertificateCard = ({ cert, logo }) => {
     const centerX = width / 2;
     const centerY = height / 2;
 
-    // High multiplier = Obvious 3D movement
-    const rotateX = ((y - centerY) / centerY) * -20;
-    const rotateY = ((x - centerX) / centerX) * 20;
+    // Calculate rotation based on cursor position relative to center
+    // Divisor controls sensitivity (higher = less sensitive)
+    const rotateX = ((y - centerY) / centerY) * -15;
+    const rotateY = ((x - centerX) / centerX) * 15;
 
     setRotate({ x: rotateX, y: rotateY });
-    setGlarePos({ x: (x / width) * 100, y: (y / height) * 100 });
-    setOpacity(1);
+  };
+
+  const handleMouseEnter = () => {
+    setScale(1.05);
   };
 
   const handleMouseLeave = () => {
+    setScale(1);
     setRotate({ x: 0, y: 0 });
-    setOpacity(0);
   };
 
   return (
     <div
       ref={ref}
       onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="relative h-full w-full group perspective-1000"
+      className={`relative transition-transform duration-200 ease-out preserve-3d group ${className}`}
+      style={{
+        perspective: "1000px",
+      }}
     >
       <div
-        className="relative h-full w-full transition-all duration-200 ease-out"
+        className="w-full h-full bg-white rounded-[20px] border border-gray-100 p-6 sm:p-8 shadow-sm transition-all duration-200 ease-out group-hover:shadow-2xl group-hover:shadow-sky-200/50"
         style={{
-          transform: `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) scale3d(1.05, 1.05, 1.05)`,
-          transformStyle: "preserve-3d", // CRITICAL for the 3D depth
+          transform: `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) scale(${scale})`,
+          transformStyle: "preserve-3d",
         }}
       >
-        {/* LAYER 1: The Card Base */}
-        <div 
-            className="absolute inset-0 bg-white rounded-2xl border border-gray-100 transition-shadow duration-300 shadow-sm group-hover:shadow-2xl group-hover:shadow-sky-100/50"
-            style={{ transform: "translateZ(-10px)" }}
-        ></div>
-
-        {/* LAYER 2: Glare */}
-        <div
-          className="absolute inset-0 w-full h-full pointer-events-none z-10 rounded-2xl overflow-hidden"
-          style={{
-            opacity,
-            transition: "opacity 0.25s ease",
-            transform: "translateZ(1px)",
-            background: `radial-gradient(
-              400px circle at ${glarePos.x}% ${glarePos.y}%,
-              rgba(14,165,233,0.15),
-              transparent 40%
-            )`,
-          }}
-        />
-
-        {/* LAYER 3: Floating Content */}
-        <div 
-          className="relative p-7 sm:p-8 flex flex-col h-full" 
-          style={{ transformStyle: "preserve-3d" }}
-        >
-          
-          {/* Header with REAL LOGO */}
-          <div 
-            className="flex items-center justify-between mb-6"
-            style={{ transform: "translateZ(40px)" }}
-          >
-            <div className="font-black text-gray-900 text-lg flex items-center gap-2">
-              <img 
-                src={logo} 
-                alt="Issuer Logo" 
-                className="w-6 h-6 object-contain mr-1" 
-              />
-              Meta
-            </div>
-            <span className="text-green-600 flex items-center gap-1 text-xs font-bold bg-green-50 px-2 py-1 rounded-full border border-green-100">
-              Verified <CheckCircle size={14} />
-            </span>
-          </div>
-
-          {/* Title */}
-          <div style={{ transform: "translateZ(30px)" }}>
-            <h4 className="font-black text-xl text-gray-900 mb-2 leading-snug">
-              {cert.title}
-            </h4>
-            <p className="text-xs text-gray-400 mb-6 font-medium">
-              Authorized by Meta and offered through Coursera
-            </p>
-          </div>
-
-          {/* Footer */}
-          <div className="mt-auto space-y-6" style={{ transform: "translateZ(20px)" }}>
-            <div className="flex flex-wrap gap-2">
-              {cert.tags.map((t) => (
-                <span key={t} className="px-3 py-1 bg-yellow-400 text-black text-xs font-black rounded-md shadow-sm">
-                  {t}
-                </span>
-              ))}
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => alert("Hook VIEW to credential link")}
-                className="flex-1 bg-[#0EA5E9] text-white py-2 rounded-lg text-sm font-black hover:bg-sky-500 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-sky-100"
-              >
-                VIEW
-              </button>
-              <button
-                onClick={() => alert("Hook PDF to download")}
-                className="flex-1 border border-gray-200 text-gray-700 py-2 rounded-lg text-sm font-black hover:bg-gray-50 transition-colors"
-              >
-                PDF
-              </button>
-            </div>
-          </div>
-        </div>
-
+        {/* Inner Content with depth */}
+        <div style={{ transform: "translateZ(30px)" }}>{children}</div>
       </div>
+    </div>
+  );
+};
+
+// --- COMPONENT 2: GLARE HOVER (React Bits style) ---
+// Crisp glare, no blur, driven by CSS variables (no React re-render spam)
+const GlareHover = ({
+  children,
+  className = "",
+  background = "#fff",
+  borderRadius = "22px",
+  borderColor = "rgba(226,232,240,1)", // slate-200
+  glareOpacity = 0.35,
+  glareAngle = -45,
+  glareSize = 240, // px
+}) => {
+  const ref = useRef(null);
+  const raf = useRef(null);
+  const isFinePointer = useRef(true);
+
+  useEffect(() => {
+    const mq = window.matchMedia?.("(pointer: fine)");
+    const update = () => (isFinePointer.current = !!mq?.matches);
+    update();
+    mq?.addEventListener?.("change", update);
+    return () => mq?.removeEventListener?.("change", update);
+  }, []);
+
+  const setVars = (xPct, yPct, hovering) => {
+    const el = ref.current;
+    if (!el) return;
+
+    el.style.setProperty("--gh-x", `${xPct}%`);
+    el.style.setProperty("--gh-y", `${yPct}%`);
+    el.style.setProperty("--gh-o", hovering ? String(glareOpacity) : "0");
+    el.style.setProperty("--gh-angle", `${glareAngle}deg`);
+    el.style.setProperty("--gh-size", `${glareSize}px`);
+  };
+
+  const onMove = (e) => {
+    if (!isFinePointer.current) return;
+    const el = ref.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+    if (raf.current) cancelAnimationFrame(raf.current);
+    raf.current = requestAnimationFrame(() => setVars(x, y, true));
+  };
+
+  const onEnter = (e) => {
+    if (!isFinePointer.current) return;
+    onMove(e);
+  };
+
+  const onLeave = () => {
+    if (raf.current) cancelAnimationFrame(raf.current);
+    const el = ref.current;
+    if (!el) return;
+    el.style.setProperty("--gh-o", "0");
+  };
+
+  return (
+    <div
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+      className={[
+        "relative overflow-hidden border shadow-sm transition-shadow duration-300",
+        "hover:shadow-lg",
+        className,
+      ].join(" ")}
+      style={{
+        background,
+        borderRadius,
+        borderColor,
+        borderStyle: "solid",
+        borderWidth: 1,
+
+        // defaults
+        ["--gh-x"]: "50%",
+        ["--gh-y"]: "50%",
+        ["--gh-o"]: "0",
+        ["--gh-angle"]: `${glareAngle}deg`,
+        ["--gh-size"]: `${glareSize}px`,
+      }}
+    >
+      {/* Glare layer: NO blur, NO glow */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          opacity: "var(--gh-o)",
+          transition: "opacity 220ms ease",
+          mixBlendMode: "soft-light",
+          backgroundImage: `
+            radial-gradient(
+              circle at var(--gh-x) var(--gh-y),
+              rgba(255,255,255,0.55),
+              rgba(255,255,255,0) var(--gh-size)
+            ),
+            linear-gradient(
+              var(--gh-angle),
+              rgba(255,255,255,0) 0%,
+              rgba(255,255,255,0.55) 45%,
+              rgba(255,255,255,0) 100%
+            )
+          `,
+          backgroundSize: "100% 100%, 200% 200%",
+          backgroundPosition: "0 0, var(--gh-x) var(--gh-y)",
+        }}
+      />
+
+      <div className="relative z-10 h-full">{children}</div>
     </div>
   );
 };
@@ -512,11 +505,7 @@ const Hero = () => (
               WebkitMaskImage: "linear-gradient(to bottom, black 72%, transparent 100%)",
             }}
           >
-            <img
-              src={Vladi1}
-              alt="Vladi Georgiev"
-              className="w-full h-auto object-cover select-none"
-            />
+            <img src={Vladi1} alt="Vladi Georgiev" className="w-full h-auto object-cover select-none" />
           </div>
 
           <div className="absolute top-16 left-10 w-[78%] h-[78%] bg-sky-200 rounded-full blur-[70px] -z-10 opacity-55"></div>
@@ -610,8 +599,7 @@ const Skills = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
         {skillCategories.map((cat, idx) => (
           <Reveal key={idx} delay={idx * 80}>
-            {/* WRAPPED IN SPOTLIGHT CARD */}
-            <SpotlightCard className="p-6 sm:p-8 h-full">
+            <TiltedCard className="h-full">
               <div className="bg-sky-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
                 {cat.icon}
               </div>
@@ -624,7 +612,7 @@ const Skills = () => {
                   </li>
                 ))}
               </ul>
-            </SpotlightCard>
+            </TiltedCard>
           </Reveal>
         ))}
       </div>
@@ -636,11 +624,8 @@ const Projects = () => {
   const projects = [
     {
       title: "OurGrid (OpenRemote)",
-      // Focus: Research + Real Testing + React Platform
       desc: "A platform demystifying 'grid congestion' for OpenRemote. I designed the UI and validated the UX with real users (students & coaches) to translate complex data into a clean React interface.",
-      
       role: "Frontend Lead • UI/UX Designer • Research",
-      
       outcomes: [
         "Validated UX via testing with real users",
         "Architected a split-view UI for Residents vs. Municipalities",
@@ -687,34 +672,28 @@ const Projects = () => {
           <div key={p.title} className="md:sticky md:top-28">
             <Reveal delay={index * 90}>
               <div className="bg-white/85 backdrop-blur-xl border border-white/60 shadow-xl rounded-3xl p-6 sm:p-7 md:p-10 flex flex-col md:flex-row gap-8 md:gap-10 transition-transform duration-500 md:hover:scale-[1.01] motion-reduce:transition-none">
-                
                 {/* Image Section */}
                 <div className="w-full md:w-1/2">
                   <div className="rounded-2xl overflow-hidden shadow-inner aspect-[4/3] bg-gradient-to-br from-sky-50 to-white border border-gray-100 flex items-center justify-center relative">
-                    <span className="text-gray-400 font-bold text-center px-4">
-                      [ {p.title} Screenshot ]
-                    </span>
-                    {/* Unique color glow for the main project */}
-                    <div className={`absolute -bottom-10 -left-10 w-32 h-32 rounded-full blur-2xl opacity-70 ${index === 0 ? "bg-indigo-100" : "bg-sky-100"}`}></div>
+                    <span className="text-gray-400 font-bold text-center px-4">[ {p.title} Screenshot ]</span>
+                    <div
+                      className={`absolute -bottom-10 -left-10 w-32 h-32 rounded-full blur-2xl opacity-70 ${
+                        index === 0 ? "bg-indigo-100" : "bg-sky-100"
+                      }`}
+                    ></div>
                   </div>
                 </div>
 
                 {/* Text Section */}
                 <div className="w-full md:w-1/2 flex flex-col justify-center space-y-4">
-                  
                   <div className="flex flex-col items-start">
                     <span className="text-[#0EA5E9] font-black tracking-widest uppercase text-sm mb-2">
                       {p.role}
                     </span>
-                    <h3 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight">
-                      {p.title}
-                    </h3>
+                    <h3 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight">{p.title}</h3>
                   </div>
 
-                  {/* Min-height ensures the cards look identical in size */}
-                  <p className="text-gray-600 leading-relaxed text-base sm:text-lg min-h-[5rem]">
-                    {p.desc}
-                  </p>
+                  <p className="text-gray-600 leading-relaxed text-base sm:text-lg min-h-[5rem]">{p.desc}</p>
 
                   <ul className="space-y-2 text-gray-700 mt-2">
                     {p.outcomes.map((o) => (
@@ -727,17 +706,30 @@ const Projects = () => {
 
                   <div className="flex flex-wrap gap-2 pt-4">
                     {p.tags.map((t) => (
-                      <span key={t} className="px-4 py-1.5 bg-sky-50 text-[#0EA5E9] rounded-full text-sm font-bold border border-sky-100">
+                      <span
+                        key={t}
+                        className="px-4 py-1.5 bg-sky-50 text-[#0EA5E9] rounded-full text-sm font-bold border border-sky-100"
+                      >
                         {t}
                       </span>
                     ))}
                   </div>
 
                   <div className="pt-4 flex flex-col sm:flex-row flex-wrap gap-3">
-                    <a href={p.liveUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#0EA5E9] text-white font-bold shadow-lg hover:bg-sky-50 transition-all w-full sm:w-auto">
+                    <a
+                      href={p.liveUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#0EA5E9] text-white font-bold shadow-lg hover:bg-sky-50 transition-all w-full sm:w-auto"
+                    >
                       Live <ExternalLink size={18} />
                     </a>
-                    <a href={p.repoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white border border-gray-200 text-gray-800 font-bold hover:bg-gray-50 transition-all w-full sm:w-auto">
+                    <a
+                      href={p.repoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white border border-gray-200 text-gray-800 font-bold hover:bg-gray-50 transition-all w-full sm:w-auto"
+                    >
                       Code <Github size={18} />
                     </a>
                   </div>
@@ -753,51 +745,88 @@ const Projects = () => {
   );
 };
 
+// ✅ UPDATED CERTIFICATES: GlareHover + no dot grid background, no glow mess
 const Certificates = () => {
   const certs = [
     { title: "Introduction to Front-End", tags: ["HTML", "CSS"] },
     { title: "HTML and CSS in depth", tags: ["HTML", "CSS"] },
     { title: "Programming with JavaScript", tags: ["JavaScript"] },
     { title: "React Basics", tags: ["JavaScript", "React"] },
-    { title: "Version Control", tags: ["GIT", "GitHub"] },
+    { title: "Version Control", tags: ["Git", "GitHub"] },
     { title: "Advanced React", tags: ["React", "Hooks"] },
   ];
 
   return (
-    <section 
-      id="certificates" 
-      className="relative py-24 px-4 sm:px-6 scroll-mt-24 md:scroll-mt-32 overflow-hidden"
-    >
-      {/* BACKGROUND: TECHNICAL DOT GRID + FADE */}
-      <div className="absolute inset-0 bg-[#F8FAFC] -z-20"></div>
-      <div 
-        className="absolute inset-0 opacity-[0.4] -z-10" 
-        style={{
-            backgroundImage: "radial-gradient(#CBD5E1 1.5px, transparent 1.5px)",
-            backgroundSize: "24px 24px"
-        }}
-      ></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAFC] via-transparent to-[#F8FAFC] -z-10"></div>
+    <section id="certificates" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
+      <SectionTitle title="Certificates" num="04" kicker="Verified Skills" />
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <SectionTitle title="Certificates" num="04" kicker="Verified Skills" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {certs.map((cert, idx) => (
+          <Reveal key={idx} delay={idx * 90}>
+            <div className="h-full min-h-[320px]">
+              <GlareHover className="h-full" borderRadius="22px" glareOpacity={0.35} glareAngle={-45} glareSize={240}>
+                <div className="p-7 sm:p-8 flex flex-col h-full">
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-7">
+                    <div className="flex items-center gap-3">
+                      <img src={MetaLogo} alt="Meta" className="w-12 h-12 object-contain" />
+                      <div className="leading-tight">
+                        <div className="text-sm font-black text-gray-900">Meta</div>
+                        <div className="text-xs text-gray-400 font-semibold">Coursera</div>
+                      </div>
+                    </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
-          {certs.map((cert, idx) => (
-            <Reveal key={idx} delay={idx * 100}>
-              {/* FIXED HEIGHT for consistent 3D effect */}
-              <div className="h-[340px]">
-                <CertificateCard cert={cert} logo={MetaLogo} />
-              </div>
-            </Reveal>
-          ))}
-        </div>
+                    <span className="inline-flex items-center gap-1 text-xs font-black px-2.5 py-1 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700">
+                      Verified <CheckCircle size={14} />
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <div className="mb-4">
+                    <h4 className="font-black text-xl text-gray-900 leading-snug">{cert.title}</h4>
+                    <p className="text-sm text-gray-500 font-medium mt-2 leading-relaxed">
+                      Professional certificate authorized by Meta.
+                    </p>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="mt-auto">
+                    <div className="flex flex-wrap gap-2 pb-6">
+                      {cert.tags.map((t) => (
+                        <span
+                          key={t}
+                          className="px-3 py-1 rounded-full text-xs font-black border border-gray-200 bg-white text-gray-800"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => alert("Hook VIEW to credential link")}
+                        className="flex-1 bg-[#0EA5E9] text-white py-2.5 rounded-xl text-sm font-black shadow-sm hover:brightness-95 transition"
+                      >
+                        VIEW
+                      </button>
+                      <button
+                        onClick={() => alert("Hook PDF to download")}
+                        className="flex-1 border border-gray-200 text-gray-800 py-2.5 rounded-xl text-sm font-black hover:bg-gray-50 transition"
+                      >
+                        PDF
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </GlareHover>
+            </div>
+          </Reveal>
+        ))}
       </div>
     </section>
   );
 };
 
-// Journey: keep your animation, but remove “disappear on scroll up” on mobile
 const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
   const itemRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -813,7 +842,6 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
       setIsVisible(true);
       return;
     }
-    // Only hide again on desktop. On mobile this feels glitchy, so we keep it once shown.
     if (isDesktop) setIsVisible(false);
   }, [parentLineHeight, trigger, isDesktop]);
 
@@ -921,7 +949,11 @@ const Journey = () => {
   }, []);
 
   return (
-    <section id="journey" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32" ref={sectionRef}>
+    <section
+      id="journey"
+      className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32"
+      ref={sectionRef}
+    >
       <SectionTitle title="Journey" num="05" kicker="Timeline" />
 
       <div className="max-w-4xl relative">
@@ -987,7 +1019,11 @@ const Contact = () => {
                 className="inline-flex items-center justify-between gap-2 bg-white/70 border border-white/60 px-5 py-3 rounded-full text-gray-700 font-semibold shadow-sm hover:bg-white transition-colors w-full sm:w-auto"
               >
                 <span className="truncate max-w-[240px] sm:max-w-none">{email}</span>
-                {copied ? <Check size={16} className="text-green-600" /> : <Copy size={16} className="hover:text-[#0EA5E9]" />}
+                {copied ? (
+                  <Check size={16} className="text-green-600" />
+                ) : (
+                  <Copy size={16} className="hover:text-[#0EA5E9]" />
+                )}
               </button>
 
               <a
@@ -1088,9 +1124,7 @@ export default function App() {
       <Journey />
       <Contact />
 
-      <footer className="text-center py-12 text-gray-400 text-sm font-semibold">
-        © 2025 Vladi Georgiev.
-      </footer>
+      <footer className="text-center py-12 text-gray-400 text-sm font-semibold">© 2025 Vladi Georgiev.</footer>
 
       {showTop && (
         <button
