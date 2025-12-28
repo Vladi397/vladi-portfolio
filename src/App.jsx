@@ -19,6 +19,7 @@ import {
 // --- IMAGES ---
 import Vladi1 from "./assets/Vladi1.png";
 import Vladi2 from "./assets/Vladi2.jpg";
+import MetaLogo from "./assets/meta.png";
 
 // ---------- Helpers ----------
 
@@ -79,8 +80,8 @@ const SpotlightCard = ({ children, className = "", spotlightColor = "rgba(14, 16
   );
 };
 
-// --- COMPONENT 2: 3D CERTIFICATE CARD (For Certificates) ---
-const CertificateCard = ({ cert }) => {
+// --- COMPONENT 2: 3D CERTIFICATE CARD (Updated with Logo) ---
+const CertificateCard = ({ cert, logo }) => {
   const ref = useRef(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [glarePos, setGlarePos] = useState({ x: 50, y: 50 });
@@ -95,7 +96,7 @@ const CertificateCard = ({ cert }) => {
     const centerX = width / 2;
     const centerY = height / 2;
 
-    // High multiplier = Obvious 3D movement (Text moves separate from bg)
+    // High multiplier = Obvious 3D movement
     const rotateX = ((y - centerY) / centerY) * -20;
     const rotateY = ((x - centerX) / centerX) * 20;
 
@@ -123,10 +124,10 @@ const CertificateCard = ({ cert }) => {
           transformStyle: "preserve-3d", // CRITICAL for the 3D depth
         }}
       >
-        {/* LAYER 1: The Card Base (Clean White) */}
+        {/* LAYER 1: The Card Base */}
         <div 
             className="absolute inset-0 bg-white rounded-2xl border border-gray-100 transition-shadow duration-300 shadow-sm group-hover:shadow-2xl group-hover:shadow-sky-100/50"
-            style={{ transform: "translateZ(-10px)" }} // Pushed back slightly
+            style={{ transform: "translateZ(-10px)" }}
         ></div>
 
         {/* LAYER 2: Glare */}
@@ -144,28 +145,33 @@ const CertificateCard = ({ cert }) => {
           }}
         />
 
-        {/* LAYER 3: Floating Content (The 3D Magic) */}
+        {/* LAYER 3: Floating Content */}
         <div 
           className="relative p-7 sm:p-8 flex flex-col h-full" 
           style={{ transformStyle: "preserve-3d" }}
         >
           
-          {/* Header: High Float */}
+          {/* Header with REAL LOGO */}
           <div 
             className="flex items-center justify-between mb-6"
             style={{ transform: "translateZ(40px)" }}
           >
             <div className="font-black text-gray-900 text-lg flex items-center gap-2">
-              <span className="text-[#0EA5E9] text-2xl font-black">∞</span> Meta
+              <img 
+                src={logo} 
+                alt="Issuer Logo" 
+                className="w-6 h-6 object-contain mr-1" 
+              />
+              Meta
             </div>
             <span className="text-green-600 flex items-center gap-1 text-xs font-bold bg-green-50 px-2 py-1 rounded-full border border-green-100">
               Verified <CheckCircle size={14} />
             </span>
           </div>
 
-          {/* Title: Mid Float */}
+          {/* Title */}
           <div style={{ transform: "translateZ(30px)" }}>
-            <h4 className="font-black text-xl text-gray-900 mb-2">
+            <h4 className="font-black text-xl text-gray-900 mb-2 leading-snug">
               {cert.title}
             </h4>
             <p className="text-xs text-gray-400 mb-6 font-medium">
@@ -173,7 +179,7 @@ const CertificateCard = ({ cert }) => {
             </p>
           </div>
 
-          {/* Footer: Low Float */}
+          {/* Footer */}
           <div className="mt-auto space-y-6" style={{ transform: "translateZ(20px)" }}>
             <div className="flex flex-wrap gap-2">
               {cert.tags.map((t) => (
@@ -205,7 +211,7 @@ const CertificateCard = ({ cert }) => {
   );
 };
 
-// 2) Reveal-on-scroll (kept)
+// 2) Reveal-on-scroll
 const Reveal = ({ children, className = "", delay = 0 }) => {
   const ref = useRef(null);
   const [show, setShow] = useState(false);
@@ -294,7 +300,7 @@ const SecondaryButton = ({ children, onClick, className = "" }) => (
   </button>
 );
 
-// Scrollspy for navbar
+// Scrollspy
 const useActiveSection = (sectionIds) => {
   const [active, setActive] = useState(sectionIds[0] ?? "home");
 
@@ -337,7 +343,6 @@ const Navbar = ({ activeId }) => {
     []
   );
 
-  // Lock body scroll when mobile menu is open (mobile polish)
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -630,8 +635,24 @@ const Skills = () => {
 const Projects = () => {
   const projects = [
     {
+      title: "OurGrid (OpenRemote)",
+      // Focus: Research + Real Testing + React Platform
+      desc: "A platform demystifying 'grid congestion' for OpenRemote. I designed the UI and validated the UX with real users (students & coaches) to translate complex data into a clean React interface.",
+      
+      role: "Frontend Lead • UI/UX Designer • Research",
+      
+      outcomes: [
+        "Validated UX via testing with real users",
+        "Architected a split-view UI for Residents vs. Municipalities",
+        "Translated technical IoT data into accessible web components",
+      ],
+      tags: ["React", "Tailwind", "User Testing", "Figma"],
+      liveUrl: "#",
+      repoUrl: "#",
+    },
+    {
       title: "Mario & Luigi's Pizza",
-      desc: "A full-stack restaurant application featuring a dynamic menu, shopping cart, and user authentication. I designed the visual identity in Figma to capture an authentic Italian feel and built the responsive frontend connected to a Flask backend.",
+      desc: "A full-stack Italian restaurant app with auth and a shopping cart. I designed the authentic visual identity in Figma and built the responsive frontend connected to a Python Flask backend.",
       role: "UI Designer & Frontend Lead",
       outcomes: [
         "Designed the UI/UX & assets in Figma",
@@ -644,36 +665,14 @@ const Projects = () => {
     },
     {
       title: "Fit Fusion",
-      // Description: Updated to mention the team structure (6 people) and the ecosystem
-      desc: "A gamified health ecosystem where physical steps nurture a virtual pet. Leading a cross-functional team of 6 (including backend devs and designers), I oversaw the integration between the Unity game and the Web platform while contributing code and creative assets.",
-      
-      // Role: Highlights Leadership + The mix of Coding (Full Stack) and Art (Assets)
-      role: "Team Lead • Full Stack Web • Asset Designer",
-      
-      // Outcomes: improved division of labor
+      desc: "A gamified health ecosystem where physical steps nurture a virtual pet. I led a 6-person agile team and handled the technical integration between the Unity game and the Web platform.",
+      role: "Team Lead • Full Stack Web",
       outcomes: [
-        "Led the agile team & coordinated Game/Web backend integration",
-        "Developed the Web Frontend & connected C# Razor Pages", // Shows you worked WITH the backend dev
-        "Designed game characters (Tamagotchis), skins & Web UI", // Shows your creative contribution
+        "Led the agile team & coordinated integration",
+        "Developed the Web Frontend & C# Razor Pages",
+        "Designed game characters (Tamagotchis) & UI",
       ],
-      
-      // Tags: Shows the mix of management, code, and design tools
-      tags: ["Team Lead", "C# Razor Pages", "Figma", "Game Art"],
-      
-      liveUrl: "#",
-      repoUrl: "#",
-    },
-    // --- PLACEHOLDER FOR PROJECT 3 ---
-    {
-      title: "Portfolio v1",
-      desc: "My first portfolio iteration, where I learned layout fundamentals and basic interactions.",
-      role: "Front-End",
-      outcomes: [
-        "Solid HTML/CSS foundation",
-        "Basic JS interactions",
-        "Responsive rework",
-      ],
-      tags: ["HTML", "CSS", "JS"],
+      tags: ["Team Lead", "C# Razor Pages", "Figma", "Unity"],
       liveUrl: "#",
       repoUrl: "#",
     },
@@ -695,14 +694,14 @@ const Projects = () => {
                     <span className="text-gray-400 font-bold text-center px-4">
                       [ {p.title} Screenshot ]
                     </span>
-                    <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-sky-100 rounded-full blur-2xl opacity-70"></div>
+                    {/* Unique color glow for the main project */}
+                    <div className={`absolute -bottom-10 -left-10 w-32 h-32 rounded-full blur-2xl opacity-70 ${index === 0 ? "bg-indigo-100" : "bg-sky-100"}`}></div>
                   </div>
                 </div>
 
                 {/* Text Section */}
                 <div className="w-full md:w-1/2 flex flex-col justify-center space-y-4">
                   
-                  {/* Role at the TOP */}
                   <div className="flex flex-col items-start">
                     <span className="text-[#0EA5E9] font-black tracking-widest uppercase text-sm mb-2">
                       {p.role}
@@ -712,7 +711,8 @@ const Projects = () => {
                     </h3>
                   </div>
 
-                  <p className="text-gray-600 leading-relaxed text-base sm:text-lg">
+                  {/* Min-height ensures the cards look identical in size */}
+                  <p className="text-gray-600 leading-relaxed text-base sm:text-lg min-h-[5rem]">
                     {p.desc}
                   </p>
 
@@ -734,7 +734,7 @@ const Projects = () => {
                   </div>
 
                   <div className="pt-4 flex flex-col sm:flex-row flex-wrap gap-3">
-                    <a href={p.liveUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#0EA5E9] text-white font-bold shadow-lg hover:bg-sky-500 transition-all w-full sm:w-auto">
+                    <a href={p.liveUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#0EA5E9] text-white font-bold shadow-lg hover:bg-sky-50 transition-all w-full sm:w-auto">
                       Live <ExternalLink size={18} />
                     </a>
                     <a href={p.repoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white border border-gray-200 text-gray-800 font-bold hover:bg-gray-50 transition-all w-full sm:w-auto">
@@ -745,7 +745,6 @@ const Projects = () => {
               </div>
             </Reveal>
 
-            {/* Sticky spacer for desktop */}
             <div className="hidden md:block" style={{ height: `${(projects.length - index) * 22}px` }} />
           </div>
         ))}
@@ -788,7 +787,7 @@ const Certificates = () => {
             <Reveal key={idx} delay={idx * 100}>
               {/* FIXED HEIGHT for consistent 3D effect */}
               <div className="h-[340px]">
-                <CertificateCard cert={cert} />
+                <CertificateCard cert={cert} logo={MetaLogo} />
               </div>
             </Reveal>
           ))}
