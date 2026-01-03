@@ -6,12 +6,11 @@ const LoadingScreen = ({ onComplete }) => {
   const [isExiting, setIsExiting] = useState(false);
 
   // INVITING WORDS SEQUENCE
-  // These cycle through as the loader progresses
   const phrases = [
-    "Thinking",
-    "Designing",
-    "Curating",
-    "Experience", // Ends with this
+    "Initializing",
+    "Syncing",
+    "Connecting",
+    "Online",
   ];
 
   useEffect(() => {
@@ -33,7 +32,6 @@ const LoadingScreen = ({ onComplete }) => {
     }, intervalTime);
 
     // 2. Phrase Changer Logic
-    // Switch phrases at 33% and 66% completion
     if (progress < 33) setTextIndex(0);
     else if (progress < 66) setTextIndex(1);
     else if (progress < 90) setTextIndex(2);
@@ -58,7 +56,7 @@ const LoadingScreen = ({ onComplete }) => {
         isExiting ? "translate-y-[-100%]" : "translate-y-0"
       }`}
     >
-      {/* Background Gradient Spot - Adds depth without reducing visibility */}
+      {/* Background Gradient Spot */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-900/20 blur-[120px] rounded-full pointer-events-none" />
 
       {/* Main Container */}
@@ -72,7 +70,7 @@ const LoadingScreen = ({ onComplete }) => {
             className="block text-transparent bg-clip-text opacity-30"
             style={{ 
                 WebkitTextStroke: "2px white",
-                fontFamily: "'Inter', sans-serif" // Ensure a thick font
+                fontFamily: "'Inter', sans-serif" 
             }}
           >
             {phrases[textIndex]}
@@ -81,7 +79,7 @@ const LoadingScreen = ({ onComplete }) => {
           {/* Layer 2: The "Liquid" Fill (Overlays Layer 1) */}
           <div 
             className="absolute top-0 left-0 w-full overflow-hidden transition-all duration-75"
-            style={{ height: `${progress}%` }} // This fills the text vertically
+            style={{ height: `${progress}%` }} 
           >
             <span 
                 className="block text-white"
@@ -94,7 +92,7 @@ const LoadingScreen = ({ onComplete }) => {
         </div>
       </div>
 
-      {/* Percentage Counter (Small & Technical) */}
+      {/* Percentage Counter */}
       <div className="absolute bottom-10 right-10 flex flex-col items-end">
         <span className="text-6xl font-mono font-bold text-white/20">
             {Math.round(progress)}
@@ -104,7 +102,6 @@ const LoadingScreen = ({ onComplete }) => {
         </span>
       </div>
 
-      {/* CSS for smoother font transitions if needed */}
       <style jsx>{`
         .transition-height {
           transition: height 0.1s linear;

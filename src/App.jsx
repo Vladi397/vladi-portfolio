@@ -6,7 +6,7 @@ import useActiveSection from "./hooks/useActiveSection";
 import { scrollToId } from "./utils/scrollHelpers";
 
 // UI
-import LoadingScreen from "./components/ui/LoadingScreen"; // <--- NEW IMPORT
+import LoadingScreen from "./components/ui/LoadingScreen"; 
 
 // Sections
 import Navbar from "./components/sections/Navbar";
