@@ -93,12 +93,12 @@ const TiltedCard = ({ children, className = "" }) => {
 const GlareHover = ({
   children,
   className = "",
-  background = "#fff",
+  background = "#f8fafc",
   borderRadius = "22px",
-  borderColor = "rgba(226,232,240,1)", // slate-200
-  glareOpacity = 0.35,
-  glareAngle = -45,
-  glareSize = 240, // px
+  borderColor = "rgba(226,232,240,1)",
+  glareOpacity = 0.45,
+  glareAngle = -20,
+  glareSize = 280,
 }) => {
   const ref = useRef(null);
   const raf = useRef(null);
@@ -115,7 +115,6 @@ const GlareHover = ({
   const setVars = (xPct, yPct, hovering) => {
     const el = ref.current;
     if (!el) return;
-
     el.style.setProperty("--gh-x", `${xPct}%`);
     el.style.setProperty("--gh-y", `${yPct}%`);
     el.style.setProperty("--gh-o", hovering ? String(glareOpacity) : "0");
@@ -127,18 +126,12 @@ const GlareHover = ({
     if (!isFinePointer.current) return;
     const el = ref.current;
     if (!el) return;
-
     const rect = el.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
 
     if (raf.current) cancelAnimationFrame(raf.current);
     raf.current = requestAnimationFrame(() => setVars(x, y, true));
-  };
-
-  const onEnter = (e) => {
-    if (!isFinePointer.current) return;
-    onMove(e);
   };
 
   const onLeave = () => {
@@ -151,9 +144,9 @@ const GlareHover = ({
   return (
     <div
       ref={ref}
-      onMouseMove={onMove}
-      onMouseEnter={onEnter}
-      onMouseLeave={onLeave}
+      onPointerMove={onMove}
+      onPointerEnter={onMove}
+      onPointerLeave={onLeave}
       className={[
         "relative overflow-hidden border shadow-sm transition-shadow duration-300",
         "hover:shadow-lg",
@@ -165,8 +158,7 @@ const GlareHover = ({
         borderColor,
         borderStyle: "solid",
         borderWidth: 1,
-
-        // defaults
+        isolation: "isolate",
         ["--gh-x"]: "50%",
         ["--gh-y"]: "50%",
         ["--gh-o"]: "0",
@@ -174,23 +166,22 @@ const GlareHover = ({
         ["--gh-size"]: `${glareSize}px`,
       }}
     >
-      {/* Glare layer: NO blur, NO glow */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           opacity: "var(--gh-o)",
           transition: "opacity 220ms ease",
-          mixBlendMode: "soft-light",
+          mixBlendMode: "screen",
           backgroundImage: `
             radial-gradient(
               circle at var(--gh-x) var(--gh-y),
-              rgba(255,255,255,0.55),
-              rgba(255,255,255,0) var(--gh-size)
+              rgba(255,255,255,0.85),
+              rgba(255,255,255,0) 55%
             ),
             linear-gradient(
               var(--gh-angle),
               rgba(255,255,255,0) 0%,
-              rgba(255,255,255,0.55) 45%,
+              rgba(255,255,255,0.9) 45%,
               rgba(255,255,255,0) 100%
             )
           `,
@@ -198,11 +189,11 @@ const GlareHover = ({
           backgroundPosition: "0 0, var(--gh-x) var(--gh-y)",
         }}
       />
-
       <div className="relative z-10 h-full">{children}</div>
     </div>
   );
 };
+
 
 // 2) Reveal-on-scroll
 const Reveal = ({ children, className = "", delay = 0 }) => {
@@ -764,7 +755,7 @@ const Certificates = () => {
         {certs.map((cert, idx) => (
           <Reveal key={idx} delay={idx * 90}>
             <div className="h-full min-h-[320px]">
-              <GlareHover className="h-full" borderRadius="22px" glareOpacity={0.35} glareAngle={-45} glareSize={240}>
+              <GlareHover className="h-full" borderRadius="22px" glareOpacity={0.45} glareAngle={-20} glareSize={280}>
                 <div className="p-7 sm:p-8 flex flex-col h-full">
                   {/* Header */}
                   <div className="flex items-center justify-between mb-7">
