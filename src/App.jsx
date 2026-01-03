@@ -88,112 +88,107 @@ const TiltedCard = ({ children, className = "" }) => {
   );
 };
 
-// --- COMPONENT 2: GLARE HOVER (React Bits style) ---
-// Crisp glare, no blur, driven by CSS variables (no React re-render spam)
+// --- COMPONENT 2: GLARE HOVER (React Bits "premium shine" animation) ---
 const GlareHover = ({
   children,
   className = "",
-  background = "#f8fafc",
+  background = "#fff",
   borderRadius = "22px",
-  borderColor = "rgba(226,232,240,1)",
-  glareOpacity = 0.45,
-  glareAngle = -20,
-  glareSize = 280,
+  borderColor = "#e5e7eb",
+  glareColor = "#ffffff",
+  glareOpacity = 0.3,
+  glareSize = 300, // percentage
+  glareAngle = -45,
+  transitionDuration = 800, // ms
+  playOnce = false,
 }) => {
   const ref = useRef(null);
-  const raf = useRef(null);
-  const isFinePointer = useRef(true);
 
-  useEffect(() => {
-    const mq = window.matchMedia?.("(pointer: fine)");
-    const update = () => (isFinePointer.current = !!mq?.matches);
-    update();
-    mq?.addEventListener?.("change", update);
-    return () => mq?.removeEventListener?.("change", update);
-  }, []);
-
-  const setVars = (xPct, yPct, hovering) => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.setProperty("--gh-x", `${xPct}%`);
-    el.style.setProperty("--gh-y", `${yPct}%`);
-    el.style.setProperty("--gh-o", hovering ? String(glareOpacity) : "0");
-    el.style.setProperty("--gh-angle", `${glareAngle}deg`);
-    el.style.setProperty("--gh-size", `${glareSize}px`);
-  };
-
-  const onMove = (e) => {
-    if (!isFinePointer.current) return;
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-    if (raf.current) cancelAnimationFrame(raf.current);
-    raf.current = requestAnimationFrame(() => setVars(x, y, true));
-  };
-
-  const onLeave = () => {
-    if (raf.current) cancelAnimationFrame(raf.current);
-    const el = ref.current;
-    if (!el) return;
-    el.style.setProperty("--gh-o", "0");
+  const trigger = () => {
+    if (!ref.current) return;
+    ref.current.classList.remove("shine");
+    // Force reflow to restart animation
+    void ref.current.offsetWidth;
+    ref.current.classList.add("shine");
   };
 
   return (
     <div
       ref={ref}
-      onPointerMove={onMove}
-      onPointerEnter={onMove}
-      onPointerLeave={onLeave}
-      className={[
-        "relative overflow-hidden border shadow-sm transition-shadow duration-300",
-        "hover:shadow-lg",
-        className,
-      ].join(" ")}
+      onMouseEnter={trigger}
+      className={`relative overflow-hidden border transition-transform duration-300 hover:scale-[1.02] ${className}`}
       style={{
         background,
-        borderRadius,
         borderColor,
+        borderRadius,
         borderStyle: "solid",
         borderWidth: 1,
-        isolation: "isolate",
-        ["--gh-x"]: "50%",
-        ["--gh-y"]: "50%",
-        ["--gh-o"]: "0",
-        ["--gh-angle"]: `${glareAngle}deg`,
-        ["--gh-size"]: `${glareSize}px`,
+        "--glare-color": glareColor,
+        "--glare-opacity": glareOpacity,
+        "--glare-size": `${glareSize}%`,
+        "--glare-angle": `${glareAngle}deg`,
+        "--glare-speed": `${transitionDuration}ms`,
       }}
     >
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          opacity: "var(--gh-o)",
-          transition: "opacity 220ms ease",
-          mixBlendMode: "screen",
-          backgroundImage: `
-            radial-gradient(
-              circle at var(--gh-x) var(--gh-y),
-              rgba(255,255,255,0.85),
-              rgba(255,255,255,0) 55%
+      {/* Shining sweep layer */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="glare-light" />
+      </div>
+
+      {/* Actual content */}
+      <div className="relative z-10 h-full">{children}</div>
+
+      <style jsx>{`
+        .glare-light {
+          position: absolute;
+          inset: -50%;
+          background-image: repeating-linear-gradient(
+              var(--glare-angle),
+              rgba(255, 255, 255, 0) 0%,
+              rgba(255, 255, 255, var(--glare-opacity)) 3%,
+              rgba(255, 255, 255, 0) 6%,
+              rgba(255, 255, 255, 0) 9%
             ),
             linear-gradient(
-              var(--gh-angle),
-              rgba(255,255,255,0) 0%,
-              rgba(255,255,255,0.9) 45%,
-              rgba(255,255,255,0) 100%
-            )
-          `,
-          backgroundSize: "100% 100%, 200% 200%",
-          backgroundPosition: "0 0, var(--gh-x) var(--gh-y)",
-        }}
-      />
-      <div className="relative z-10 h-full">{children}</div>
+              var(--glare-angle),
+              rgba(255, 255, 255, 0) 0%,
+              var(--glare-color) 50%,
+              rgba(255, 255, 255, 0) 100%
+            );
+          background-size: var(--glare-size) var(--glare-size);
+          opacity: 0;
+          transform: translateX(-150%) rotate(var(--glare-angle));
+        }
+
+        .shine .glare-light {
+          animation: glareSweep var(--glare-speed) ease-in-out forwards;
+        }
+
+        @keyframes glareSweep {
+          0% {
+            opacity: 0;
+            transform: translateX(-150%) rotate(var(--glare-angle));
+          }
+          10% {
+            opacity: var(--glare-opacity);
+          }
+          50% {
+            opacity: var(--glare-opacity);
+            transform: translateX(0%) rotate(var(--glare-angle));
+          }
+          90% {
+            opacity: 0.25;
+            transform: translateX(150%) rotate(var(--glare-angle));
+          }
+          100% {
+            opacity: 0;
+            transform: translateX(150%) rotate(var(--glare-angle));
+          }
+        }
+      `}</style>
     </div>
   );
 };
-
 
 // 2) Reveal-on-scroll
 const Reveal = ({ children, className = "", delay = 0 }) => {
@@ -755,7 +750,19 @@ const Certificates = () => {
         {certs.map((cert, idx) => (
           <Reveal key={idx} delay={idx * 90}>
             <div className="h-full min-h-[320px]">
-              <GlareHover className="h-full" borderRadius="22px" glareOpacity={0.45} glareAngle={-20} glareSize={280}>
+              
+
+<GlareHover
+  className="h-full"
+  background="#ffffff"
+  borderRadius="22px"
+  // CHANGE THIS LINE BELOW 👇
+  glareColor="#d2d2d2ff"  // Changed from "#ffffff" to your theme Blue
+  glareOpacity={0.8}    // You might want to lower opacity slightly for colored glare
+  glareSize={500}
+  glareAngle={-1200}
+  transitionDuration={800}
+>
                 <div className="p-7 sm:p-8 flex flex-col h-full">
                   {/* Header */}
                   <div className="flex items-center justify-between mb-7">
