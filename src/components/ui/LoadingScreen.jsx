@@ -1,46 +1,113 @@
 import React, { useState, useEffect } from "react";
 
 const LoadingScreen = ({ onComplete }) => {
-  const [text, setText] = useState("");
-  const fullText = "Hello Vladi..."; // You can change this text
-  const [index, setIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [textIndex, setTextIndex] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
+
+  // INVITING WORDS SEQUENCE
+  // These cycle through as the loader progresses
+  const phrases = [
+    "Thinking",
+    "Designing",
+    "Curating",
+    "Experience", // Ends with this
+  ];
 
   useEffect(() => {
-    if (index < fullText.length) {
-      const timeout = setTimeout(() => {
-        setText((prev) => prev + fullText[index]);
-        setIndex((prev) => prev + 1);
-      }, 100); // Typing speed
-      return () => clearTimeout(timeout);
-    } else {
-      // Once typing is done, wait a bit and then finish
-      const timeout = setTimeout(() => {
-        onComplete();
-      }, 1000);
-      return () => clearTimeout(timeout);
+    // 1. Progress Timer
+    const duration = 3000; // 3 seconds total load time
+    const intervalTime = 30;
+    const steps = duration / intervalTime;
+    const increment = 100 / steps;
+
+    const timer = setInterval(() => {
+      setProgress((prev) => {
+        const next = prev + increment;
+        if (next >= 100) {
+          clearInterval(timer);
+          return 100;
+        }
+        return next;
+      });
+    }, intervalTime);
+
+    // 2. Phrase Changer Logic
+    // Switch phrases at 33% and 66% completion
+    if (progress < 33) setTextIndex(0);
+    else if (progress < 66) setTextIndex(1);
+    else if (progress < 90) setTextIndex(2);
+    else setTextIndex(3);
+
+    return () => clearInterval(timer);
+  }, [progress]);
+
+  useEffect(() => {
+    // 3. Completion Handler
+    if (progress >= 100) {
+      setTimeout(() => {
+        setIsExiting(true);
+        setTimeout(onComplete, 1000); // Wait for exit animation
+      }, 500); // Pause briefly at 100%
     }
-  }, [index, fullText, onComplete]);
+  }, [progress, onComplete]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black text-white flex flex-col items-center justify-center">
-      {/* Blinking Cursor Text */}
-      <div className="text-4xl md:text-6xl font-bold font-mono">
-        {text}
-        <span className="animate-pulse">_</span>
+    <div
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-black text-white overflow-hidden transition-all duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+        isExiting ? "translate-y-[-100%]" : "translate-y-0"
+      }`}
+    >
+      {/* Background Gradient Spot - Adds depth without reducing visibility */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-900/20 blur-[120px] rounded-full pointer-events-none" />
+
+      {/* Main Container */}
+      <div className="relative z-10 font-black tracking-tighter uppercase text-center cursor-default">
+        
+        {/* The Text Container */}
+        <div className="relative text-6xl md:text-9xl leading-none">
+          
+          {/* Layer 1: The "Hollow" Text (Always visible background) */}
+          <span 
+            className="block text-transparent bg-clip-text opacity-30"
+            style={{ 
+                WebkitTextStroke: "2px white",
+                fontFamily: "'Inter', sans-serif" // Ensure a thick font
+            }}
+          >
+            {phrases[textIndex]}
+          </span>
+
+          {/* Layer 2: The "Liquid" Fill (Overlays Layer 1) */}
+          <div 
+            className="absolute top-0 left-0 w-full overflow-hidden transition-all duration-75"
+            style={{ height: `${progress}%` }} // This fills the text vertically
+          >
+            <span 
+                className="block text-white"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+            >
+              {phrases[textIndex]}
+            </span>
+          </div>
+          
+        </div>
       </div>
 
-      {/* Loading Bar */}
-      <div className="w-[200px] h-[2px] bg-gray-800 rounded mt-4 overflow-hidden relative">
-        <div className="absolute top-0 left-0 h-full bg-[#0EA5E9] animate-progress"></div>
+      {/* Percentage Counter (Small & Technical) */}
+      <div className="absolute bottom-10 right-10 flex flex-col items-end">
+        <span className="text-6xl font-mono font-bold text-white/20">
+            {Math.round(progress)}
+        </span>
+        <span className="text-xs text-white/40 font-mono tracking-widest uppercase mt-2">
+            System Ready
+        </span>
       </div>
 
+      {/* CSS for smoother font transitions if needed */}
       <style jsx>{`
-        @keyframes progress {
-          0% { width: 0%; }
-          100% { width: 100%; }
-        }
-        .animate-progress {
-          animation: progress 2.5s ease-in-out forwards;
+        .transition-height {
+          transition: height 0.1s linear;
         }
       `}</style>
     </div>
