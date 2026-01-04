@@ -6,7 +6,8 @@ import useActiveSection from "./hooks/useActiveSection";
 import { scrollToId } from "./utils/scrollHelpers";
 
 // UI
-import LoadingScreen from "./components/ui/LoadingScreen"; 
+import LoadingScreen from "./components/ui/LoadingScreen";
+import GlareHover from "./components/ui/GlareHover"; 
 
 // Sections
 import Navbar from "./components/sections/Navbar";
@@ -25,7 +26,7 @@ export default function App() {
   );
   const activeId = useActiveSection(sectionIds);
 
-  // --- NEW: Loading State ---
+  // --- Loading & Scroll State ---
   const [isLoaded, setIsLoaded] = useState(false);
   const [showTop, setShowTop] = useState(false);
 
@@ -37,12 +38,10 @@ export default function App() {
 
   return (
     <>
-      {/* 1. The Loading Screen */}
-      {/* It stays on top until it calls setIsLoaded(true) */}
+      {/* 1. Loading Screen */}
       {!isLoaded && <LoadingScreen onComplete={() => setIsLoaded(true)} />}
 
-      {/* 2. The Main Website */}
-      {/* We use a simple opacity transition to make it fade in smoothly */}
+      {/* 2. Main Website */}
       <div
         className={`min-h-screen font-sans selection:bg-[#0EA5E9] selection:text-white transition-opacity duration-700 ${
           isLoaded ? "opacity-100" : "opacity-0"
@@ -69,14 +68,25 @@ export default function App() {
           © 2025 Vladi Georgiev.
         </footer>
 
+        {/* Back to Top Button */}
         {showTop && (
-          <button
-            onClick={() => scrollToId("home")}
-            className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 bg-white/80 backdrop-blur border border-gray-100 shadow-lg rounded-full w-12 h-12 flex items-center justify-center hover:bg-white transition-colors"
-            aria-label="Back to top"
-          >
-            <ArrowUpRight className="rotate-[-45deg]" size={18} />
-          </button>
+          <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50">
+            <GlareHover
+              borderRadius="50%"
+              className="cursor-pointer"
+              // We use a slight off-white here so the white glare is visible
+              background="rgba(245, 245, 245, 0.9)"
+              glareOpacity={1} // Maximum shine
+            >
+              <button
+                onClick={() => scrollToId("home")}
+                className="w-12 h-12 flex items-center justify-center text-gray-700 hover:text-black transition-colors"
+                aria-label="Back to top"
+              >
+                <ArrowUpRight className="rotate-[-45deg]" size={18} />
+              </button>
+            </GlareHover>
+          </div>
         )}
       </div>
     </>
