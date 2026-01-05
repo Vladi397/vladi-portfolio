@@ -33,18 +33,22 @@ const Navbar = ({ activeId, theme, toggleTheme }) => { // Accepted new props
     scrollToId(id);
   };
 
-  // Reusable Theme Toggle Component to ensure consistency
+  // Inside Navbar.jsx
   const ThemeToggle = ({ className }) => (
     <button
-      onClick={toggleTheme}
-      className={`p-2 rounded-full transition-colors duration-300 ${className}
+      // We pass the event (e) so the circle starts exactly where you clicked!
+      onClick={(e) => toggleTheme(e)} 
+      className={`p-2 rounded-full transition-all duration-300 ${className}
         hover:bg-gray-100 text-gray-600
         dark:hover:bg-slate-800 dark:text-slate-300
+        active:scale-90 hover:rotate-12 transform
       `}
       aria-label="Toggle Dark Mode"
     >
-      {/* Show Sun if Dark, Moon if Light */}
-      {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+      {/* Added a subtle spin/scale animation to the ICON itself */}
+      <div className="transition-transform duration-500 rotate-0 dark:rotate-[360deg]">
+        {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+      </div>
     </button>
   );
 
