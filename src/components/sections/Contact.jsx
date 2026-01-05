@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Check, Copy, ExternalLink, Github, Rocket } from "lucide-react";
+import { Check, Copy, ExternalLink, Github, Rocket, Mail } from "lucide-react";
 import Reveal from "../ui/Reveal";
 
 const Contact = () => {
@@ -19,116 +19,133 @@ const Contact = () => {
   return (
     <section id="contact" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
       <Reveal>
-        <div className="rounded-3xl p-6 sm:p-8 md:p-16 flex flex-col md:flex-row gap-10 md:gap-12 items-center shadow-lg border transition-colors
-          bg-[#E0F2FE] border-sky-100
-          dark:bg-slate-800/80 dark:border-slate-700"
-        >
-          <div className="flex-1 space-y-6 w-full">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold transition-colors
-              text-gray-900 dark:text-white"
-            >
-              Let’s start a <br className="hidden sm:block" /> conversation
-            </h2>
-
-            <div className="flex items-center gap-2 font-black transition-colors
-              text-green-700 dark:text-green-400"
-            >
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse motion-reduce:animate-none"></span>
-              Available for new projects
-            </div>
-
-            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 pt-2 w-full">
-              <button
-                onClick={onCopy}
-                className="inline-flex items-center justify-between gap-2 px-5 py-3 rounded-full font-semibold shadow-sm transition-colors w-full sm:w-auto
-                  bg-white/70 border border-white/60 text-gray-700 hover:bg-white
-                  dark:bg-slate-900/50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900"
-              >
-                <span className="truncate max-w-[240px] sm:max-w-none">{email}</span>
-                {copied ? (
-                  <Check size={16} className="text-green-600" />
-                ) : (
-                  <Copy size={16} className="hover:text-[#0EA5E9]" />
-                )}
-              </button>
-
-              <a
-                href="#"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full font-semibold shadow-sm transition-colors w-full sm:w-auto
-                  bg-white/70 border border-white/60 text-gray-700 hover:bg-white
-                  dark:bg-slate-900/50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900"
-              >
-                LinkedIn <ExternalLink size={16} />
-              </a>
-
-              <a
-                href="#"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full font-semibold shadow-sm transition-colors w-full sm:w-auto
-                  bg-white/70 border border-white/60 text-gray-700 hover:bg-white
-                  dark:bg-slate-900/50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900"
-              >
-                GitHub <Github size={16} />
-              </a>
-            </div>
-          </div>
-
-          <form
-            className="flex-1 w-full space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              alert("Hook this form to EmailJS / Formspree / your backend.");
-            }}
+        {/* Glow Effect behind the card */}
+        <div className="relative group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[40px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
+          
+          <div className="relative rounded-[32px] p-8 sm:p-12 md:p-16 flex flex-col lg:flex-row gap-12 lg:gap-20 items-start overflow-hidden
+            bg-white shadow-2xl
+            dark:bg-[#0B1120] dark:shadow-none"
           >
-            <div className="space-y-2">
-              <label className="text-sm font-black transition-colors text-gray-700 dark:text-slate-300">
-                Name
-              </label>
-              <input
-                type="text"
-                placeholder="Your name"
-                className="w-full p-4 rounded-xl focus:ring-2 focus:ring-[#0EA5E9] outline-none transition-colors
-                  bg-[#F0F9FF] border border-sky-100 placeholder:text-gray-400
-                  dark:bg-slate-950 dark:border-slate-800 dark:placeholder:text-slate-600 dark:text-white"
-              />
+            {/* Background Texture (Noise or Lines could go here) */}
+            <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))] pointer-events-none" />
+
+            {/* LEFT COLUMN: Info */}
+            <div className="flex-1 w-full relative z-10">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 transition-colors
+                text-gray-900 dark:text-white"
+              >
+                Let’s work <br /> together.
+              </h2>
+
+              <p className="text-lg mb-8 max-w-md transition-colors text-gray-600 dark:text-slate-400">
+                Have a project in mind? I'm available for freelance work and new opportunities.
+              </p>
+
+              <div className="flex items-center gap-3 font-bold mb-10 transition-colors
+                text-emerald-600 dark:text-emerald-400"
+              >
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+                Available for new projects
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <button
+                  onClick={onCopy}
+                  className="group flex items-center justify-between gap-4 p-4 rounded-2xl border transition-all
+                    bg-gray-50 border-gray-200 hover:border-sky-300 hover:bg-sky-50
+                    dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10 dark:hover:border-white/20"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 rounded-xl bg-sky-100 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400">
+                      <Mail size={20} />
+                    </div>
+                    <span className="font-semibold text-gray-700 dark:text-slate-200 break-all text-left">
+                      {email}
+                    </span>
+                  </div>
+                  {copied ? (
+                    <Check size={18} className="text-emerald-500" />
+                  ) : (
+                    <Copy size={18} className="text-gray-400 group-hover:text-sky-500 transition-colors" />
+                  )}
+                </button>
+
+                <div className="flex gap-4">
+                  <a
+                    href="#"
+                    className="flex-1 flex items-center justify-center gap-2 p-4 rounded-2xl border font-bold transition-all
+                    bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100
+                    dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
+                  >
+                    LinkedIn <ExternalLink size={18} />
+                  </a>
+                  <a
+                    href="#"
+                    className="flex-1 flex items-center justify-center gap-2 p-4 rounded-2xl border font-bold transition-all
+                    bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100
+                    dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
+                  >
+                    GitHub <Github size={18} />
+                  </a>
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-black transition-colors text-gray-700 dark:text-slate-300">
-                Email
-              </label>
-              <input
-                type="email"
-                placeholder="you@email.com"
-                className="w-full p-4 rounded-xl focus:ring-2 focus:ring-[#0EA5E9] outline-none transition-colors
-                  bg-[#F0F9FF] border border-sky-100 placeholder:text-gray-400
-                  dark:bg-slate-950 dark:border-slate-800 dark:placeholder:text-slate-600 dark:text-white"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-black transition-colors text-gray-700 dark:text-slate-300">
-                Message
-              </label>
-              <textarea
-                placeholder="What are you building?"
-                rows="4"
-                className="w-full p-4 rounded-xl focus:ring-2 focus:ring-[#0EA5E9] outline-none resize-none transition-colors
-                  bg-[#F0F9FF] border border-sky-100 placeholder:text-gray-400
-                  dark:bg-slate-950 dark:border-slate-800 dark:placeholder:text-slate-600 dark:text-white"
-              ></textarea>
-            </div>
-
-            <button
-              className="w-full bg-[#0EA5E9] text-white font-black py-4 px-8 rounded-full shadow-lg hover:bg-sky-500 transition-all duration-300 motion-reduce:transition-none inline-flex items-center justify-center gap-2"
-              type="submit"
+            {/* RIGHT COLUMN: Form */}
+            <form
+              className="flex-1 w-full relative z-10 bg-gray-50 dark:bg-white/5 p-6 sm:p-8 rounded-[24px] border border-gray-100 dark:border-white/5"
+              onSubmit={(e) => {
+                e.preventDefault();
+                alert("Connect to backend.");
+              }}
             >
-              Send Message <Rocket size={20} />
-            </button>
-          </form>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">Name</label>
+                  <input
+                    type="text"
+                    placeholder="John Doe"
+                    className="w-full p-4 rounded-xl outline-none font-medium transition-all
+                      bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
+                      dark:bg-[#0B1120] dark:border-white/10 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-sky-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">Email</label>
+                  <input
+                    type="email"
+                    placeholder="john@example.com"
+                    className="w-full p-4 rounded-xl outline-none font-medium transition-all
+                      bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
+                      dark:bg-[#0B1120] dark:border-white/10 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-sky-500"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2 mb-6">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">Message</label>
+                <textarea
+                  placeholder="Tell me about your project..."
+                  rows="4"
+                  className="w-full p-4 rounded-xl outline-none resize-none font-medium transition-all
+                    bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
+                    dark:bg-[#0B1120] dark:border-white/10 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-sky-500"
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-4 rounded-xl font-bold text-white shadow-lg shadow-sky-500/25 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2
+                bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500"
+              >
+                Send Message <Rocket size={20} />
+              </button>
+            </form>
+          </div>
         </div>
       </Reveal>
     </section>
