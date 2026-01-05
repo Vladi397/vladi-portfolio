@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react"; // Imported Sun & Moon
 import { scrollToId } from "../../utils/scrollHelpers";
 import PrimaryButton from "../ui/PrimaryButton";
 
-const Navbar = ({ activeId }) => {
+const Navbar = ({ activeId, theme, toggleTheme }) => { // Accepted new props
   const [open, setOpen] = useState(false);
 
   const links = useMemo(
@@ -18,6 +18,7 @@ const Navbar = ({ activeId }) => {
     []
   );
 
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -32,16 +33,39 @@ const Navbar = ({ activeId }) => {
     scrollToId(id);
   };
 
+  // Reusable Theme Toggle Component to ensure consistency
+  const ThemeToggle = ({ className }) => (
+    <button
+      onClick={toggleTheme}
+      className={`p-2 rounded-full transition-colors duration-300 ${className}
+        hover:bg-gray-100 text-gray-600
+        dark:hover:bg-slate-800 dark:text-slate-300
+      `}
+      aria-label="Toggle Dark Mode"
+    >
+      {/* Show Sun if Dark, Moon if Light */}
+      {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+    </button>
+  );
+
   return (
-    <nav className="fixed w-full z-50 top-0 left-0 bg-white/70 backdrop-blur-md border-b border-gray-100/60">
+    <nav className="fixed w-full z-50 top-0 left-0 transition-colors duration-300
+      bg-white/70 border-gray-100/60
+      dark:bg-slate-900/80 dark:border-slate-800/60
+      backdrop-blur-md border-b"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 md:py-5 flex justify-between items-center">
+        
+        {/* LOGO */}
         <button
           onClick={() => scrollToId("home")}
-          className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 tracking-tight"
+          className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight transition-colors
+            text-gray-900 dark:text-slate-50"
         >
           Vladi Georgiev
         </button>
 
+        {/* --- DESKTOP MENU --- */}
         <div className="hidden md:flex items-center gap-6 lg:gap-10">
           {links.map((l) => {
             const isActive = activeId === l.id;
@@ -51,7 +75,9 @@ const Navbar = ({ activeId }) => {
                 onClick={() => handleNav(l.id)}
                 className={[
                   "text-xs lg:text-sm font-semibold tracking-widest uppercase transition-colors",
-                  isActive ? "text-sky-600" : "text-gray-600 hover:text-sky-600",
+                  isActive 
+                    ? "text-sky-600 dark:text-sky-400" 
+                    : "text-gray-600 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-400",
                 ].join(" ")}
               >
                 {l.label}
@@ -59,22 +85,42 @@ const Navbar = ({ activeId }) => {
             );
           })}
 
+          {/* Theme Toggle (Desktop) */}
+          <ThemeToggle />
+
           <PrimaryButton onClick={() => handleNav("contact")} className="px-6 py-2 text-sm">
             Let’s talk
           </PrimaryButton>
         </div>
 
-        <button className="md:hidden" onClick={() => setOpen((s) => !s)} aria-label="Open menu">
-          {open ? <X /> : <Menu />}
-        </button>
+        {/* --- MOBILE HEADER CONTROLS --- */}
+        <div className="flex items-center gap-4 md:hidden">
+          {/* Theme Toggle (Mobile - Visible in header) */}
+          <ThemeToggle />
+
+          <button 
+            onClick={() => setOpen((s) => !s)} 
+            aria-label="Open menu"
+            className="text-gray-900 dark:text-white"
+          >
+            {open ? <X /> : <Menu />}
+          </button>
+        </div>
       </div>
 
+      {/* --- MOBILE MENU DRAWER --- */}
       {open && (
-        <div className="md:hidden fixed inset-0 bg-white/95 backdrop-blur-xl z-50 overflow-y-auto">
+        <div className="md:hidden fixed inset-0 z-50 overflow-y-auto transition-colors duration-300
+          bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl"
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-10">
             <div className="flex justify-between items-center">
-              <div className="text-2xl font-bold text-gray-900">Menu</div>
-              <button onClick={() => setOpen(false)} aria-label="Close menu">
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">Menu</div>
+              <button 
+                onClick={() => setOpen(false)} 
+                aria-label="Close menu"
+                className="text-gray-900 dark:text-white"
+              >
                 <X />
               </button>
             </div>
@@ -87,8 +133,10 @@ const Navbar = ({ activeId }) => {
                     key={l.id}
                     onClick={() => handleNav(l.id)}
                     className={[
-                      "text-2xl font-black tracking-tight text-left",
-                      isActive ? "text-sky-600" : "text-gray-900",
+                      "text-2xl font-black tracking-tight text-left transition-colors",
+                      isActive 
+                        ? "text-sky-600 dark:text-sky-400" 
+                        : "text-gray-900 dark:text-slate-200",
                     ].join(" ")}
                   >
                     {l.label}
