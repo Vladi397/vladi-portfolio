@@ -30,33 +30,40 @@ const Skills = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
         {skillCategories.map((cat, idx) => (
           <Reveal key={idx} delay={idx * 80}>
-            {/* Added container div to handle Dark Mode background for the card content */}
-            <TiltedCard className="h-full">
-              <div className="h-full p-6 sm:p-8 rounded-[22px] transition-colors duration-300
-                bg-white dark:bg-slate-800/50 border border-transparent dark:border-slate-700/50"
-              >
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-colors
-                  bg-sky-50 dark:bg-slate-700"
+            {/* Wrapper for Glow Effect */}
+            <div className="relative group h-full">
+              
+              {/* THE GLOW - Positioned behind the card */}
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[22px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
+              
+              <TiltedCard className="h-full relative">
+                <div className="h-full p-6 sm:p-8 rounded-[22px] transition-colors duration-300
+                  bg-white dark:bg-slate-800/90 border border-transparent dark:border-slate-700/50"
+                  // Note: Adjusted bg opacity for dark mode to ensure contrast against the glow
                 >
-                  {cat.icon}
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-colors
+                    bg-sky-50 dark:bg-slate-700"
+                  >
+                    {cat.icon}
+                  </div>
+                  <h3 className="text-2xl font-black mb-6 transition-colors
+                    text-gray-900 dark:text-white"
+                  >
+                    {cat.title}
+                  </h3>
+                  <ul className="space-y-3">
+                    {cat.skills.map((skill) => (
+                      <li key={skill} className="flex items-center gap-3 font-semibold transition-colors
+                        text-gray-600 dark:text-slate-300"
+                      >
+                        <span className="w-2 h-2 rounded-full bg-[#0EA5E9]"></span>
+                        {skill}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <h3 className="text-2xl font-black mb-6 transition-colors
-                  text-gray-900 dark:text-white"
-                >
-                  {cat.title}
-                </h3>
-                <ul className="space-y-3">
-                  {cat.skills.map((skill) => (
-                    <li key={skill} className="flex items-center gap-3 font-semibold transition-colors
-                      text-gray-600 dark:text-slate-300"
-                    >
-                      <span className="w-2 h-2 rounded-full bg-[#0EA5E9]"></span>
-                      {skill}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </TiltedCard>
+              </TiltedCard>
+            </div>
           </Reveal>
         ))}
       </div>

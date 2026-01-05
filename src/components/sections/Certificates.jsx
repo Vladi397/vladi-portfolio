@@ -22,10 +22,13 @@ const Certificates = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {certs.map((cert, idx) => (
           <Reveal key={idx} delay={idx * 90}>
-            <div className="h-full min-h-[320px]">
+             {/* Wrapper for the Glow Effect */}
+            <div className="relative group h-full min-h-[320px]">
+               {/* THE GLOW - Positioned behind the card */}
+               <div className="absolute -inset-0.5 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[22px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
+
               <GlareHover
-                className="h-full"
-                // KEY CHANGE: Set background to transparent so we can control it via Tailwind classes below
+                className="h-full relative" // Keep relative so it sits on top of the glow div
                 background="transparent"
                 borderRadius="22px"
                 glareColor="#ffffff"
@@ -34,7 +37,8 @@ const Certificates = () => {
                 glareAngle={-1200}
                 transitionDuration={800}
               >
-                {/* INNER CARD: Controls the dark/light theme */}
+                {/* INNER CARD */}
+                {/* REVERTED dark:bg-slate-800/90 BACK TO your original dark:bg-slate-800/60 below */}
                 <div className="p-7 sm:p-8 flex flex-col h-full rounded-[22px] transition-colors duration-300
                   bg-white dark:bg-slate-800/60 dark:border dark:border-slate-700"
                 >
