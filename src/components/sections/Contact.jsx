@@ -1,10 +1,14 @@
-import React, { useState } from "react";
-import { Check, Copy, ExternalLink, Github, Rocket, Mail } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { Check, Copy, ExternalLink, Github, Rocket, Mail, Loader2 } from "lucide-react";
 import Reveal from "../ui/Reveal";
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const email = "vladi.georgiev.14@gmail.com";
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
+  const form = useRef();
 
   const onCopy = async () => {
     try {
@@ -16,10 +20,39 @@ const Contact = () => {
     }
   };
 
+  const sendEmail = (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    // ---------------------------------------------------------
+    // ✅ FINAL KEYS UPDATED
+    // ---------------------------------------------------------
+    const SERVICE_ID = "service_cpwm64l";   
+    const TEMPLATE_ID = "template_w6f41ai"; // ✅ Updated to your new ID
+    const PUBLIC_KEY = "tweMi9zagYlpsXvjC"; 
+    // ---------------------------------------------------------
+
+    emailjs
+      .sendForm(SERVICE_ID, TEMPLATE_ID, form.current, {
+        publicKey: PUBLIC_KEY,
+      })
+      .then(
+        () => {
+          setLoading(false);
+          alert("Message sent successfully!");
+          e.target.reset(); 
+        },
+        (error) => {
+          setLoading(false);
+          console.error('FAILED...', error.text);
+          alert("Failed to send message. Please try again.");
+        },
+      );
+  };
+
   return (
     <section id="contact" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
       <Reveal>
-        {/* Glow Effect behind the card */}
         <div className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[40px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
           
@@ -27,24 +60,18 @@ const Contact = () => {
             bg-white shadow-2xl
             dark:bg-[#0B1120] dark:shadow-none"
           >
-            {/* Background Texture (Noise or Lines could go here) */}
             <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))] pointer-events-none" />
 
             {/* LEFT COLUMN: Info */}
             <div className="flex-1 w-full relative z-10">
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 transition-colors
-                text-gray-900 dark:text-white"
-              >
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 transition-colors text-gray-900 dark:text-white">
                 Let’s work <br /> together.
               </h2>
-
               <p className="text-lg mb-8 max-w-md transition-colors text-gray-600 dark:text-slate-400">
                 Have a project in mind? I'm available for freelance work and new opportunities.
               </p>
-
-              <div className="flex items-center gap-3 font-bold mb-10 transition-colors
-                text-emerald-600 dark:text-emerald-400"
-              >
+              
+              <div className="flex items-center gap-3 font-bold mb-10 transition-colors text-emerald-600 dark:text-emerald-400">
                 <span className="relative flex h-3 w-3">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
@@ -75,20 +102,10 @@ const Contact = () => {
                 </button>
 
                 <div className="flex gap-4">
-                  <a
-                    href="#"
-                    className="flex-1 flex items-center justify-center gap-2 p-4 rounded-2xl border font-bold transition-all
-                    bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100
-                    dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
-                  >
+                  <a href="#" className="flex-1 flex items-center justify-center gap-2 p-4 rounded-2xl border font-bold transition-all bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10">
                     LinkedIn <ExternalLink size={18} />
                   </a>
-                  <a
-                    href="#"
-                    className="flex-1 flex items-center justify-center gap-2 p-4 rounded-2xl border font-bold transition-all
-                    bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100
-                    dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
-                  >
+                  <a href="#" className="flex-1 flex items-center justify-center gap-2 p-4 rounded-2xl border font-bold transition-all bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10">
                     GitHub <Github size={18} />
                   </a>
                 </div>
@@ -97,17 +114,17 @@ const Contact = () => {
 
             {/* RIGHT COLUMN: Form */}
             <form
+              ref={form}
+              onSubmit={sendEmail}
               className="flex-1 w-full relative z-10 bg-gray-50 dark:bg-white/5 p-6 sm:p-8 rounded-[24px] border border-gray-100 dark:border-white/5"
-              onSubmit={(e) => {
-                e.preventDefault();
-                alert("Connect to backend.");
-              }}
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">Name</label>
                   <input
                     type="text"
+                    name="user_name"
+                    required
                     placeholder="John Doe"
                     className="w-full p-4 rounded-xl outline-none font-medium transition-all
                       bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
@@ -118,6 +135,8 @@ const Contact = () => {
                   <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">Email</label>
                   <input
                     type="email"
+                    name="user_email"
+                    required
                     placeholder="john@example.com"
                     className="w-full p-4 rounded-xl outline-none font-medium transition-all
                       bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
@@ -129,6 +148,8 @@ const Contact = () => {
               <div className="space-y-2 mb-6">
                 <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">Message</label>
                 <textarea
+                  name="message"
+                  required
                   placeholder="Tell me about your project..."
                   rows="4"
                   className="w-full p-4 rounded-xl outline-none resize-none font-medium transition-all
@@ -139,10 +160,11 @@ const Contact = () => {
 
               <button
                 type="submit"
+                disabled={loading}
                 className="w-full py-4 rounded-xl font-bold text-white shadow-lg shadow-sky-500/25 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2
-                bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500"
+                bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Send Message <Rocket size={20} />
+                {loading ? <Loader2 className="animate-spin" /> : <>Send Message <Rocket size={20} /></>}
               </button>
             </form>
           </div>
