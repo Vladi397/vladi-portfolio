@@ -8,11 +8,13 @@ const SectionTitle = ({ title, num, kicker }) => (
           {kicker}
         </p>
       )}
-      <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 uppercase tracking-tight">
+      {/* Added dark:text-white below */}
+      <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
         {title}
       </h2>
     </div>
-    <span className="text-lg sm:text-xl md:text-2xl text-gray-500 font-medium">
+    {/* You might also want to make the number lighter in dark mode */}
+    <span className="text-lg sm:text-xl md:text-2xl text-gray-500 dark:text-gray-400 font-medium">
       ({num})
     </span>
   </div>
