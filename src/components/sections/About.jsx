@@ -10,7 +10,8 @@ const About = () => (
     <SectionTitle title="About Me" num="01" kicker="Who I am" />
 
     <div className="flex flex-col-reverse md:flex-row items-center gap-12 md:gap-16">
-      <div className="flex-1 space-y-6 text-gray-600 text-base sm:text-lg leading-relaxed">
+      <div className="flex-1 space-y-6 text-base sm:text-lg leading-relaxed transition-colors 
+        text-gray-600 dark:text-slate-400">
         <Reveal>
           <p>
             I’m Vladi Georgiev from Bulgaria. After studying electronic trades in high school, I earned seven
@@ -26,15 +27,18 @@ const About = () => (
 
         <Reveal delay={140}>
           <div className="pt-3 flex flex-wrap gap-2 sm:gap-3">
-            <span className="px-4 py-2 rounded-full bg-sky-50 text-sky-700 border border-sky-100 font-semibold text-sm">
-              React + Tailwind
-            </span>
-            <span className="px-4 py-2 rounded-full bg-sky-50 text-sky-700 border border-sky-100 font-semibold text-sm">
-              UI/UX in Figma
-            </span>
-            <span className="px-4 py-2 rounded-full bg-sky-50 text-sky-700 border border-sky-100 font-semibold text-sm">
-              C# Basics
-            </span>
+            {[
+              "React + Tailwind",
+              "UI/UX in Figma",
+              "C# Basics"
+            ].map((skill) => (
+              <span key={skill} className="px-4 py-2 rounded-full font-semibold text-sm border transition-colors
+                bg-sky-50 text-sky-700 border-sky-100
+                dark:bg-sky-900/20 dark:text-sky-300 dark:border-sky-800"
+              >
+                {skill}
+              </span>
+            ))}
           </div>
         </Reveal>
 
@@ -55,7 +59,8 @@ const About = () => (
             alt="About Vladi"
             className="rounded-[28px] sm:rounded-[32px] shadow-2xl w-full object-cover bg-gray-100 select-none"
           />
-          <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-sky-100 rounded-full blur-2xl -z-10"></div>
+          <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full blur-2xl -z-10 transition-colors
+            bg-sky-100 dark:bg-sky-800/40"></div>
         </Reveal>
       </div>
     </div>

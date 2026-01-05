@@ -54,14 +54,22 @@ const Projects = () => {
         {projects.map((p, index) => (
           <div key={p.title} className="md:sticky md:top-28">
             <Reveal delay={index * 90}>
-              <div className="bg-white/85 backdrop-blur-xl border border-white/60 shadow-xl rounded-3xl p-6 sm:p-7 md:p-10 flex flex-col md:flex-row gap-8 md:gap-10 transition-transform duration-500 md:hover:scale-[1.01] motion-reduce:transition-none">
+              <div className="backdrop-blur-xl border shadow-xl rounded-3xl p-6 sm:p-7 md:p-10 flex flex-col md:flex-row gap-8 md:gap-10 transition-all duration-500 md:hover:scale-[1.01] motion-reduce:transition-none
+                bg-white/85 border-white/60
+                dark:bg-slate-900/90 dark:border-slate-700/50"
+              >
                 {/* Image Section */}
                 <div className="w-full md:w-1/2">
-                  <div className="rounded-2xl overflow-hidden shadow-inner aspect-[4/3] bg-gradient-to-br from-sky-50 to-white border border-gray-100 flex items-center justify-center relative">
-                    <span className="text-gray-400 font-bold text-center px-4">[ {p.title} Screenshot ]</span>
+                  <div className="rounded-2xl overflow-hidden shadow-inner aspect-[4/3] border flex items-center justify-center relative transition-colors
+                    bg-gradient-to-br from-sky-50 to-white border-gray-100
+                    dark:from-slate-800 dark:to-slate-900 dark:border-slate-700"
+                  >
+                    <span className="font-bold text-center px-4 transition-colors text-gray-400 dark:text-slate-500">
+                      [ {p.title} Screenshot ]
+                    </span>
                     <div
                       className={`absolute -bottom-10 -left-10 w-32 h-32 rounded-full blur-2xl opacity-70 ${
-                        index === 0 ? "bg-indigo-100" : "bg-sky-100"
+                        index === 0 ? "bg-indigo-100 dark:bg-indigo-900/30" : "bg-sky-100 dark:bg-sky-900/30"
                       }`}
                     ></div>
                   </div>
@@ -73,14 +81,22 @@ const Projects = () => {
                     <span className="text-[#0EA5E9] font-black tracking-widest uppercase text-sm mb-2">
                       {p.role}
                     </span>
-                    <h3 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight">{p.title}</h3>
+                    <h3 className="text-3xl md:text-4xl font-black leading-tight transition-colors
+                      text-gray-900 dark:text-white"
+                    >
+                      {p.title}
+                    </h3>
                   </div>
 
-                  <p className="text-gray-600 leading-relaxed text-base sm:text-lg min-h-[5rem]">{p.desc}</p>
+                  <p className="leading-relaxed text-base sm:text-lg min-h-[5rem] transition-colors
+                    text-gray-600 dark:text-slate-300"
+                  >
+                    {p.desc}
+                  </p>
 
-                  <ul className="space-y-2 text-gray-700 mt-2">
+                  <ul className="space-y-2 mt-2">
                     {p.outcomes.map((o) => (
-                      <li key={o} className="flex gap-3 items-start">
+                      <li key={o} className="flex gap-3 items-start transition-colors text-gray-700 dark:text-slate-400">
                         <span className="mt-2 w-2 h-2 rounded-full bg-[#0EA5E9] flex-shrink-0"></span>
                         <span className="font-medium text-sm sm:text-base">{o}</span>
                       </li>
@@ -91,7 +107,9 @@ const Projects = () => {
                     {p.tags.map((t) => (
                       <span
                         key={t}
-                        className="px-4 py-1.5 bg-sky-50 text-[#0EA5E9] rounded-full text-sm font-bold border border-sky-100"
+                        className="px-4 py-1.5 rounded-full text-sm font-bold border transition-colors
+                        bg-sky-50 text-[#0EA5E9] border-sky-100
+                        dark:bg-sky-900/20 dark:text-sky-300 dark:border-sky-800"
                       >
                         {t}
                       </span>
@@ -103,7 +121,7 @@ const Projects = () => {
                       href={p.liveUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#0EA5E9] text-white font-bold shadow-lg hover:bg-sky-50 transition-all w-full sm:w-auto"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#0EA5E9] text-white font-bold shadow-lg hover:bg-sky-500 transition-all w-full sm:w-auto"
                     >
                       Live <ExternalLink size={18} />
                     </a>
@@ -111,7 +129,9 @@ const Projects = () => {
                       href={p.repoUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white border border-gray-200 text-gray-800 font-bold hover:bg-gray-50 transition-all w-full sm:w-auto"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full border font-bold transition-all w-full sm:w-auto
+                      bg-white border-gray-200 text-gray-800 hover:bg-gray-50
+                      dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-700"
                     >
                       Code <Github size={18} />
                     </a>

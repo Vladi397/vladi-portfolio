@@ -35,7 +35,8 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
       <div className="relative flex flex-col items-center w-0 md:w-auto">
         <div
           className={[
-            "hidden md:flex absolute top-3 -left-[9px] w-5 h-5 rounded-full border-4 border-white bg-[#0EA5E9] shadow-md z-20 transition-transform duration-300",
+            "hidden md:flex absolute top-3 -left-[9px] w-5 h-5 rounded-full border-4 shadow-md z-20 transition-transform duration-300",
+            "bg-[#0EA5E9] border-white dark:border-slate-800", // Dark mode border for dot
             isVisible ? "scale-100" : "scale-0",
           ].join(" ")}
         ></div>
@@ -43,12 +44,21 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
 
       <div
         className={[
-          "pl-6 sm:pl-8 md:pl-12 pt-1 border-l-2 border-gray-100 md:border-none transition-all duration-500 ease-out delay-75",
+          "pl-6 sm:pl-8 md:pl-12 pt-1 border-l-2 md:border-none transition-all duration-500 ease-out delay-75",
+          "border-gray-100 dark:border-slate-800", // Mobile Timeline Line
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
         ].join(" ")}
       >
-        <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-2 sm:mb-3">{item.title}</h3>
-        <p className="text-gray-600 leading-relaxed font-medium text-sm sm:text-base">{item.desc}</p>
+        <h3 className="text-lg sm:text-xl font-black mb-2 sm:mb-3 transition-colors
+          text-gray-900 dark:text-white"
+        >
+          {item.title}
+        </h3>
+        <p className="leading-relaxed font-medium text-sm sm:text-base transition-colors
+          text-gray-600 dark:text-slate-400"
+        >
+          {item.desc}
+        </p>
       </div>
     </div>
   );
@@ -64,26 +74,22 @@ const Journey = () => {
     {
       year: "2019",
       title: "Specialty: Electronic Trade",
-      desc:
-        "Started a multidisciplinary high school program combining Economy, Business, and Web Development. Graduated with a diploma as an Organizer of Internet Applications.",
+      desc: "Started a multidisciplinary high school program combining Economy, Business, and Web Development. Graduated with a diploma as an Organizer of Internet Applications.",
     },
     {
       year: "2023",
       title: "International Exhibition & Fundamentals",
-      desc:
-        "Participated in the TF-FEST International Exhibition. Earned foundational certificates in Version Control and Introduction to Front-End.",
+      desc: "Participated in the TF-FEST International Exhibition. Earned foundational certificates in Version Control and Introduction to Front-End.",
     },
     {
       year: "2024",
       title: "Graduation & Meta Certifications",
-      desc:
-        "Solidified front-end expertise by mastering HTML, CSS, and JavaScript. Earned Meta certificates in React Basics and Advanced React.",
+      desc: "Solidified front-end expertise by mastering HTML, CSS, and JavaScript. Earned Meta certificates in React Basics and Advanced React.",
     },
     {
       year: "2025",
       title: "Fontys University (ICT)",
-      desc:
-        "Expanding into full-stack development with C#, Razor, and Blazor. Focusing on UI/UX design and collaboration in agile teams.",
+      desc: "Expanding into full-stack development with C#, Razor, and Blazor. Focusing on UI/UX design and collaboration in agile teams.",
     },
   ];
 
@@ -134,7 +140,8 @@ const Journey = () => {
 
       <div className="max-w-4xl relative">
         <div className="absolute left-[80px] sm:left-[96px] md:left-[128px] top-2 bottom-0 w-[2px] h-full z-0 hidden md:block">
-          <div className="absolute top-0 left-0 w-full h-full bg-gray-200"></div>
+          {/* Background Gray Line - Darkened for Dark Mode */}
+          <div className="absolute top-0 left-0 w-full h-full transition-colors bg-gray-200 dark:bg-slate-800"></div>
 
           <div
             className="absolute top-0 left-0 w-full bg-[#0EA5E9] transition-all duration-75 ease-linear shadow-[0_0_10px_rgba(14,165,233,0.55)]"
