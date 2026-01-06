@@ -1,70 +1,148 @@
-import React from "react";
-import { ArrowUpRight } from "lucide-react";
+import React, { useState } from "react";
+import { ArrowUpRight, X, Download, Eye } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
-import SecondaryButton from "../ui/SecondaryButton";
 import Vladi2 from "../../assets/Vladi2.jpg";
+import ResumePDF from "../../assets/Vladi-resume.pdf";
 
-const About = () => (
-  <section id="about" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
-    <SectionTitle title="About Me" num="01" kicker="Who I am" />
+const About = () => {
+  const [showResume, setShowResume] = useState(false);
 
-    <div className="flex flex-col-reverse md:flex-row items-center gap-12 md:gap-16">
-      <div className="flex-1 space-y-6 text-base sm:text-lg leading-relaxed transition-colors 
-        text-gray-600 dark:text-slate-400">
-        <Reveal>
-          <p>
-            I’m Vladi Georgiev from Bulgaria. After studying electronic trades in high school, I earned seven
-            professional certificates in front-end development from Meta.
-          </p>
-        </Reveal>
-        <Reveal delay={80}>
-          <p>
-            I build websites with HTML, CSS, JavaScript, React, and UI/UX design. I’ve also worked on C# projects
-            using Razor and Blazor.
-          </p>
-        </Reveal>
+  return (
+    <>
+      <section id="about" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
+        <SectionTitle title="About Me" num="01" kicker="Who I am" />
 
-        <Reveal delay={140}>
-          <div className="pt-3 flex flex-wrap gap-2 sm:gap-3">
-            {[
-              "React + Tailwind",
-              "UI/UX in Figma",
-              "C# Basics"
-            ].map((skill) => (
-              <span key={skill} className="px-4 py-2 rounded-full font-semibold text-sm border transition-colors
-                bg-sky-50 text-sky-700 border-sky-100
-                dark:bg-sky-900/20 dark:text-sky-300 dark:border-sky-800"
-              >
-                {skill}
-              </span>
-            ))}
+        <div className="flex flex-col-reverse md:flex-row items-center gap-12 md:gap-16">
+          
+          {/* LEFT SIDE: TEXT */}
+          <div className="flex-1 space-y-6 text-base sm:text-lg leading-relaxed transition-colors text-gray-600 dark:text-slate-400">
+            <Reveal>
+              <p>
+                I’m Vladi Georgiev from Bulgaria. After studying electronic trades in high school, I earned seven
+                professional certificates in front-end development from Meta.
+              </p>
+            </Reveal>
+            <Reveal delay={80}>
+              <p>
+                I build websites with HTML, CSS, JavaScript, React, and UI/UX design. I’ve also worked on C# projects
+                using Razor and Blazor.
+              </p>
+            </Reveal>
+
+            <Reveal delay={140}>
+              <div className="pt-3 flex flex-wrap gap-2 sm:gap-3">
+                {[
+                  "React + Tailwind",
+                  "UI/UX in Figma",
+                  "C# Basics"
+                ].map((skill) => (
+                  <span key={skill} className="px-4 py-2 rounded-full font-semibold text-sm border transition-colors
+                    bg-sky-50 text-sky-700 border-sky-100
+                    dark:bg-sky-900/20 dark:text-sky-300 dark:border-sky-800"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </Reveal>
+
+            <Reveal delay={200}>
+              {/* --- NEW GLOW BUTTON --- */}
+              <div className="relative group inline-block mt-4">
+                {/* The Gradient Border/Glow */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-xl blur opacity-30 group-hover:opacity-75 transition duration-500"></div>
+                
+                {/* The Button Content */}
+                <button
+                  onClick={() => setShowResume(true)}
+                  className="relative flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all active:scale-95
+                    bg-white text-slate-800 border border-gray-100
+                    hover:bg-gray-50 
+                    dark:bg-[#0B1120] dark:text-white dark:border-white/10 dark:hover:bg-slate-800"
+                >
+                  <Eye size={18} className="text-sky-500" /> 
+                  View Resume
+                </button>
+              </div>
+            </Reveal>
           </div>
-        </Reveal>
 
-        <Reveal delay={200}>
-          <SecondaryButton
-            onClick={() => alert("Hook this to your resume PDF link.")}
-            className="mt-4 inline-flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-start"
-          >
-            Download Full Resume <ArrowUpRight size={18} />
-          </SecondaryButton>
-        </Reveal>
-      </div>
+          {/* RIGHT SIDE: PHOTO */}
+          <div className="flex-1 relative w-full flex justify-center md:justify-end">
+            <Reveal className="w-full max-w-sm sm:max-w-md md:max-w-sm relative">
+              
+              {/* --- NEW PHOTO CONTAINER WITH GLOW --- */}
+              <div className="relative group">
+                {/* The Gradient Border/Glow */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[32px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-75 group-hover:duration-200"></div>
+                
+                {/* The Image */}
+                <div className="relative rounded-[32px] overflow-hidden bg-gray-100 dark:bg-slate-800">
+                   <img
+                    src={Vladi2}
+                    alt="About Vladi"
+                    className="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-105 select-none"
+                  />
+                </div>
+              </div>
 
-      <div className="flex-1 relative w-full">
-        <Reveal className="w-full max-w-sm sm:max-w-md md:max-w-sm ml-auto relative">
-          <img
-            src={Vladi2}
-            alt="About Vladi"
-            className="rounded-[28px] sm:rounded-[32px] shadow-2xl w-full object-cover bg-gray-100 select-none"
-          />
-          <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full blur-2xl -z-10 transition-colors
-            bg-sky-100 dark:bg-sky-800/40"></div>
-        </Reveal>
-      </div>
-    </div>
-  </section>
-);
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* --- RESUME MODAL (Kept exactly as before) --- */}
+      {showResume && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            onClick={() => setShowResume(false)}
+          ></div>
+
+          <div className="relative w-full max-w-5xl h-[85vh] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 z-10">
+              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">
+                Resume Preview
+              </h3>
+              <div className="flex items-center gap-3">
+                <a 
+                  href={ResumePDF} 
+                  download="Vladi_Georgiev_Resume.pdf"
+                  className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-sky-600 hover:bg-sky-700 rounded-lg transition-colors"
+                >
+                  <Download size={16} /> Download
+                </a>
+                <button 
+                  onClick={() => setShowResume(false)}
+                  className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white bg-gray-100 dark:bg-slate-800 rounded-lg transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex-1 bg-gray-50 dark:bg-slate-950 relative">
+              <iframe 
+                src={`${ResumePDF}#toolbar=0`} 
+                title="Resume PDF"
+                className="w-full h-full border-0"
+              />
+               <div className="sm:hidden absolute bottom-6 left-1/2 -translate-x-1/2 w-max shadow-lg">
+                 <a 
+                  href={ResumePDF} 
+                  download="Vladi_Georgiev_Resume.pdf"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 rounded-full"
+                >
+                  <Download size={18} /> Download PDF
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 
 export default About;
