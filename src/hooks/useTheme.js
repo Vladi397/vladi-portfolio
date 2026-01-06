@@ -1,61 +1,89 @@
-import { useState, useEffect } from "react";
-import { flushSync } from "react-dom"; // Needed to force React to update DOM immediately
+// src/hooks/useTheme.js
+import { useState, useEffect, useCallback } from "react";
+import { flushSync } from "react-dom";
+
+function getInitialTheme() {
+  const saved = localStorage.getItem("theme");
+  if (saved === "dark" || saved === "light") return saved;
+  return "light";
+}
+
+function applyTheme(nextTheme) {
+  const root = document.documentElement;
+  root.classList.toggle("dark", nextTheme === "dark");
+  localStorage.setItem("theme", nextTheme);
+}
 
 export default function useTheme() {
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const [theme, setTheme] = useState(() => getInitialTheme());
 
   useEffect(() => {
-    const root = window.document.documentElement;
-    // Remove old, add new
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-    localStorage.setItem("theme", theme);
+    applyTheme(theme);
   }, [theme]);
 
-  const toggleTheme = async (e) => {
-    // 1. Check if browser supports View Transitions. If not, just toggle.
-    if (!document.startViewTransition) {
-      setTheme((prev) => (prev === "light" ? "dark" : "light"));
-      return;
-    }
+  const toggleTheme = useCallback(
+    async (e) => {
+      const root = document.documentElement;
 
-    // 2. Capture the click position (or center of screen if no event)
-    const x = e?.clientX ?? window.innerWidth / 2;
-    const y = e?.clientY ?? window.innerHeight / 2;
+      root.dataset.themeSwitching = "true";
 
-    // 3. Calculate distance to the furthest corner
-    const endRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
-    );
+      const DURATION = 320;
+      const EASING = "linear";
 
-    // 4. Start the transition
-    const transition = document.startViewTransition(() => {
-      flushSync(() => {
-        setTheme((prev) => (prev === "light" ? "dark" : "light"));
-      });
-    });
+      // fallback if no view transitions
+      if (!document.startViewTransition) {
+        const next = theme === "light" ? "dark" : "light";
+        setTheme(next);
+        applyTheme(next);
 
-    // 5. Animate the circle clip path
-    transition.ready.then(() => {
-      document.documentElement.animate(
-        {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`,
-          ],
-        },
-        {
-          duration: 700,
-          easing: "ease-in-out",
-          pseudoElement: "::view-transition-new(root)",
-        }
+        setTimeout(() => {
+          delete root.dataset.themeSwitching;
+        }, DURATION + 50);
+
+        return;
+      }
+
+      const x = e?.clientX ?? window.innerWidth / 2;
+      const y = e?.clientY ?? window.innerHeight / 2;
+
+      const endRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
       );
-    });
-  };
+
+      const nextTheme = theme === "light" ? "dark" : "light";
+
+      const transition = document.startViewTransition(() => {
+        flushSync(() => {
+          setTheme(nextTheme);
+        });
+        // apply immediately so the view transition snapshots match perfectly
+        applyTheme(nextTheme);
+      });
+
+      transition.ready.then(() => {
+        document.documentElement.animate(
+          {
+            clipPath: [
+              `circle(0px at ${x}px ${y}px)`,
+              `circle(${endRadius}px at ${x}px ${y}px)`,
+            ],
+          },
+          {
+            duration: DURATION,
+            easing: EASING,
+            pseudoElement: "::view-transition-new(root)",
+          }
+        );
+      });
+
+      // remove switching flag quickly based on duration
+      setTimeout(() => {
+        delete root.dataset.themeSwitching;
+      }, DURATION + 50);
+    },
+    [theme]
+  );
 
   return { theme, toggleTheme };
 }

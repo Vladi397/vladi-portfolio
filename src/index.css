@@ -1,3 +1,4 @@
+/* src/index.css (or whatever global css file you use) */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -12,11 +13,32 @@ html.dark {
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
-  /* FORCE GPU ACCELERATION */
-  will-change: clip-path; 
   height: 100%;
 }
 
+/* Put the transitioning layer on top */
 ::view-transition-new(root) {
   z-index: 9999;
+}
+
+/* ------------------------------- */
+/* PERF: reduce repaint during theme switch */
+/* ------------------------------- */
+html[data-theme-switching="true"] .theme-heavy-blur {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-theme-switching="true"] .theme-heavy-blob {
+  filter: none !important;
+  opacity: 0.25 !important;
+}
+
+html[data-theme-switching="true"] .theme-color-transition {
+  transition: none !important;
+}
+
+/* Optional: pause normal CSS animations for a split second */
+html[data-theme-switching="true"] * {
+  animation-play-state: paused !important;
 }
