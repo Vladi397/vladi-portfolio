@@ -15,58 +15,81 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
   }, []);
 
   useEffect(() => {
-    // If the blue line has passed this item's trigger point, show it
     if (parentLineHeight > trigger) {
       setIsVisible(true);
       return;
     }
-    // Only hide it again if we are on desktop (scrolling back up)
-    // On mobile, once it's visible, let's keep it visible to avoid glitchy jumping
+    // Desktop can hide again when scrolling up. Mobile stays visible (no jumpy feel).
     if (isDesktop) setIsVisible(false);
   }, [parentLineHeight, trigger, isDesktop]);
 
   return (
-    <div ref={itemRef} className="flex group relative z-10 mb-12 sm:mb-20 md:mb-24">
-      {/* YEAR: Slide in animation */}
+    <div
+      ref={itemRef}
+      className="group relative z-10 mb-12 sm:mb-16 md:mb-24 md:flex"
+    >
+      {/* MOBILE DOT (aligned to the mobile animated line) */}
       <div
         className={[
-          "w-20 sm:w-24 md:w-32 flex-shrink-0 text-right pr-4 sm:pr-8 pt-2 transition-all duration-500 ease-out",
+          "md:hidden absolute left-4 top-7 -translate-x-1/2 w-3.5 h-3.5 rounded-full border-4 z-20 shadow-sm transition-all duration-300",
+          "bg-[#0EA5E9] border-white dark:border-slate-800",
+          isVisible ? "scale-100 opacity-100" : "scale-0 opacity-0",
+        ].join(" ")}
+      />
+
+      {/* YEAR: Desktop only (keep desktop layout unchanged) */}
+      <div
+        className={[
+          "hidden md:block w-20 sm:w-24 md:w-32 flex-shrink-0 text-right pr-4 sm:pr-8 pt-2 transition-all duration-500 ease-out",
           isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10",
         ].join(" ")}
       >
-        <span className="text-xl sm:text-2xl md:text-3xl font-black text-[#0EA5E9]">{item.year}</span>
+        <span className="text-xl sm:text-2xl md:text-3xl font-black text-[#0EA5E9]">
+          {item.year}
+        </span>
       </div>
 
-      {/* DOT: Only visible on Desktop */}
-      <div className="relative flex flex-col items-center w-0 md:w-auto">
+      {/* DOT: Desktop only (keep existing desktop dot behavior) */}
+      <div className="relative hidden md:flex flex-col items-center w-0 md:w-auto">
         <div
           className={[
-            "hidden md:flex absolute top-3 -left-[9px] w-5 h-5 rounded-full border-4 shadow-md z-20 transition-transform duration-300",
+            "absolute top-3 -left-[9px] w-5 h-5 rounded-full border-4 shadow-md z-20 transition-transform duration-300",
             "bg-[#0EA5E9] border-white dark:border-slate-800",
             isVisible ? "scale-100" : "scale-0",
           ].join(" ")}
-        ></div>
+        />
       </div>
 
-      {/* TEXT CONTENT */}
-      {/* Mobile: Has a border-l-2 (static line). Desktop: No border (uses the main animated line) */}
+      {/* CONTENT */}
       <div
         className={[
-          "pl-6 sm:pl-8 md:pl-12 pt-1 border-l-2 md:border-none transition-all duration-500 ease-out delay-75",
-          "border-gray-200 dark:border-slate-800", // Static gray line color for mobile
+          // On mobile we shift content right so it clears the line + dot.
+          // Desktop keeps the original padding.
+          "relative pl-12 sm:pl-14 md:pl-12 pt-1 transition-all duration-500 ease-out delay-75",
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
         ].join(" ")}
       >
-        <h3 className="text-lg sm:text-xl font-black mb-2 sm:mb-3 transition-colors
-          text-gray-900 dark:text-white"
+        {/* MOBILE YEAR BADGE (since desktop year is hidden on mobile) */}
+        <div
+          className={[
+            "md:hidden mb-3 transition-all duration-500 ease-out",
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2",
+          ].join(" ")}
         >
-          {item.title}
-        </h3>
-        <p className="leading-relaxed font-medium text-sm sm:text-base transition-colors
-          text-gray-600 dark:text-slate-400"
-        >
-          {item.desc}
-        </p>
+          <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-black tracking-wide border bg-sky-500/10 text-[#0EA5E9] border-sky-500/20">
+            {item.year}
+          </span>
+        </div>
+
+        {/* MOBILE CARD SHELL (desktop stays transparent) */}
+        <div className="rounded-2xl border bg-white/70 dark:bg-slate-900/35 border-gray-200/80 dark:border-slate-800/80 shadow-[0_10px_30px_rgba(2,6,23,0.10)] backdrop-blur-sm md:shadow-none md:border-none md:bg-transparent md:backdrop-blur-0 p-4 sm:p-5 md:p-0">
+          <h3 className="text-lg sm:text-xl font-black mb-2 sm:mb-3 transition-colors text-gray-900 dark:text-white">
+            {item.title}
+          </h3>
+          <p className="leading-relaxed font-medium text-sm sm:text-base transition-colors text-gray-600 dark:text-slate-400">
+            {item.desc}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -149,11 +172,30 @@ const Journey = () => {
       <SectionTitle title="Journey" num="05" kicker="Timeline" />
 
       <div className="max-w-4xl relative">
-        {/* DESKTOP GRAY LINE BACKGROUND */}
+        {/* MOBILE GRAY LINE + ANIMATED BLUE LINE + ARROW (new, desktop untouched) */}
+        <div className="absolute left-4 top-6 bottom-0 w-[2px] h-full z-0 md:hidden">
+          <div className="absolute top-0 left-0 w-full h-full transition-colors bg-gray-200 dark:bg-slate-800" />
+
+          <div
+            className="absolute top-0 left-0 w-full bg-[#0EA5E9] transition-all duration-75 ease-linear shadow-[0_0_10px_rgba(14,165,233,0.55)]"
+            style={{ height: `${lineHeight}px`, maxHeight: "100%" }}
+          >
+            <div
+              className={[
+                "absolute -bottom-4 -left-[9px] text-[#0EA5E9] transition-opacity duration-300",
+                lineHeight > 10 ? "opacity-100" : "opacity-0",
+              ].join(" ")}
+            >
+              <ChevronDown size={20} strokeWidth={3} />
+            </div>
+          </div>
+        </div>
+
+        {/* DESKTOP GRAY LINE BACKGROUND (unchanged) */}
         <div className="absolute left-[80px] sm:left-[96px] md:left-[128px] top-2 bottom-0 w-[2px] h-full z-0 hidden md:block">
           <div className="absolute top-0 left-0 w-full h-full transition-colors bg-gray-200 dark:bg-slate-800"></div>
 
-          {/* ANIMATED BLUE LINE (Desktop Only) */}
+          {/* ANIMATED BLUE LINE (Desktop Only, unchanged) */}
           <div
             className="absolute top-0 left-0 w-full bg-[#0EA5E9] transition-all duration-75 ease-linear shadow-[0_0_10px_rgba(14,165,233,0.55)]"
             style={{ height: `${lineHeight}px`, maxHeight: "100%" }}
@@ -171,7 +213,12 @@ const Journey = () => {
 
         <div className="relative pb-10 md:pb-16">
           {timeline.map((item, index) => (
-            <TimelineItem key={index} item={item} parentLineHeight={lineHeight} isDesktop={isDesktop} />
+            <TimelineItem
+              key={index}
+              item={item}
+              parentLineHeight={lineHeight}
+              isDesktop={isDesktop}
+            />
           ))}
         </div>
       </div>
