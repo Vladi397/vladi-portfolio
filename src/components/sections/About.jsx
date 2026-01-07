@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ArrowUpRight, X, Download, Eye } from "lucide-react";
+import { ArrowUpRight, X, Download, Eye, FileText } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
 import Vladi2 from "../../assets/Vladi2.jpg";
@@ -48,12 +48,8 @@ const About = () => {
             </Reveal>
 
             <Reveal delay={200}>
-              {/* --- NEW GLOW BUTTON --- */}
               <div className="relative group inline-block mt-4">
-                {/* The Gradient Border/Glow */}
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-xl blur opacity-30 group-hover:opacity-75 transition duration-500"></div>
-                
-                {/* The Button Content */}
                 <button
                   onClick={() => setShowResume(true)}
                   className="relative flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all active:scale-95
@@ -71,13 +67,8 @@ const About = () => {
           {/* RIGHT SIDE: PHOTO */}
           <div className="flex-1 relative w-full flex justify-center md:justify-end">
             <Reveal className="w-full max-w-sm sm:max-w-md md:max-w-sm relative">
-              
-              {/* --- NEW PHOTO CONTAINER WITH GLOW --- */}
               <div className="relative group">
-                {/* The Gradient Border/Glow */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[32px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-75 group-hover:duration-200"></div>
-                
-                {/* The Image */}
                 <div className="relative rounded-[32px] overflow-hidden bg-gray-100 dark:bg-slate-800">
                    <img
                     src={Vladi2}
@@ -86,13 +77,12 @@ const About = () => {
                   />
                 </div>
               </div>
-
             </Reveal>
           </div>
         </div>
       </section>
 
-      {/* --- RESUME MODAL (Kept exactly as before) --- */}
+      {/* --- RESUME MODAL --- */}
       {showResume && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
           <div 
@@ -100,7 +90,7 @@ const About = () => {
             onClick={() => setShowResume(false)}
           ></div>
 
-          <div className="relative w-full max-w-5xl h-[85vh] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-300">
+          <div className="relative w-full max-w-5xl h-[70vh] sm:h-[85vh] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-300">
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 z-10">
               <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">
                 Resume Preview
@@ -122,19 +112,33 @@ const About = () => {
               </div>
             </div>
 
-            <div className="flex-1 bg-gray-50 dark:bg-slate-950 relative">
+            <div className="flex-1 bg-gray-50 dark:bg-slate-950 relative flex flex-col justify-center">
+              
+              {/* DESKTOP: Full PDF Iframe */}
               <iframe 
                 src={`${ResumePDF}#toolbar=0`} 
                 title="Resume PDF"
-                className="w-full h-full border-0"
+                className="hidden sm:block w-full h-full border-0"
               />
-               <div className="sm:hidden absolute bottom-6 left-1/2 -translate-x-1/2 w-max shadow-lg">
-                 <a 
+
+              {/* MOBILE: Fallback Card */}
+              <div className="sm:hidden flex flex-col items-center text-center p-6 gap-4">
+                <div className="w-16 h-16 bg-sky-100 dark:bg-sky-900/30 rounded-full flex items-center justify-center text-sky-600 dark:text-sky-400">
+                   <FileText size={32} />
+                </div>
+                <div>
+                   <h4 className="text-lg font-bold text-slate-900 dark:text-white">View Resume PDF</h4>
+                   <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 max-w-[200px] mx-auto">
+                     For the best experience on mobile, please open the file directly.
+                   </p>
+                </div>
+                <a 
                   href={ResumePDF} 
-                  download="Vladi_Georgiev_Resume.pdf"
-                  className="flex items-center gap-2 px-6 py-3 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 rounded-full"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 rounded-full shadow-lg shadow-sky-500/20"
                 >
-                  <Download size={18} /> Download PDF
+                  <Eye size={18} /> Open Resume
                 </a>
               </div>
             </div>

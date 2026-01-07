@@ -7,7 +7,6 @@ const Contact = () => {
   const email = "vladi.georgiev.14@gmail.com";
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
-  
   const form = useRef();
 
   const onCopy = async () => {
@@ -24,13 +23,9 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
 
-    // ---------------------------------------------------------
-    // ✅ FINAL KEYS UPDATED
-    // ---------------------------------------------------------
     const SERVICE_ID = "service_cpwm64l";   
-    const TEMPLATE_ID = "template_w6f41ai"; // ✅ Updated to your new ID
+    const TEMPLATE_ID = "template_w6f41ai"; 
     const PUBLIC_KEY = "tweMi9zagYlpsXvjC"; 
-    // ---------------------------------------------------------
 
     emailjs
       .sendForm(SERVICE_ID, TEMPLATE_ID, form.current, {
@@ -62,7 +57,7 @@ const Contact = () => {
           >
             <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))] pointer-events-none" />
 
-            {/* LEFT COLUMN: Info */}
+            {/* LEFT SIDE */}
             <div className="flex-1 w-full relative z-10">
               <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 transition-colors text-gray-900 dark:text-white">
                 Let’s work <br /> together.
@@ -112,7 +107,7 @@ const Contact = () => {
               </div>
             </div>
 
-            {/* RIGHT COLUMN: Form */}
+            {/* FORM SIDE */}
             <form
               ref={form}
               onSubmit={sendEmail}
@@ -126,7 +121,7 @@ const Contact = () => {
                     name="user_name"
                     required
                     placeholder="John Doe"
-                    className="w-full p-4 rounded-xl outline-none font-medium transition-all
+                    className="w-full p-4 rounded-xl outline-none font-medium transition-all text-base
                       bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
                       dark:bg-[#0B1120] dark:border-white/10 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-sky-500"
                   />
@@ -138,7 +133,7 @@ const Contact = () => {
                     name="user_email"
                     required
                     placeholder="john@example.com"
-                    className="w-full p-4 rounded-xl outline-none font-medium transition-all
+                    className="w-full p-4 rounded-xl outline-none font-medium transition-all text-base
                       bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
                       dark:bg-[#0B1120] dark:border-white/10 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-sky-500"
                   />
@@ -152,7 +147,7 @@ const Contact = () => {
                   required
                   placeholder="Tell me about your project..."
                   rows="4"
-                  className="w-full p-4 rounded-xl outline-none resize-none font-medium transition-all
+                  className="w-full p-4 rounded-xl outline-none resize-none font-medium transition-all text-base
                     bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
                     dark:bg-[#0B1120] dark:border-white/10 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-sky-500"
                 ></textarea>

@@ -24,7 +24,7 @@ const Skills = () => {
   ];
 
   return (
-    <section id="skills" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
+    <section id="skills" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
       <SectionTitle title="Skills" num="02" kicker="What I use" />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -39,7 +39,6 @@ const Skills = () => {
               <TiltedCard className="h-full relative">
                 <div className="h-full p-6 sm:p-8 rounded-[22px] transition-colors duration-300
                   bg-white dark:bg-slate-800/90 border border-transparent dark:border-slate-700/50"
-                  // Note: Adjusted bg opacity for dark mode to ensure contrast against the glow
                 >
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-colors
                     bg-sky-50 dark:bg-slate-700"

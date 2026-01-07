@@ -10,42 +10,50 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
 
   useLayoutEffect(() => {
     if (!itemRef.current) return;
+    // Calculate when this item should light up
     setTrigger(itemRef.current.offsetTop + 60);
   }, []);
 
   useEffect(() => {
+    // If the blue line has passed this item's trigger point, show it
     if (parentLineHeight > trigger) {
       setIsVisible(true);
       return;
     }
+    // Only hide it again if we are on desktop (scrolling back up)
+    // On mobile, once it's visible, let's keep it visible to avoid glitchy jumping
     if (isDesktop) setIsVisible(false);
   }, [parentLineHeight, trigger, isDesktop]);
 
   return (
-    <div ref={itemRef} className="flex group relative z-10 mb-16 sm:mb-20 md:mb-24">
+    <div ref={itemRef} className="flex group relative z-10 mb-12 sm:mb-20 md:mb-24">
+      {/* YEAR: Slide in animation */}
       <div
         className={[
-          "w-20 sm:w-24 md:w-32 flex-shrink-0 text-right pr-6 sm:pr-8 pt-2 transition-all duration-500 ease-out",
+          "w-20 sm:w-24 md:w-32 flex-shrink-0 text-right pr-4 sm:pr-8 pt-2 transition-all duration-500 ease-out",
           isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10",
         ].join(" ")}
       >
-        <span className="text-2xl sm:text-3xl font-black text-[#0EA5E9]">{item.year}</span>
+        <span className="text-xl sm:text-2xl md:text-3xl font-black text-[#0EA5E9]">{item.year}</span>
       </div>
 
+      {/* DOT: Only visible on Desktop */}
       <div className="relative flex flex-col items-center w-0 md:w-auto">
         <div
           className={[
             "hidden md:flex absolute top-3 -left-[9px] w-5 h-5 rounded-full border-4 shadow-md z-20 transition-transform duration-300",
-            "bg-[#0EA5E9] border-white dark:border-slate-800", // Dark mode border for dot
+            "bg-[#0EA5E9] border-white dark:border-slate-800",
             isVisible ? "scale-100" : "scale-0",
           ].join(" ")}
         ></div>
       </div>
 
+      {/* TEXT CONTENT */}
+      {/* Mobile: Has a border-l-2 (static line). Desktop: No border (uses the main animated line) */}
       <div
         className={[
           "pl-6 sm:pl-8 md:pl-12 pt-1 border-l-2 md:border-none transition-all duration-500 ease-out delay-75",
-          "border-gray-100 dark:border-slate-800", // Mobile Timeline Line
+          "border-gray-200 dark:border-slate-800", // Static gray line color for mobile
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
         ].join(" ")}
       >
@@ -93,6 +101,7 @@ const Journey = () => {
     },
   ];
 
+  // Detect Desktop vs Mobile
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
     const update = () => setIsDesktop(mq.matches);
@@ -101,6 +110,7 @@ const Journey = () => {
     return () => mq.removeEventListener?.("change", update);
   }, []);
 
+  // Animation Loop for the Blue Line
   useEffect(() => {
     const calc = () => {
       if (!sectionRef.current) return;
@@ -133,16 +143,17 @@ const Journey = () => {
   return (
     <section
       id="journey"
-      className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32"
+      className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32"
       ref={sectionRef}
     >
       <SectionTitle title="Journey" num="05" kicker="Timeline" />
 
       <div className="max-w-4xl relative">
+        {/* DESKTOP GRAY LINE BACKGROUND */}
         <div className="absolute left-[80px] sm:left-[96px] md:left-[128px] top-2 bottom-0 w-[2px] h-full z-0 hidden md:block">
-          {/* Background Gray Line - Darkened for Dark Mode */}
           <div className="absolute top-0 left-0 w-full h-full transition-colors bg-gray-200 dark:bg-slate-800"></div>
 
+          {/* ANIMATED BLUE LINE (Desktop Only) */}
           <div
             className="absolute top-0 left-0 w-full bg-[#0EA5E9] transition-all duration-75 ease-linear shadow-[0_0_10px_rgba(14,165,233,0.55)]"
             style={{ height: `${lineHeight}px`, maxHeight: "100%" }}

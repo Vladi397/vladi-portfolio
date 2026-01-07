@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { CheckCircle, X, ExternalLink } from "lucide-react";
+import { CheckCircle, X, ExternalLink, FileText } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
 import GlareHover from "../ui/GlareHover";
@@ -16,7 +16,6 @@ import AdvReactPdf from "../../assets/advanced-react.pdf";
 const Certificates = () => {
   const [selectedCert, setSelectedCert] = useState(null);
 
-  // Disable body scroll when modal is open
   useEffect(() => {
     if (selectedCert) {
       document.body.style.overflow = "hidden";
@@ -72,14 +71,13 @@ const Certificates = () => {
 
   return (
     <>
-      <section id="certificates" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
+      <section id="certificates" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
         <SectionTitle title="Certificates" num="04" kicker="Verified Skills" />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {certs.map((cert, idx) => (
             <Reveal key={idx} delay={idx * 90}>
               <div className="relative group h-full min-h-[320px]">
-                {/* THE GLOW */}
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[22px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
 
                 <GlareHover
@@ -92,7 +90,6 @@ const Certificates = () => {
                   glareAngle={-1200}
                   transitionDuration={800}
                 >
-                  {/* INNER CARD */}
                   <div className="p-7 sm:p-8 flex flex-col h-full rounded-[22px] transition-colors duration-300 bg-white dark:bg-slate-800/60 dark:border dark:border-slate-700">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-7">
@@ -187,26 +184,47 @@ const Certificates = () => {
               </div>
             </div>
 
-            {/* Modal Body - Adjusted height to fit landscape PDF better */}
-            <div className="w-full h-[60vh] sm:h-[75vh] bg-gray-50 dark:bg-slate-950 relative overflow-hidden">
+            {/* Modal Body */}
+            <div className="w-full h-[50vh] sm:h-[75vh] bg-gray-50 dark:bg-slate-950 relative overflow-hidden flex flex-col justify-center">
+              
+              {/* DESKTOP: Iframe */}
               <iframe
-                // The magic query params: hides toolbar, side nav, scrollbars, and fits width
                 src={`${selectedCert.pdf}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
                 title="Certificate PDF"
-                className="w-full h-full border-0"
+                className="hidden sm:block w-full h-full border-0"
               />
               
-              {/* Mobile Verify Button */}
-              <div className="sm:hidden absolute bottom-6 left-1/2 -translate-x-1/2 w-max shadow-lg flex gap-2">
-                 <a
-                  href={selectedCert.verifyLink}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-2 px-6 py-3 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 rounded-full"
-                >
-                  Verify <ExternalLink size={16} />
-                </a>
+              {/* MOBILE: Fallback */}
+              <div className="sm:hidden flex flex-col items-center text-center p-6 gap-4">
+                 <div className="w-16 h-16 bg-sky-100 dark:bg-sky-900/30 rounded-full flex items-center justify-center text-sky-600 dark:text-sky-400">
+                   <FileText size={32} />
+                 </div>
+                 <div>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">View Certificate PDF</h4>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 max-w-[220px] mx-auto">
+                      Tap below to open the official PDF in your browser.
+                    </p>
+                 </div>
+                 <div className="flex flex-col gap-3 w-full max-w-[250px]">
+                   <a
+                    href={selectedCert.pdf}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 rounded-full shadow-lg"
+                  >
+                    Open PDF
+                  </a>
+                  <a
+                    href={selectedCert.verifyLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold border border-gray-200 dark:border-slate-700 rounded-full text-slate-700 dark:text-slate-300"
+                  >
+                     External Verify <ExternalLink size={14} />
+                  </a>
+                 </div>
               </div>
+
             </div>
           </div>
         </div>

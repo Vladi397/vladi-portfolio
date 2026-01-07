@@ -3,8 +3,7 @@ import { ExternalLink, Github } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
 
-// 1. Importing the assets based on your screenshot
-// Change "../" to "../../" to go up two folders
+// Imports
 import ourGridImg from "../../assets/OurGrid.png";
 import marioPizzaImg from "../../assets/MarioPizza.png";
 import fitFusionImg from "../../assets/FirFusion.png";
@@ -16,7 +15,7 @@ const Projects = () => {
       title: "OurGrid (OpenRemote)",
       desc: "A platform demystifying 'grid congestion' for OpenRemote. I designed the UI and validated the UX with real users (students & coaches) to translate complex data into a clean React interface.",
       role: "Frontend Lead • UI/UX Designer • Research",
-      img: ourGridImg, // Added image
+      img: ourGridImg,
       outcomes: [
         "Validated UX via testing with real users",
         "Architected a split-view UI for Residents vs. Municipalities",
@@ -30,7 +29,7 @@ const Projects = () => {
       title: "Mario & Luigi's Pizza",
       desc: "A full-stack Italian restaurant app with auth and a shopping cart. I designed the authentic visual identity in Figma and built the responsive frontend connected to a Python Flask backend.",
       role: "UI Designer & Frontend Lead",
-      img: marioPizzaImg, // Added image
+      img: marioPizzaImg,
       outcomes: [
         "Designed the UI/UX & assets in Figma",
         "Developed the product card grid & cart logic",
@@ -44,7 +43,7 @@ const Projects = () => {
       title: "Fit Fusion",
       desc: "A gamified health ecosystem where physical steps nurture a virtual pet. I led a 6-person agile team and handled the technical integration between the Unity game and the Web platform.",
       role: "Team Lead • Full Stack Web",
-      img: fitFusionImg, // Added image
+      img: fitFusionImg,
       outcomes: [
         "Led the agile team & coordinated integration",
         "Developed the Web Frontend & C# Razor Pages",
@@ -58,20 +57,20 @@ const Projects = () => {
       title: "Space Invasion",
       desc: "A classic arcade shooter reimagined. (Please update this description with your specific project details).",
       role: "Game Developer",
-      img: spaceInvasionImg, // Added image for the 4th asset
+      img: spaceInvasionImg,
       outcomes: [
         "Implemented core game mechanics",
         "Designed pixel art assets",
         "Managed game state and high scores",
       ],
-      tags: ["Game Dev", "JavaScript", "Canvas API"], // Placeholder tags
+      tags: ["Game Dev", "JavaScript", "Canvas API"],
       liveUrl: "#",
       repoUrl: "#",
     },
   ];
 
   return (
-    <section id="projects" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto relative scroll-mt-24 md:scroll-mt-32">
+    <section id="projects" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto relative scroll-mt-24 md:scroll-mt-32">
       <SectionTitle title="Projects" num="03" kicker="Selected work" />
 
       <div className="flex flex-col gap-10 pb-10 md:pb-20">
@@ -88,14 +87,11 @@ const Projects = () => {
                     bg-gradient-to-br from-sky-50 to-white border-gray-100
                     dark:from-slate-800 dark:to-slate-900 dark:border-slate-700"
                   >
-                    {/* Render the image */}
                     <img 
                       src={p.img} 
                       alt={p.title} 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-
-                    {/* Optional: Colorful glow behind the image */}
                     <div
                       className={`absolute -bottom-10 -left-10 w-32 h-32 rounded-full blur-2xl opacity-40 -z-10 ${
                         index % 2 === 0 ? "bg-indigo-500" : "bg-sky-500"
@@ -168,7 +164,6 @@ const Projects = () => {
                 </div>
               </div>
             </Reveal>
-
             <div className="hidden md:block" style={{ height: `${(projects.length - index) * 22}px` }} />
           </div>
         ))}

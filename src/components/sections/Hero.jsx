@@ -10,12 +10,13 @@ const Hero = () => (
   <section
     id="home"
     className={[
-      "pt-28 sm:pt-32 md:pt-40 pb-14 sm:pb-16 md:pb-24",
+      "pt-24 sm:pt-32 md:pt-40 pb-12 sm:pb-16 md:pb-24", // Tuned mobile padding
       "px-4 sm:px-6 max-w-7xl mx-auto",
-      "min-h-[92svh] flex flex-col md:flex-row items-center gap-10 md:gap-12",
+      "min-h-[92svh] flex flex-col md:flex-row items-center gap-8 md:gap-12",
     ].join(" ")}
   >
-    <div className="flex-1 z-10 text-center md:text-left">
+    {/* Text Section */}
+    <div className="flex-1 z-10 text-center md:text-left order-2 md:order-1">
       <Reveal>
         <h3 className="font-bold tracking-[0.25em] text-[11px] sm:text-xs uppercase mb-4 transition-colors
           text-[#0EA5E9] dark:text-sky-400"
@@ -25,7 +26,6 @@ const Hero = () => (
       </Reveal>
 
       <Reveal delay={80}>
-        {/* UPDATED H1: Removed the span that created the highlight behind "Experiences" */}
         <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.08] transition-colors
           text-gray-900 dark:text-white"
         >
@@ -42,18 +42,18 @@ const Hero = () => (
       </Reveal>
 
       <Reveal delay={200}>
-        <div className="pt-7 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-          <PrimaryButton onClick={() => scrollToId("projects")}>
+        <div className="pt-7 flex flex-col sm:flex-row gap-3 justify-center md:justify-start w-full sm:w-auto">
+          <PrimaryButton onClick={() => scrollToId("projects")} className="justify-center w-full sm:w-auto">
             See My Work <ArrowUpRight className="inline-block ml-2" size={18} />
           </PrimaryButton>
-          {/* Note: Check if SecondaryButton needs dark mode styling */}
-          <SecondaryButton onClick={() => scrollToId("contact")}>Get in touch</SecondaryButton>
+          <SecondaryButton onClick={() => scrollToId("contact")} className="justify-center w-full sm:w-auto">
+            Get in touch
+          </SecondaryButton>
         </div>
       </Reveal>
 
       <Reveal delay={260}>
         <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm justify-center md:justify-start">
-          {/* Badges styled for dark mode */}
           <span className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-full shadow-sm transition-colors border
             bg-white/80 border-gray-100 text-gray-800
             dark:bg-slate-800/60 dark:border-slate-700 dark:text-slate-300"
@@ -89,8 +89,9 @@ const Hero = () => (
       </Reveal>
     </div>
 
-    <div className="flex-1 relative flex justify-center w-full">
-      <Reveal delay={120} className="w-full max-w-sm sm:max-w-md">
+    {/* Image Section */}
+    <div className="flex-1 relative flex justify-center w-full order-1 md:order-2">
+      <Reveal delay={120} className="w-full max-w-[280px] sm:max-w-md">
         <div className="relative">
           <div
             className="relative z-10"
@@ -102,7 +103,6 @@ const Hero = () => (
             <img src={Vladi1} alt="Vladi Georgiev" className="w-full h-auto object-cover select-none" />
           </div>
 
-          {/* Background Blobs - Adjusted for Dark Mode */}
           <div className="absolute top-16 left-10 w-[78%] h-[78%] rounded-full blur-[70px] -z-10 transition-colors
             opacity-55 bg-sky-200 
             dark:opacity-30 dark:bg-sky-600"
