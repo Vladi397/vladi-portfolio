@@ -9,6 +9,10 @@ import { scrollToId } from "./utils/scrollHelpers";
 import LoadingScreen from "./components/ui/LoadingScreen";
 import GlareHover from "./components/ui/GlareHover";
 
+// --- NEW IMPORTS (Fixed) ---
+import TechGrid from "./components/ui/TechGrid"; 
+import MouseSpotlight from "./components/ui/MouseSpotlight";
+
 import Navbar from "./components/sections/Navbar";
 import Hero from "./components/sections/Hero";
 import About from "./components/sections/About";
@@ -44,16 +48,16 @@ export default function App() {
         className={`min-h-screen font-sans theme-color-transition transition-colors duration-700
         selection:bg-[#0EA5E9] selection:text-white
         text-gray-900 dark:text-slate-100
+        bg-white dark:bg-[#0B1120] /* Added base background color here */
         ${isLoaded ? "opacity-100" : "opacity-0"}`}
       >
-        {/* --- DYNAMIC BACKGROUND --- */}
-        <div
-          className="fixed inset-0 -z-50 theme-color-transition transition-colors duration-700
-          bg-gradient-to-b from-gray-50 via-gray-50 to-sky-100
-          dark:from-slate-950 dark:via-slate-950 dark:to-slate-900"
-        />
+        {/* --- 1. MOUSE TRACKER (Top Layer) --- */}
+        <MouseSpotlight />
 
-        {/* --- BACKGROUND BLOBS --- */}
+        {/* --- 2. TECH GRID (Middle Layer) --- */}
+        <TechGrid />
+
+        {/* --- 3. BACKGROUND BLOBS (Bottom Layer) --- */}
         <div className="fixed -z-40 inset-0 pointer-events-none opacity-[0.55] theme-color-transition transition-opacity duration-700">
           <div
             className="theme-heavy-blob absolute -top-24 -left-24 w-[520px] h-[520px] rounded-full blur-[120px] theme-color-transition transition-colors duration-700
@@ -65,20 +69,24 @@ export default function App() {
           />
         </div>
 
+        {/* --- MAIN CONTENT --- */}
         <Navbar activeId={activeId} theme={theme} toggleTheme={toggleTheme} />
 
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Certificates />
-        <Journey />
-        <Contact />
+        <main className="relative z-10">
+          <Hero />
+          <About />
+          <Skills />
+          <Projects />
+          <Certificates />
+          <Journey />
+          <Contact />
+        </main>
 
-        <footer className="text-center py-12 text-sm font-semibold theme-color-transition transition-colors duration-500 text-gray-400 dark:text-slate-600">
+        <footer className="text-center py-12 text-sm font-semibold theme-color-transition transition-colors duration-500 text-gray-400 dark:text-slate-600 relative z-10">
           © 2025 Vladi Georgiev.
         </footer>
 
+        {/* --- SCROLL TO TOP BUTTON --- */}
         {showTop && (
           <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50">
             <GlareHover
