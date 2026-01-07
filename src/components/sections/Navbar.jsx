@@ -7,6 +7,7 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  // REMOVED "CONTACT" from this list so we don't have duplicates
   const links = useMemo(
     () => [
       { label: "ABOUT", id: "about" },
@@ -14,19 +15,16 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
       { label: "PROJECTS", id: "projects" },
       { label: "CERTIFICATES", id: "certificates" },
       { label: "JOURNEY", id: "journey" },
-      { label: "CONTACT", id: "contact" },
     ],
     []
   );
 
-  // Handle scroll background
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -43,10 +41,10 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
   const ThemeToggle = ({ className = "" }) => (
     <button
       onClick={(e) => toggleTheme(e)}
-      className={`p-2 rounded-full transition-all duration-300 ${className}
+      className={`p-2.5 rounded-full transition-all duration-300 ${className}
         hover:bg-gray-100 text-gray-600
         dark:hover:bg-slate-800 dark:text-slate-300
-        active:scale-95 active:rotate-12 transform
+        active:scale-95 transform
       `}
       aria-label="Toggle Dark Mode"
     >
@@ -61,22 +59,21 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
       <nav
         className={`fixed w-full z-50 top-0 left-0 transition-all duration-300 border-b
           ${scrolled 
-            ? "bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-gray-200/50 dark:border-slate-700/50 py-3 md:py-4" 
-            : "bg-transparent border-transparent py-4 md:py-5"
+            ? "bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-gray-200/50 dark:border-slate-700/50 py-3 md:py-4" 
+            : "bg-transparent border-transparent py-4 md:py-6"
           }
         `}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center">
-          {/* LOGO */}
           <button
             onClick={() => scrollToId("home")}
-            className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight theme-color-transition transition-colors
+            className="text-xl sm:text-2xl font-black tracking-tight theme-color-transition transition-colors
               text-gray-900 dark:text-slate-50 relative z-50"
           >
             Vladi Georgiev
           </button>
 
-          {/* --- DESKTOP MENU --- */}
+          {/* DESKTOP */}
           <div className="hidden md:flex items-center gap-6 lg:gap-10">
             {links.map((l) => {
               const isActive = activeId === l.id;
@@ -95,20 +92,20 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
                 </button>
               );
             })}
-
+            
             <ThemeToggle />
-
+            
+            {/* THIS IS THE MAIN CONTACT BUTTON */}
             <PrimaryButton onClick={() => handleNav("contact")} className="px-6 py-2 text-sm">
               Let’s talk
             </PrimaryButton>
           </div>
 
-          {/* --- MOBILE HEADER CONTROLS --- */}
+          {/* MOBILE TOGGLES */}
           <div className="flex items-center gap-2 md:hidden relative z-50">
             <ThemeToggle />
             <button
               onClick={() => setOpen((s) => !s)}
-              aria-label="Toggle menu"
               className="p-2 rounded-lg text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
             >
               {open ? <X size={28} /> : <Menu size={28} />}
@@ -117,7 +114,7 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
         </div>
       </nav>
 
-      {/* --- MOBILE MENU OVERLAY --- */}
+      {/* MOBILE MENU */}
       <div 
         className={`fixed inset-0 z-40 md:hidden bg-white/95 dark:bg-[#0B1120]/95 backdrop-blur-xl transition-all duration-300 ease-in-out
           ${open ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"}
@@ -141,13 +138,9 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
             );
           })}
           
-          <div 
-            className={`w-full max-w-xs pt-8 transition-all duration-700 delay-300 transform
-              ${open ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}
-            `}
-          >
-             <PrimaryButton onClick={() => handleNav("contact")} className="w-full justify-center py-4 text-lg">
-               Get in Touch
+          <div className={`pt-8 transition-all duration-700 delay-300 transform ${open ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}>
+             <PrimaryButton onClick={() => handleNav("contact")} className="w-64 justify-center py-4 text-lg">
+               Let's Talk
              </PrimaryButton>
           </div>
         </div>
