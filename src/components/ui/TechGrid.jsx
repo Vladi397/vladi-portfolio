@@ -6,17 +6,19 @@ const TechGrid = () => {
       <div 
         className="absolute inset-0"
         style={{
-          // Use a stronger color (slate-900 / slate-100) and higher opacity
+          // 1. Grid Pattern
           backgroundImage: `
-            linear-gradient(to right, rgba(100, 116, 139, 0.15) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(100, 116, 139, 0.15) 1px, transparent 1px)
+            linear-gradient(to right, rgba(120, 116, 139, 0.15) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(120, 116, 139, 0.15) 1px, transparent 1px)
           `,
-          backgroundSize: "40px 40px", // Size of the squares
+          backgroundSize: "40px 40px",
+          
+          // 2. The "Side Fade" (Mask) you asked for
+          // This creates a circle of visibility in the center and fades to transparent on sides
+          maskImage: "radial-gradient(ellipse at center, black 40%, transparent 100%)",
+          WebkitMaskImage: "radial-gradient(ellipse at center, black 40%, transparent 100%)"
         }}
-      >
-        {/* Optional: Add a subtle pulse animation to the grid so you know it's alive */}
-        <div className="absolute inset-0 bg-gradient-to-t from-white/0 via-white/0 to-white/0 dark:from-slate-950/0" />
-      </div>
+      />
     </div>
   );
 };

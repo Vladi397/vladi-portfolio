@@ -9,9 +9,10 @@ import { scrollToId } from "./utils/scrollHelpers";
 import LoadingScreen from "./components/ui/LoadingScreen";
 import GlareHover from "./components/ui/GlareHover";
 
-// --- NEW IMPORTS (Fixed) ---
+// --- IMPORTS ---
 import TechGrid from "./components/ui/TechGrid"; 
 import MouseSpotlight from "./components/ui/MouseSpotlight";
+// Removed Aurora import
 
 import Navbar from "./components/sections/Navbar";
 import Hero from "./components/sections/Hero";
@@ -48,16 +49,17 @@ export default function App() {
         className={`min-h-screen font-sans theme-color-transition transition-colors duration-700
         selection:bg-[#0EA5E9] selection:text-white
         text-gray-900 dark:text-slate-100
-        bg-white dark:bg-[#0B1120] /* Added base background color here */
+        bg-white dark:bg-[#0B1120]
         ${isLoaded ? "opacity-100" : "opacity-0"}`}
       >
-        {/* --- 1. MOUSE TRACKER (Top Layer) --- */}
+        {/* --- 1. MOUSE SPOTLIGHT (Interactive Top Layer) --- */}
         <MouseSpotlight />
 
-        {/* --- 2. TECH GRID (Middle Layer) --- */}
+        {/* --- 2. TECH GRID (Faded at edges) --- */}
         <TechGrid />
 
-        {/* --- 3. BACKGROUND BLOBS (Bottom Layer) --- */}
+        {/* --- 3. STATIC BACKGROUND BLOBS (Restored) --- */}
+        {/* These provide the subtle blue tint behind the grid */}
         <div className="fixed -z-40 inset-0 pointer-events-none opacity-[0.55] theme-color-transition transition-opacity duration-700">
           <div
             className="theme-heavy-blob absolute -top-24 -left-24 w-[520px] h-[520px] rounded-full blur-[120px] theme-color-transition transition-colors duration-700
@@ -86,7 +88,6 @@ export default function App() {
           © 2025 Vladi Georgiev.
         </footer>
 
-        {/* --- SCROLL TO TOP BUTTON --- */}
         {showTop && (
           <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50">
             <GlareHover
