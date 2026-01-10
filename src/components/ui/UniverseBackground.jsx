@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from "react";
+import React, { useRef, useState, useMemo, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
 import { EffectComposer, Bloom, Noise, Vignette } from "@react-three/postprocessing";
@@ -27,14 +27,13 @@ const StarField = ({ count = 5000, theme }) => {
     return pos;
   });
 
+  // Re-memoize if count changes (though typically count stays stable after mount)
   const initialPositions = useMemo(() => new Float32Array(positions), [positions]);
 
   useFrame((state, delta) => {
-    // 1. Very slow, constant rotation (Just to keep it alive, not distracting)
     ref.current.rotation.x -= delta / 50;
     ref.current.rotation.y -= delta / 60;
 
-    // 2. MOUSE PHYSICS (The "Get rid of stars" effect)
     const xMult = viewport.width / 2;
     const yMult = viewport.height / 2;
     const mx = state.pointer.x * xMult;
@@ -52,21 +51,16 @@ const StarField = ({ count = 5000, theme }) => {
       const iy = initialPositions[i3 + 1];
       const iz = initialPositions[i3 + 2];
 
-      // Distance from mouse
       const dx = mx - x;
       const dy = my - y;
       const dist = Math.sqrt(dx * dx + dy * dy);
 
-      // FORCE RADIUS: 6 units (Large "Clearance" area)
       if (dist < 6) {
          const force = (6 - dist) / 6;
          const angle = Math.atan2(dy, dx);
-         
-         // Push stars away strongly
          currentPositions[i3] -= Math.cos(angle) * force * 20 * delta; 
          currentPositions[i3 + 1] -= Math.sin(angle) * force * 20 * delta;
       } else {
-         // Gently return to original spot
          currentPositions[i3] += (ix - x) * 2.5 * delta; 
          currentPositions[i3 + 1] += (iy - y) * 2.5 * delta;
          currentPositions[i3 + 2] += (iz - z) * 2.5 * delta;
@@ -76,16 +70,18 @@ const StarField = ({ count = 5000, theme }) => {
     ref.current.geometry.attributes.position.needsUpdate = true;
   });
 
+  const color = "#0EA5E9"; 
+
   return (
     <group>
       <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
         <PointMaterial
           transparent
-          color={theme === "dark" ? "#0EA5E9" : "#475569"}
+          color={color}
           size={0.07}
           sizeAttenuation={true}
           depthWrite={false}
-          opacity={theme === "dark" ? 0.8 : 0.6}
+          opacity={theme === "dark" ? 0.8 : 1.0} 
         />
       </Points>
     </group>
@@ -96,7 +92,6 @@ const StarField = ({ count = 5000, theme }) => {
 const NetworkLines = ({ theme }) => {
     const lineRef = useRef();
     
-    // Constant slow rotation, unaffected by mouse
     useFrame((state) => {
         const t = state.clock.getElapsedTime();
         lineRef.current.rotation.y = t * 0.02;
@@ -119,20 +114,35 @@ const NetworkLines = ({ theme }) => {
 
 // --- MAIN COMPONENT ---
 const UniverseBackground = ({ theme }) => {
+  // OPTIMIZATION: Detect mobile screen to reduce particle count
+  const [starCount, setStarCount] = useState(5000);
+
+  useEffect(() => {
+    const handleResize = () => {
+      // If width < 768px (Mobile), use 1500 stars. Else 5000.
+      setStarCount(window.innerWidth < 768 ? 1500 : 5000);
+    };
+
+    // Run once on mount
+    handleResize();
+
+    // Optional: Update on resize
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
       <Canvas 
         camera={{ position: [0, 0, 10], fov: 45 }} 
         dpr={[1, 2]}
-        // Listen to mouse on the whole body
         eventSource={document.getElementById('root')}
         eventPrefix="client"
       >
-        <StarField theme={theme} />
+        {/* Pass the dynamic count here */}
+        <StarField count={starCount} theme={theme} />
         <NetworkLines theme={theme} />
         
-        {/* REMOVED <Rig /> HERE - No more camera tilting! */}
-
         <EffectComposer multisampling={0} disableNormalPass={true}>
             <Bloom 
                 luminanceThreshold={0} 

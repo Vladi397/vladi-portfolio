@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ExternalLink, Github } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
@@ -10,6 +10,18 @@ import fitFusionImg from "../../assets/FirFusion.png";
 import spaceInvasionImg from "../../assets/spaceinvasion.png";
 
 const Projects = () => {
+  // 1. Add state to track if we are on mobile
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const projects = [
     {
       title: "OurGrid (OpenRemote)",
@@ -74,23 +86,23 @@ const Projects = () => {
     <section id="projects" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto relative scroll-mt-24 md:scroll-mt-32">
       <SectionTitle title="Projects" num="03" kicker="Selected work" />
 
-      {/* Container - Removed extra padding since margins handle it now */}
       <div className="flex flex-col">
         {projects.map((p, index) => {
           return (
             <div 
               key={p.title} 
-              // All cards use sticky positioning
-              className="sticky top-28 md:top-32" 
+              // OPTIMIZATION: 
+              // Mobile: "relative" (Natural scrolling)
+              // Desktop: "sticky top-28" (Stacking effect)
+              className={isMobile ? "relative mb-12" : "sticky top-28 md:top-32"}
+              
               style={{ 
-                // Z-Index ensures stacking (Card 2 covers Card 1)
                 zIndex: index + 1,
                 
-                // THE FIX:
-                // We apply '40vh' margin to ALL cards, including the last one.
-                // This creates the "scroll time" needed for the last card to stick 
-                // at the top before the footer catches up to it.
-                marginBottom: "40vh"
+                // OPTIMIZATION:
+                // Mobile: Just 4rem spacing between items (no huge gaps)
+                // Desktop: 40vh margin to create the scroll-stacking time
+                marginBottom: isMobile ? "4rem" : "40vh"
               }}
             >
               <Reveal delay={index * 90}>
