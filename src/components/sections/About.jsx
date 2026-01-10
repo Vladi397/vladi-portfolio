@@ -2,11 +2,15 @@ import React, { useState } from "react";
 import { ArrowUpRight, X, Download, Eye, FileText } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
+
+// 1. IMAGE IMPORT (Kept because it is in src/assets)
 import Vladi2 from "../../assets/Vladi2.jpg";
-import ResumePDF from "../../assets/Vladi-resume.pdf";
 
 const About = () => {
   const [showResume, setShowResume] = useState(false);
+
+  // 2. RESUME PATH (String because it is in public folder)
+  const ResumePDF = "/Vladi-resume.pdf";
 
   return (
     <>
@@ -70,6 +74,7 @@ const About = () => {
               <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[32px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-75 group-hover:duration-200"></div>
                 <div className="relative rounded-[32px] overflow-hidden bg-gray-100 dark:bg-slate-800">
+                   {/* Using the IMPORTED image variable */}
                    <img
                     src={Vladi2}
                     alt="About Vladi"

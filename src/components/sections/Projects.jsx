@@ -10,7 +10,6 @@ import fitFusionImg from "../../assets/FirFusion.png";
 import spaceInvasionImg from "../../assets/spaceinvasion.png";
 
 const Projects = () => {
-  // 1. Add state to track if we are on mobile
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -34,7 +33,7 @@ const Projects = () => {
         "Translated technical IoT data into accessible web components",
       ],
       tags: ["React", "Tailwind", "User Testing", "Figma"],
-      liveUrl: "#",
+      liveUrl: "https://ourgrid.vercel.app/",
       repoUrl: "https://github.com/Marto8090/OurGrid_Website",
     },
     {
@@ -49,7 +48,7 @@ const Projects = () => {
         "Integrated Python Flask for routing & auth",
       ],
       tags: ["Figma", "Python Flask", "JavaScript", "HTML/CSS"],
-      liveUrl: "#", 
+      liveUrl: "#", // Button will hide
       repoUrl: "#", 
     },
     {
@@ -63,7 +62,7 @@ const Projects = () => {
         "Designed game characters (Tamagotchis) & UI",
       ],
       tags: ["Team Lead", "C# Razor Pages", "Figma", "Unity"],
-      liveUrl: "#",
+      liveUrl: "#", // Button will hide
       repoUrl: "#",
     },
     {
@@ -77,7 +76,7 @@ const Projects = () => {
         "Managed game state, levels, and local high scores",
       ],
       tags: ["Game Dev", "JavaScript", "Canvas API", "HTML5"],
-      liveUrl: "#",
+      liveUrl: "#", // Button will hide
       repoUrl: "#",
     },
   ];
@@ -91,17 +90,9 @@ const Projects = () => {
           return (
             <div 
               key={p.title} 
-              // OPTIMIZATION: 
-              // Mobile: "relative" (Natural scrolling)
-              // Desktop: "sticky top-28" (Stacking effect)
               className={isMobile ? "relative mb-12" : "sticky top-28 md:top-32"}
-              
               style={{ 
                 zIndex: index + 1,
-                
-                // OPTIMIZATION:
-                // Mobile: Just 4rem spacing between items (no huge gaps)
-                // Desktop: 40vh margin to create the scroll-stacking time
                 marginBottom: isMobile ? "4rem" : "40vh"
               }}
             >
@@ -175,15 +166,20 @@ const Projects = () => {
                         </div>
 
                         <div className="pt-4 flex flex-col sm:flex-row flex-wrap gap-3">
-                          <a
-                            href={p.liveUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-white shadow-lg shadow-sky-500/20 transition-all hover:scale-105 active:scale-95 w-full sm:w-auto
-                            bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500"
-                          >
-                            Live Demo <ExternalLink size={18} />
-                          </a>
+                          
+                          {/* CHANGED: Only render Live Demo if there is a real URL */}
+                          {p.liveUrl && p.liveUrl !== "#" && (
+                            <a
+                              href={p.liveUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-white shadow-lg shadow-sky-500/20 transition-all hover:scale-105 active:scale-95 w-full sm:w-auto
+                              bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500"
+                            >
+                              Live Demo <ExternalLink size={18} />
+                            </a>
+                          )}
+
                           <a
                             href={p.repoUrl}
                             target="_blank"
