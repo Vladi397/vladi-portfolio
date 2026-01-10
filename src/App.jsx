@@ -42,14 +42,15 @@ export default function App() {
     <>
       {!isLoaded && <LoadingScreen onComplete={() => setIsLoaded(true)} />}
 
+      {/* CHANGED: duration-700 -> duration-300 for snappy feel */}
       <div
-        className={`min-h-screen font-sans theme-color-transition transition-colors duration-700
+        className={`min-h-screen font-sans theme-color-transition transition-colors duration-300
         selection:bg-[#0EA5E9] selection:text-white
         text-gray-900 dark:text-slate-100
         ${isLoaded ? "opacity-100" : "opacity-0"}`}
       >
         {/* --- LAYER 1: BASE COLOR --- */}
-        <div className="fixed inset-0 -z-50 bg-slate-50 dark:bg-[#050505] transition-colors duration-700" />
+        <div className="fixed inset-0 -z-50 bg-slate-50 dark:bg-[#050505] transition-colors duration-300" />
 
         {/* --- LAYER 2: MOUSE SPOTLIGHT --- */}
         <MouseSpotlight />

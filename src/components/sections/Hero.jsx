@@ -103,6 +103,7 @@ const Hero = () => (
 
       <Reveal delay={320}>
         <div className="mt-8 sm:mt-10 border-l-4 border-[#0EA5E9] pl-4 sm:pl-5 py-2 text-left max-w-xl mx-auto md:mx-0">
+          {/* REVERTED: Back to original stronger gray text */}
           <p
             className="text-sm sm:text-base md:text-lg font-semibold leading-relaxed transition-colors
             text-gray-800 dark:text-slate-200"
@@ -139,19 +140,20 @@ const Hero = () => (
               WebkitMaskImage: "linear-gradient(to bottom, black 72%, transparent 100%)",
             }}
           >
+            {/* KEPT: The better shadow logic you liked */}
             <img
               src={Vladi1}
               alt="Vladi Georgiev"
               className={[
                 "w-full h-auto object-cover select-none",
-                // Better integration: soft drop shadow (light) + stronger (dark)
+                // Better integration: soft drop shadow (light) + stronger BLUE glow (dark)
                 "drop-shadow-[0_28px_55px_rgba(2,6,23,0.18)]",
-                "dark:drop-shadow-[0_28px_55px_rgba(0,0,0,0.50)]",
+                "dark:drop-shadow-[0_0_35px_rgba(14,165,233,0.25)]", 
               ].join(" ")}
             />
           </div>
 
-          {/* Glow blobs: toned down in LIGHT mode to avoid halo/sticker look */}
+          {/* Glow blobs */}
           <div
             className="absolute top-16 left-10 w-[78%] h-[78%] rounded-full blur-[80px] -z-10 transition-colors
             opacity-35 bg-sky-100
