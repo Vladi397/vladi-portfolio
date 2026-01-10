@@ -1,7 +1,24 @@
-/* src/index.css (or whatever global css file you use) */
+/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* --- NEW: 3D DEPTH UTILITIES --- */
+/* Use this class (glass-panel) on your cards to make them float over the 3D background */
+@layer utilities {
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.03); /* Extremely subtle fill */
+    backdrop-filter: blur(12px);           /* Strong blur */
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark .glass-panel {
+    background: rgba(0, 0, 0, 0.3); /* Darker glass for better contrast in dark mode */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
 
 /* --- DARK MODE SETTINGS --- */
 html.dark {

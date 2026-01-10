@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useMemo, useState, useEffect } from "react";
 import { ArrowUpRight } from "lucide-react";
 
@@ -9,10 +8,8 @@ import { scrollToId } from "./utils/scrollHelpers";
 import LoadingScreen from "./components/ui/LoadingScreen";
 import GlareHover from "./components/ui/GlareHover";
 
-// --- IMPORTS ---
-import TechGrid from "./components/ui/TechGrid"; 
+import UniverseBackground from "./components/ui/UniverseBackground";
 import MouseSpotlight from "./components/ui/MouseSpotlight";
-// Removed Aurora import
 
 import Navbar from "./components/sections/Navbar";
 import Hero from "./components/sections/Hero";
@@ -49,29 +46,18 @@ export default function App() {
         className={`min-h-screen font-sans theme-color-transition transition-colors duration-700
         selection:bg-[#0EA5E9] selection:text-white
         text-gray-900 dark:text-slate-100
-        bg-white dark:bg-[#0B1120]
         ${isLoaded ? "opacity-100" : "opacity-0"}`}
       >
-        {/* --- 1. MOUSE SPOTLIGHT (Interactive Top Layer) --- */}
+        {/* --- LAYER 1: BASE COLOR --- */}
+        <div className="fixed inset-0 -z-50 bg-slate-50 dark:bg-[#050505] transition-colors duration-700" />
+
+        {/* --- LAYER 2: MOUSE SPOTLIGHT --- */}
         <MouseSpotlight />
 
-        {/* --- 2. TECH GRID (Faded at edges) --- */}
-        <TechGrid />
+        {/* --- LAYER 3: 3D UNIVERSE --- */}
+        <UniverseBackground theme={theme} />
 
-        {/* --- 3. STATIC BACKGROUND BLOBS (Restored) --- */}
-        {/* These provide the subtle blue tint behind the grid */}
-        <div className="fixed -z-40 inset-0 pointer-events-none opacity-[0.55] theme-color-transition transition-opacity duration-700">
-          <div
-            className="theme-heavy-blob absolute -top-24 -left-24 w-[520px] h-[520px] rounded-full blur-[120px] theme-color-transition transition-colors duration-700
-            bg-sky-200 dark:bg-sky-900/40"
-          />
-          <div
-            className="theme-heavy-blob absolute top-48 -right-24 w-[520px] h-[520px] rounded-full blur-[120px] theme-color-transition transition-colors duration-700
-            bg-sky-100 dark:bg-indigo-900/40"
-          />
-        </div>
-
-        {/* --- MAIN CONTENT --- */}
+        {/* --- LAYER 4: CONTENT --- */}
         <Navbar activeId={activeId} theme={theme} toggleTheme={toggleTheme} />
 
         <main className="relative z-10">
