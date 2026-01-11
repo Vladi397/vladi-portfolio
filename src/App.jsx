@@ -2,7 +2,6 @@ import React, { useMemo, useState, useEffect } from "react";
 import { ArrowUpRight } from "lucide-react";
 
 import useActiveSection from "./hooks/useActiveSection";
-import useTheme from "./hooks/useTheme";
 import { scrollToId } from "./utils/scrollHelpers";
 
 import LoadingScreen from "./components/ui/LoadingScreen";
@@ -21,7 +20,37 @@ import Journey from "./components/sections/Journey";
 import Contact from "./components/sections/Contact";
 
 export default function App() {
-  const { theme, toggleTheme } = useTheme();
+  // --- THEME LOGIC START ---
+  // 1. Initialize State with a preference check
+  const [theme, setTheme] = useState(() => {
+    // Check if user has manually chosen a theme before
+    if (localStorage.getItem("theme")) {
+      return localStorage.getItem("theme");
+    }
+    // If not, check system preference (Fixes the mobile issue)
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    // Default to light
+    return "light";
+  });
+
+  // 2. Apply the class to the HTML tag whenever theme changes
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [theme]);
+
+  // 3. Toggle function
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+  // --- THEME LOGIC END ---
 
   const sectionIds = useMemo(
     () => ["about", "skills", "projects", "certificates", "journey", "contact"],
