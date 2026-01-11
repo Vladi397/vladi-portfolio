@@ -81,8 +81,8 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
           </span>
         </div>
 
-        {/* MOBILE CARD SHELL (desktop stays transparent) */}
-        <div className="rounded-2xl border bg-white/70 dark:bg-slate-900/35 border-gray-200/80 dark:border-slate-800/80 shadow-[0_10px_30px_rgba(2,6,23,0.10)] backdrop-blur-sm md:shadow-none md:border-none md:bg-transparent md:backdrop-blur-0 p-4 sm:p-5 md:p-0">
+        {/* MOBILE CARD SHELL (UPDATED: removed background/borders/shadows) */}
+        <div className="rounded-2xl p-0 md:p-0">
           <h3 className="text-lg sm:text-xl font-black mb-2 sm:mb-3 transition-colors text-gray-900 dark:text-white">
             {item.title}
           </h3>
