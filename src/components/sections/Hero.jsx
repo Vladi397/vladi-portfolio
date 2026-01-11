@@ -4,7 +4,7 @@ import Reveal from "../ui/Reveal";
 import PrimaryButton from "../ui/PrimaryButton";
 import SecondaryButton from "../ui/SecondaryButton";
 import { scrollToId } from "../../utils/scrollHelpers";
-import Vladi1 from "../../assets/Vladi1.png";
+import Vladi1 from "../../assets/vladi-profile1.png";
 
 const Hero = () => (
   <section
