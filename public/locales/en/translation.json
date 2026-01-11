@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "about": "About",
+    "skills": "Skills",
+    "projects": "Projects",
+    "certificates": "Certificates",
+    "journey": "Journey",
+    "contact": "Let's Talk"
+  },
+  "hero": {
+    "role": "Front-End Developer • UI/UX",
+    "title": "Building Digital Experiences.",
+    "subtitle": "I build clean, responsive React interfaces with strong UX and a performance-first mindset.",
+    "cta_primary": "See My Work",
+    "cta_secondary": "Get in touch",
+    "status": "Available"
+  }
+}

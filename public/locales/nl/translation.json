@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "about": "Over mij",
+    "skills": "Vaardigheden",
+    "projects": "Projecten",
+    "certificates": "Certificaten",
+    "journey": "Ervaring",
+    "contact": "Contact"
+  },
+  "hero": {
+    "role": "Front-End Developer • UI/UX",
+    "title": "Digitale ervaringen bouwen.",
+    "subtitle": "Ik bouw schone, responsieve React-interfaces met sterke UX en focus op prestaties.",
+    "cta_primary": "Bekijk mijn werk",
+    "cta_secondary": "Neem contact op",
+    "status": "Beschikbaar"
+  }
+}
