@@ -2,8 +2,10 @@ import React, { useState, useRef } from "react";
 import { Check, Copy, ExternalLink, Github, Rocket, Mail, Loader2 } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import emailjs from '@emailjs/browser';
+import { useTranslation } from 'react-i18next';
 
 const Contact = () => {
+  const { t } = useTranslation();
   const email = "vladi.georgiev.14@gmail.com";
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -15,7 +17,7 @@ const Contact = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      alert("Copy failed. Please copy manually.");
+      alert(t('contact.copy_fail'));
     }
   };
 
@@ -34,13 +36,13 @@ const Contact = () => {
       .then(
         () => {
           setLoading(false);
-          alert("Message sent successfully!");
+          alert(t('contact.success'));
           e.target.reset(); 
         },
         (error) => {
           setLoading(false);
           console.error('FAILED...', error.text);
-          alert("Failed to send message. Please try again.");
+          alert(t('contact.fail'));
         },
       );
   };
@@ -60,10 +62,10 @@ const Contact = () => {
             {/* LEFT SIDE */}
             <div className="flex-1 w-full relative z-10">
               <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 transition-colors text-gray-900 dark:text-white">
-                Let’s work <br /> together.
+                {t('contact.title')}
               </h2>
               <p className="text-lg mb-8 max-w-md transition-colors text-gray-600 dark:text-slate-400">
-                Have a project in mind? I'm available for freelance work and new opportunities.
+                {t('contact.desc')}
               </p>
               
               <div className="flex items-center gap-3 font-bold mb-10 transition-colors text-emerald-600 dark:text-emerald-400">
@@ -71,7 +73,7 @@ const Contact = () => {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
                 </span>
-                Available for new projects
+                {t('contact.status')}
               </div>
 
               <div className="flex flex-col gap-4">
@@ -97,7 +99,6 @@ const Contact = () => {
                 </button>
 
                 <div className="flex gap-4">
-                  {/* LINKEDIN LINK UPDATED */}
                   <a 
                     href="https://www.linkedin.com/in/vladi-georgiev-b68761295" 
                     target="_blank"
@@ -106,8 +107,6 @@ const Contact = () => {
                   >
                     LinkedIn <ExternalLink size={18} />
                   </a>
-                  
-                  {/* GITHUB LINK UPDATED */}
                   <a 
                     href="https://github.com/Vladi397/vladi-portfolio" 
                     target="_blank"
@@ -128,24 +127,24 @@ const Contact = () => {
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">Name</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">{t('contact.label_name')}</label>
                   <input
                     type="text"
                     name="user_name"
                     required
-                    placeholder="John Doe"
+                    placeholder={t('contact.ph_name')}
                     className="w-full p-4 rounded-xl outline-none font-medium transition-all text-base
                       bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
                       dark:bg-[#0B1120] dark:border-white/10 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-sky-500"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">Email</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">{t('contact.label_email')}</label>
                   <input
                     type="email"
                     name="user_email"
                     required
-                    placeholder="john@example.com"
+                    placeholder={t('contact.ph_email')}
                     className="w-full p-4 rounded-xl outline-none font-medium transition-all text-base
                       bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
                       dark:bg-[#0B1120] dark:border-white/10 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-sky-500"
@@ -154,11 +153,11 @@ const Contact = () => {
               </div>
 
               <div className="space-y-2 mb-6">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">Message</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">{t('contact.label_message')}</label>
                 <textarea
                   name="message"
                   required
-                  placeholder="Tell me about your project..."
+                  placeholder={t('contact.ph_message')}
                   rows="4"
                   className="w-full p-4 rounded-xl outline-none resize-none font-medium transition-all text-base
                     bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
@@ -172,7 +171,7 @@ const Contact = () => {
                 className="w-full py-4 rounded-xl font-bold text-white shadow-lg shadow-sky-500/25 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2
                 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {loading ? <Loader2 className="animate-spin" /> : <>Send Message <Rocket size={20} /></>}
+                {loading ? <Loader2 className="animate-spin" /> : <>{t('contact.btn_send')} <Rocket size={20} /></>}
               </button>
             </form>
           </div>

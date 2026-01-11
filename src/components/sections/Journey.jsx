@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import SectionTitle from "../ui/SectionTitle";
+import { useTranslation } from 'react-i18next'; // <--- Import
 
-// Sub-component specific to Journey
+// Sub-component specific to Journey (Unchanged except logic passed down)
 const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
   const itemRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -10,7 +11,6 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
 
   useLayoutEffect(() => {
     if (!itemRef.current) return;
-    // Calculate when this item should light up
     setTrigger(itemRef.current.offsetTop + 60);
   }, []);
 
@@ -19,7 +19,6 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
       setIsVisible(true);
       return;
     }
-    // Desktop can hide again when scrolling up. Mobile stays visible (no jumpy feel).
     if (isDesktop) setIsVisible(false);
   }, [parentLineHeight, trigger, isDesktop]);
 
@@ -28,7 +27,6 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
       ref={itemRef}
       className="group relative z-10 mb-12 sm:mb-16 md:mb-24 md:flex"
     >
-      {/* MOBILE DOT (aligned to the mobile animated line) */}
       <div
         className={[
           "md:hidden absolute left-4 top-7 -translate-x-1/2 w-3.5 h-3.5 rounded-full border-4 z-20 shadow-sm transition-all duration-300",
@@ -37,7 +35,6 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
         ].join(" ")}
       />
 
-      {/* YEAR: Desktop only (keep desktop layout unchanged) */}
       <div
         className={[
           "hidden md:block w-20 sm:w-24 md:w-32 flex-shrink-0 text-right pr-4 sm:pr-8 pt-2 transition-all duration-500 ease-out",
@@ -49,7 +46,6 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
         </span>
       </div>
 
-      {/* DOT: Desktop only (keep existing desktop dot behavior) */}
       <div className="relative hidden md:flex flex-col items-center w-0 md:w-auto">
         <div
           className={[
@@ -60,16 +56,12 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
         />
       </div>
 
-      {/* CONTENT */}
       <div
         className={[
-          // On mobile we shift content right so it clears the line + dot.
-          // Desktop keeps the original padding.
           "relative pl-12 sm:pl-14 md:pl-12 pt-1 transition-all duration-500 ease-out delay-75",
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
         ].join(" ")}
       >
-        {/* MOBILE YEAR BADGE (since desktop year is hidden on mobile) */}
         <div
           className={[
             "md:hidden mb-3 transition-all duration-500 ease-out",
@@ -81,7 +73,6 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
           </span>
         </div>
 
-        {/* MOBILE CARD SHELL (UPDATED: removed background/borders/shadows) */}
         <div className="rounded-2xl p-0 md:p-0">
           <h3 className="text-lg sm:text-xl font-black mb-2 sm:mb-3 transition-colors text-gray-900 dark:text-white">
             {item.title}
@@ -96,31 +87,33 @@ const TimelineItem = ({ item, parentLineHeight, isDesktop }) => {
 };
 
 const Journey = () => {
+  const { t } = useTranslation(); // <--- Init hook
   const sectionRef = useRef(null);
   const rafRef = useRef(null);
   const [lineHeight, setLineHeight] = useState(0);
   const [isDesktop, setIsDesktop] = useState(false);
 
+  // MOVED ARRAY INSIDE
   const timeline = [
     {
       year: "2019",
-      title: "Specialty: Electronic Trade",
-      desc: "Started a multidisciplinary high school program combining Economy, Business, and Web Development. Graduated with a diploma as an Organizer of Internet Applications.",
+      title: t('journey.2019_title'),
+      desc: t('journey.2019_desc'),
     },
     {
       year: "2023",
-      title: "International Exhibition & Fundamentals",
-      desc: "Participated in the TF-FEST International Exhibition. Earned foundational certificates in Version Control and Introduction to Front-End.",
+      title: t('journey.2023_title'),
+      desc: t('journey.2023_desc'),
     },
     {
       year: "2024",
-      title: "Graduation & Meta Certifications",
-      desc: "Solidified front-end expertise by mastering HTML, CSS, and JavaScript. Earned Meta certificates in React Basics and Advanced React.",
+      title: t('journey.2024_title'),
+      desc: t('journey.2024_desc'),
     },
     {
       year: "2025",
-      title: "Fontys University (ICT)",
-      desc: "Expanding into full-stack development with C#, Razor, and Blazor. Focusing on UI/UX design and collaboration in agile teams.",
+      title: t('journey.2025_title'),
+      desc: t('journey.2025_desc'),
     },
   ];
 
@@ -133,7 +126,7 @@ const Journey = () => {
     return () => mq.removeEventListener?.("change", update);
   }, []);
 
-  // Animation Loop for the Blue Line
+  // Animation Loop
   useEffect(() => {
     const calc = () => {
       if (!sectionRef.current) return;
@@ -169,13 +162,12 @@ const Journey = () => {
       className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32"
       ref={sectionRef}
     >
-      <SectionTitle title="Journey" num="05" kicker="Timeline" />
+      <SectionTitle title={t('journey.title')} num="05" kicker={t('journey.kicker')} />
 
       <div className="max-w-4xl relative">
-        {/* MOBILE GRAY LINE + ANIMATED BLUE LINE + ARROW (new, desktop untouched) */}
+        {/* MOBILE GRAY LINE */}
         <div className="absolute left-4 top-6 bottom-0 w-[2px] h-full z-0 md:hidden">
           <div className="absolute top-0 left-0 w-full h-full transition-colors bg-gray-200 dark:bg-slate-800" />
-
           <div
             className="absolute top-0 left-0 w-full bg-[#0EA5E9] transition-all duration-75 ease-linear shadow-[0_0_10px_rgba(14,165,233,0.55)]"
             style={{ height: `${lineHeight}px`, maxHeight: "100%" }}
@@ -191,11 +183,9 @@ const Journey = () => {
           </div>
         </div>
 
-        {/* DESKTOP GRAY LINE BACKGROUND (unchanged) */}
+        {/* DESKTOP GRAY LINE */}
         <div className="absolute left-[80px] sm:left-[96px] md:left-[128px] top-2 bottom-0 w-[2px] h-full z-0 hidden md:block">
           <div className="absolute top-0 left-0 w-full h-full transition-colors bg-gray-200 dark:bg-slate-800"></div>
-
-          {/* ANIMATED BLUE LINE (Desktop Only, unchanged) */}
           <div
             className="absolute top-0 left-0 w-full bg-[#0EA5E9] transition-all duration-75 ease-linear shadow-[0_0_10px_rgba(14,165,233,0.55)]"
             style={{ height: `${lineHeight}px`, maxHeight: "100%" }}

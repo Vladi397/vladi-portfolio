@@ -13,6 +13,112 @@
     "subtitle": "I build clean, responsive React interfaces with strong UX and a performance-first mindset.",
     "cta_primary": "See My Work",
     "cta_secondary": "Get in touch",
-    "status": "Available"
+    "meta_certs": "7 Meta Certificates",
+    "location": "Eindhoven",
+    "status": "Available",
+    "quote": "“Modern solutions built with technical precision and clean design.”"
+  },
+  "about": {
+    "title": "About Me",
+    "kicker": "Who I am",
+    "p1": "I’m Vladi Georgiev from Bulgaria. After studying electronic trades in high school, I earned seven professional certificates in front-end development from Meta.",
+    "p2": "I build websites with HTML, CSS, JavaScript, React, and UI/UX design. I’ve also worked on C# projects using Razor and Blazor.",
+    "skill_csharp": "C# Basics",
+    "btn_resume": "View Resume",
+    "modal_title": "Resume Preview",
+    "download": "Download",
+    "mobile_msg": "For the best experience on mobile, please open the file directly.",
+    "btn_open": "Open Resume"
+  },
+  "skills": {
+    "title": "Skills",
+    "kicker": "What I use",
+    "cat_frontend": "Frontend",
+    "cat_backend": "Backend & Logic",
+    "cat_tools": "Tools & Design",
+    "responsive": "Responsive Design"
+  },
+  "projects": {
+    "title": "Projects",
+    "kicker": "Selected work",
+    "btn_live": "Live Demo",
+    "btn_code": "Code",
+    "ourgrid": {
+      "title": "OurGrid (OpenRemote)",
+      "desc": "A platform demystifying 'grid congestion' for OpenRemote. I designed the UI and validated the UX with real users (students & coaches) to translate complex data into a clean React interface.",
+      "role": "Frontend Lead • UI/UX Designer • Research",
+      "outcome1": "Validated UX via testing with real users",
+      "outcome2": "Architected a split-view UI for Residents vs. Municipalities",
+      "outcome3": "Translated technical IoT data into accessible web components"
+    },
+    "mario": {
+      "title": "Mario & Luigi's Pizza",
+      "desc": "A full-stack Italian restaurant app with auth and a shopping cart. I designed the authentic visual identity in Figma and built the responsive frontend connected to a Python Flask backend.",
+      "role": "UI Designer & Frontend Lead",
+      "outcome1": "Designed the UI/UX & assets in Figma",
+      "outcome2": "Developed the product card grid & cart logic",
+      "outcome3": "Integrated Python Flask for routing & auth"
+    },
+    "fitfusion": {
+      "title": "Fit Fusion",
+      "desc": "A gamified health ecosystem where physical steps nurture a virtual pet. I led a 6-person agile team and handled the technical integration between the Unity game and the Web platform.",
+      "role": "Team Lead • Full Stack Web",
+      "outcome1": "Led the agile team & coordinated integration",
+      "outcome2": "Developed the Web Frontend & C# Razor Pages",
+      "outcome3": "Designed game characters (Tamagotchis) & UI"
+    },
+    "space": {
+      "title": "Space Invasion",
+      "desc": "A classic arcade shooter reimagined with modern web technologies. Players defend Earth from waves of alien invaders using a custom-built game engine on the HTML5 Canvas.",
+      "role": "Game Developer",
+      "outcome1": "Implemented collision detection & physics from scratch",
+      "outcome2": "Designed pixel art assets & animations",
+      "outcome3": "Managed game state, levels, and local high scores"
+    }
+  },
+  "certificates": {
+    "title": "Certificates",
+    "kicker": "Verified Skills",
+    "completed_on": "Completed on",
+    "btn_view": "VIEW",
+    "btn_verify": "Verify",
+    "meta_coursera": "Meta / Coursera",
+    "verified": "Verified",
+    "modal_mobile_msg": "Tap below to open the official PDF in your browser.",
+    "btn_open_pdf": "Open PDF",
+    "btn_ext_verify": "External Verify",
+    "c1_title": "Introduction to Front-End Development",
+    "c2_title": "Programming with JavaScript",
+    "c3_title": "Version Control",
+    "c4_title": "HTML and CSS in depth",
+    "c5_title": "React Basics",
+    "c6_title": "Advanced React"
+  },
+  "journey": {
+    "title": "Journey",
+    "kicker": "Timeline",
+    "2019_title": "Specialty: Electronic Trade",
+    "2019_desc": "Started a multidisciplinary high school program combining Economy, Business, and Web Development. Graduated with a diploma as an Organizer of Internet Applications.",
+    "2023_title": "International Exhibition & Fundamentals",
+    "2023_desc": "Participated in the TF-FEST International Exhibition. Earned foundational certificates in Version Control and Introduction to Front-End.",
+    "2024_title": "Graduation & Meta Certifications",
+    "2024_desc": "Solidified front-end expertise by mastering HTML, CSS, and JavaScript. Earned Meta certificates in React Basics and Advanced React.",
+    "2025_title": "Fontys University (ICT)",
+    "2025_desc": "Expanding into full-stack development with C#, Razor, and Blazor. Focusing on UI/UX design and collaboration in agile teams."
+  },
+  "contact": {
+    "title": "Let’s work together.",
+    "desc": "Have a project in mind? I'm available for freelance work and new opportunities.",
+    "status": "Available for new projects",
+    "copy_fail": "Copy failed. Please copy manually.",
+    "success": "Message sent successfully!",
+    "fail": "Failed to send message. Please try again.",
+    "label_name": "Name",
+    "label_email": "Email",
+    "label_message": "Message",
+    "ph_name": "John Doe",
+    "ph_email": "john@example.com",
+    "ph_message": "Tell me about your project...",
+    "btn_send": "Send Message"
   }
 }

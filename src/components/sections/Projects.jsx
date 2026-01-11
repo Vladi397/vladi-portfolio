@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ExternalLink, Github } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
+import { useTranslation } from 'react-i18next'; // <--- Import
 
 // Imports
 import ourGridImg from "../../assets/OurGrid.png";
@@ -10,6 +11,7 @@ import fitFusionImg from "../../assets/FirFusion.png";
 import spaceInvasionImg from "../../assets/spaceinvasion.png";
 
 const Projects = () => {
+  const { t } = useTranslation(); // <--- Init hook
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -21,75 +23,76 @@ const Projects = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // MOVED INSIDE COMPONENT so we can use t()
   const projects = [
     {
-      title: "OurGrid (OpenRemote)",
-      desc: "A platform demystifying 'grid congestion' for OpenRemote. I designed the UI and validated the UX with real users (students & coaches) to translate complex data into a clean React interface.",
-      role: "Frontend Lead • UI/UX Designer • Research",
+      title: t('projects.ourgrid.title'),
+      desc: t('projects.ourgrid.desc'),
+      role: t('projects.ourgrid.role'),
       img: ourGridImg,
       outcomes: [
-        "Validated UX via testing with real users",
-        "Architected a split-view UI for Residents vs. Municipalities",
-        "Translated technical IoT data into accessible web components",
+        t('projects.ourgrid.outcome1'),
+        t('projects.ourgrid.outcome2'),
+        t('projects.ourgrid.outcome3'),
       ],
       tags: ["React", "Tailwind", "User Testing", "Figma"],
       liveUrl: "https://ourgrid.vercel.app/",
       repoUrl: "https://github.com/Marto8090/OurGrid_Website",
     },
     {
-      title: "Mario & Luigi's Pizza",
-      desc: "A full-stack Italian restaurant app with auth and a shopping cart. I designed the authentic visual identity in Figma and built the responsive frontend connected to a Python Flask backend.",
-      role: "UI Designer & Frontend Lead",
+      title: t('projects.mario.title'),
+      desc: t('projects.mario.desc'),
+      role: t('projects.mario.role'),
       img: marioPizzaImg,
       customImgClass: "object-[center_35%] scale-110", 
       outcomes: [
-        "Designed the UI/UX & assets in Figma",
-        "Developed the product card grid & cart logic",
-        "Integrated Python Flask for routing & auth",
+        t('projects.mario.outcome1'),
+        t('projects.mario.outcome2'),
+        t('projects.mario.outcome3'),
       ],
       tags: ["Figma", "Python Flask", "JavaScript", "HTML/CSS"],
-      liveUrl: "#", // Button will hide
+      liveUrl: "#", 
       repoUrl: "#", 
     },
     {
-      title: "Fit Fusion",
-      desc: "A gamified health ecosystem where physical steps nurture a virtual pet. I led a 6-person agile team and handled the technical integration between the Unity game and the Web platform.",
-      role: "Team Lead • Full Stack Web",
+      title: t('projects.fitfusion.title'),
+      desc: t('projects.fitfusion.desc'),
+      role: t('projects.fitfusion.role'),
       img: fitFusionImg,
       outcomes: [
-        "Led the agile team & coordinated integration",
-        "Developed the Web Frontend & C# Razor Pages",
-        "Designed game characters (Tamagotchis) & UI",
+        t('projects.fitfusion.outcome1'),
+        t('projects.fitfusion.outcome2'),
+        t('projects.fitfusion.outcome3'),
       ],
       tags: ["Team Lead", "C# Razor Pages", "Figma", "Unity"],
-      liveUrl: "#", // Button will hide
+      liveUrl: "#", 
       repoUrl: "#",
     },
     {
-      title: "Space Invasion",
-      desc: "A classic arcade shooter reimagined with modern web technologies. Players defend Earth from waves of alien invaders using a custom-built game engine on the HTML5 Canvas.",
-      role: "Game Developer",
+      title: t('projects.space.title'),
+      desc: t('projects.space.desc'),
+      role: t('projects.space.role'),
       img: spaceInvasionImg,
       outcomes: [
-        "Implemented collision detection & physics from scratch",
-        "Designed pixel art assets & animations",
-        "Managed game state, levels, and local high scores",
+        t('projects.space.outcome1'),
+        t('projects.space.outcome2'),
+        t('projects.space.outcome3'),
       ],
       tags: ["Game Dev", "JavaScript", "Canvas API", "HTML5"],
-      liveUrl: "#", // Button will hide
+      liveUrl: "#", 
       repoUrl: "#",
     },
   ];
 
   return (
     <section id="projects" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto relative scroll-mt-24 md:scroll-mt-32">
-      <SectionTitle title="Projects" num="03" kicker="Selected work" />
+      <SectionTitle title={t('projects.title')} num="03" kicker={t('projects.kicker')} />
 
       <div className="flex flex-col">
         {projects.map((p, index) => {
           return (
             <div 
-              key={p.title} 
+              key={index} 
               className={isMobile ? "relative mb-12" : "sticky top-28 md:top-32"}
               style={{ 
                 zIndex: index + 1,
@@ -167,7 +170,6 @@ const Projects = () => {
 
                         <div className="pt-4 flex flex-col sm:flex-row flex-wrap gap-3">
                           
-                          {/* CHANGED: Only render Live Demo if there is a real URL */}
                           {p.liveUrl && p.liveUrl !== "#" && (
                             <a
                               href={p.liveUrl}
@@ -176,7 +178,7 @@ const Projects = () => {
                               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-white shadow-lg shadow-sky-500/20 transition-all hover:scale-105 active:scale-95 w-full sm:w-auto
                               bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500"
                             >
-                              Live Demo <ExternalLink size={18} />
+                              {t('projects.btn_live')} <ExternalLink size={18} />
                             </a>
                           )}
 
@@ -188,7 +190,7 @@ const Projects = () => {
                             bg-white border-gray-200 text-gray-700 hover:bg-gray-50
                             dark:bg-white/5 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10"
                           >
-                            Code <Github size={18} />
+                            {t('projects.btn_code')} <Github size={18} />
                           </a>
                         </div>
                       </div>

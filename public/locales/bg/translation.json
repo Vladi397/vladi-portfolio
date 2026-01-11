@@ -13,6 +13,112 @@
     "subtitle": "Изграждам чисти, отзивчиви React интерфейси със силен UX и фокус върху производителността.",
     "cta_primary": "Вижте работата ми",
     "cta_secondary": "Свържете се с мен",
-    "status": "Наличен"
+    "meta_certs": "7 Meta Сертификата",
+    "location": "Айндховен",
+    "status": "Наличен",
+    "quote": "“Модерни решения, изградени с техническа прецизност и чист дизайн.”"
+  },
+  "about": {
+    "title": "За Мен",
+    "kicker": "Кой съм аз",
+    "p1": "Аз съм Влади Георгиев от България. След като завърших Електронна търговия в гимназията, придобих седем професионални сертификата по Front-End от Meta.",
+    "p2": "Създавам уебсайтове с HTML, CSS, JavaScript, React и UI/UX дизайн. Работил съм и по C# проекти, използвайки Razor и Blazor.",
+    "skill_csharp": "C# Основи",
+    "btn_resume": "Виж CV",
+    "modal_title": "Преглед на CV",
+    "download": "Изтегли",
+    "mobile_msg": "За най-добро изживяване на мобилно устройство, моля отворете файла директно.",
+    "btn_open": "Отвори CV"
+  },
+  "skills": {
+    "title": "Умения",
+    "kicker": "Какво използвам",
+    "cat_frontend": "Frontend",
+    "cat_backend": "Backend & Логика",
+    "cat_tools": "Инструменти & Дизайн",
+    "responsive": "Отзивчив Дизайн"
+  },
+  "projects": {
+    "title": "Проекти",
+    "kicker": "Избрани творби",
+    "btn_live": "Демо",
+    "btn_code": "Код",
+    "ourgrid": {
+      "title": "OurGrid (OpenRemote)",
+      "desc": "Платформа за OpenRemote. Проектирах потребителския интерфейс (UI) и валидирах потребителското изживяване (UX) с реални потребители, за да превърна сложни данни в чист React интерфейс.",
+      "role": "Frontend Lead • UI/UX Designer • Research",
+      "outcome1": "Валидиран UX чрез тестове с реални потребители",
+      "outcome2": "Създаден разделен UI за Жители vs. Общини",
+      "outcome3": "Превод на технически IoT данни в достъпни уеб компоненти"
+    },
+    "mario": {
+      "title": "Mario & Luigi's Pizza",
+      "desc": "Full-stack приложение за италиански ресторант. Проектирах визуалната идентичност във Figma и изградих отзивчив frontend, свързан с Python Flask backend.",
+      "role": "UI Designer & Frontend Lead",
+      "outcome1": "Проектиран UI/UX и активи във Figma",
+      "outcome2": "Разработена логика за продукти и количка",
+      "outcome3": "Интегриран Python Flask за рутиране и автентикация"
+    },
+    "fitfusion": {
+      "title": "Fit Fusion",
+      "desc": "Геймифицирана здравна екосистема. Ръководих agile екип от 6 души и се погрижих за техническата интеграция между Unity играта и уеб платформата.",
+      "role": "Team Lead • Full Stack Web",
+      "outcome1": "Ръководене на agile екип и координация",
+      "outcome2": "Разработка на Web Frontend & C# Razor Pages",
+      "outcome3": "Дизайн на герои (Tamagotchis) и UI"
+    },
+    "space": {
+      "title": "Space Invasion",
+      "desc": "Класически аркаден шутър, пресъздаден с модерни уеб технологии. Играчите защитават Земята от извънземни, използвайки къстъм енджин върху HTML5 Canvas.",
+      "role": "Game Developer",
+      "outcome1": "Имплементирана физика и засичане на колизии",
+      "outcome2": "Дизайн на пиксел арт и анимации",
+      "outcome3": "Управление на нива и локални резултати"
+    }
+  },
+  "certificates": {
+    "title": "Сертификати",
+    "kicker": "Верифицирани умения",
+    "completed_on": "Завършен на",
+    "btn_view": "ВИЖ",
+    "btn_verify": "Провери",
+    "meta_coursera": "Meta / Coursera",
+    "verified": "Верифициран",
+    "modal_mobile_msg": "Натиснете долу, за да отворите официалния PDF в браузъра.",
+    "btn_open_pdf": "Отвори PDF",
+    "btn_ext_verify": "Външна Проверка",
+    "c1_title": "Introduction to Front-End Development",
+    "c2_title": "Programming with JavaScript",
+    "c3_title": "Version Control",
+    "c4_title": "HTML and CSS in depth",
+    "c5_title": "React Basics",
+    "c6_title": "Advanced React"
+  },
+  "journey": {
+    "title": "Хронология",
+    "kicker": "Моят път",
+    "2019_title": "Специалност: Електронна търговия",
+    "2019_desc": "Започнах мултидисциплинарна програма, съчетаваща Икономика, Бизнес и Web Development. Завърших с диплома за Организатор на интернет приложения.",
+    "2023_title": "Международно изложение & Основи",
+    "2023_desc": "Участие в TF-FEST. Придобити основни сертификати по Version Control и въведение във Front-End.",
+    "2024_title": "Дипломиране & Meta Сертификати",
+    "2024_desc": "Затвърдени front-end умения чрез овладяване на HTML, CSS и JavaScript. Придобити Meta сертификати за React Basics и Advanced React.",
+    "2025_title": "Университет Fontys (ICT)",
+    "2025_desc": "Разширяване към full-stack разработка със C#, Razor и Blazor. Фокус върху UI/UX дизайн и работа в agile екипи."
+  },
+  "contact": {
+    "title": "Нека работим заедно.",
+    "desc": "Имате идея за проект? На разположение съм за freelance работа и нови възможности.",
+    "status": "Наличен за нови проекти",
+    "copy_fail": "Копирането неуспешно. Моля копирайте ръчно.",
+    "success": "Съобщението е изпратено успешно!",
+    "fail": "Грешка при изпращане. Моля опитайте отново.",
+    "label_name": "Име",
+    "label_email": "Имейл",
+    "label_message": "Съобщение",
+    "ph_name": "Иван Иванов",
+    "ph_email": "ivan@example.com",
+    "ph_message": "Разкажете ми за вашия проект...",
+    "btn_send": "Изпрати"
   }
 }

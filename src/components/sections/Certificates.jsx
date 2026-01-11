@@ -4,6 +4,7 @@ import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
 import GlareHover from "../ui/GlareHover";
 import MetaLogo from "../../assets/meta.png";
+import { useTranslation } from 'react-i18next'; // <--- Import
 
 // --- IMPORTS ---
 import FrontEndPdf from "../../assets/frontend.pdf";
@@ -14,6 +15,7 @@ import ReactBasicsPdf from "../../assets/react-basics.pdf";
 import AdvReactPdf from "../../assets/advanced-react.pdf";
 
 const Certificates = () => {
+  const { t } = useTranslation(); // <--- Init hook
   const [selectedCert, setSelectedCert] = useState(null);
 
   useEffect(() => {
@@ -24,44 +26,45 @@ const Certificates = () => {
     }
   }, [selectedCert]);
 
+  // MOVED ARRAY INSIDE
   const certs = [
     {
-      title: "Introduction to Front-End Development",
+      title: t('certificates.c1_title'),
       tags: ["HTML", "CSS"],
       date: "Sep 2, 2023",
       verifyLink: "https://coursera.org/verify/8ETUQ9L3GS9E",
       pdf: FrontEndPdf,
     },
     {
-      title: "Programming with JavaScript",
+      title: t('certificates.c2_title'),
       tags: ["JavaScript"],
       date: "Sep 25, 2023",
       verifyLink: "https://coursera.org/verify/83A5ALGPJF42",
       pdf: JSPdf,
     },
     {
-      title: "Version Control",
+      title: t('certificates.c3_title'),
       tags: ["Git", "GitHub"],
       date: "Oct 2, 2023",
       verifyLink: "https://coursera.org/verify/HYWBPSY7JGGZ",
       pdf: VersionControlPdf,
     },
     {
-      title: "HTML and CSS in depth",
+      title: t('certificates.c4_title'),
       tags: ["HTML", "CSS"],
       date: "Jan 17, 2024",
       verifyLink: "https://coursera.org/verify/8RF7U25HVNQ2",
       pdf: HtmlCssDepthPdf,
     },
     {
-      title: "React Basics",
+      title: t('certificates.c5_title'),
       tags: ["JavaScript", "React"],
       date: "Feb 24, 2024",
       verifyLink: "https://coursera.org/verify/AAS45JF4NDVZ",
       pdf: ReactBasicsPdf,
     },
     {
-      title: "Advanced React",
+      title: t('certificates.c6_title'),
       tags: ["React", "Hooks"],
       date: "Aug 1, 2024",
       verifyLink: "https://coursera.org/verify/QD8K2V7ADKY9",
@@ -72,7 +75,7 @@ const Certificates = () => {
   return (
     <>
       <section id="certificates" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
-        <SectionTitle title="Certificates" num="04" kicker="Verified Skills" />
+        <SectionTitle title={t('certificates.title')} num="04" kicker={t('certificates.kicker')} />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {certs.map((cert, idx) => (
@@ -101,7 +104,7 @@ const Certificates = () => {
                         </div>
                       </div>
                       <span className="inline-flex items-center gap-1 text-xs font-black px-2.5 py-1 rounded-full border transition-colors bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800">
-                        Verified <CheckCircle size={14} />
+                        {t('certificates.verified')} <CheckCircle size={14} />
                       </span>
                     </div>
 
@@ -111,7 +114,7 @@ const Certificates = () => {
                         {cert.title}
                       </h4>
                       <p className="text-sm font-medium mt-2 leading-relaxed transition-colors text-gray-500 dark:text-slate-400">
-                        Completed on {cert.date}
+                        {t('certificates.completed_on')} {cert.date}
                       </p>
                     </div>
 
@@ -130,7 +133,7 @@ const Certificates = () => {
                           onClick={() => setSelectedCert(cert)}
                           className="flex-1 bg-[#0EA5E9] text-white py-2.5 rounded-xl text-sm font-black shadow-sm hover:brightness-95 transition"
                         >
-                          VIEW
+                          {t('certificates.btn_view')}
                         </button>
                         <a
                           href={cert.verifyLink}
@@ -138,7 +141,7 @@ const Certificates = () => {
                           rel="noreferrer"
                           className="flex-1 border py-2.5 rounded-xl text-sm font-black transition-colors bg-transparent border-gray-200 text-gray-800 hover:bg-gray-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center justify-center gap-2"
                         >
-                          Verify <ExternalLink size={14} />
+                          {t('certificates.btn_verify')} <ExternalLink size={14} />
                         </a>
                       </div>
                     </div>
@@ -172,7 +175,7 @@ const Certificates = () => {
                   rel="noreferrer"
                   className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                 >
-                  <ExternalLink size={16} /> Verify
+                  <ExternalLink size={16} /> {t('certificates.btn_verify')}
                 </a>
                 
                 <button
@@ -196,33 +199,30 @@ const Certificates = () => {
               
               {/* MOBILE: Fallback */}
               <div className="sm:hidden flex flex-col items-center text-center p-6 gap-4">
-                 <div className="w-16 h-16 bg-sky-100 dark:bg-sky-900/30 rounded-full flex items-center justify-center text-sky-600 dark:text-sky-400">
-                   <FileText size={32} />
-                 </div>
-                 <div>
-                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">View Certificate PDF</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 max-w-[220px] mx-auto">
-                      Tap below to open the official PDF in your browser.
-                    </p>
-                 </div>
-                 <div className="flex flex-col gap-3 w-full max-w-[250px]">
+                  <div className="w-16 h-16 bg-sky-100 dark:bg-sky-900/30 rounded-full flex items-center justify-center text-sky-600 dark:text-sky-400">
+                    <FileText size={32} />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">{t('certificates.modal_mobile_msg')}</h4>
+                  </div>
+                  <div className="flex flex-col gap-3 w-full max-w-[250px]">
+                    <a
+                     href={selectedCert.pdf}
+                     target="_blank"
+                     rel="noreferrer"
+                     className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 rounded-full shadow-lg"
+                   >
+                     {t('certificates.btn_open_pdf')}
+                   </a>
                    <a
-                    href={selectedCert.pdf}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 rounded-full shadow-lg"
-                  >
-                    Open PDF
-                  </a>
-                  <a
-                    href={selectedCert.verifyLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold border border-gray-200 dark:border-slate-700 rounded-full text-slate-700 dark:text-slate-300"
-                  >
-                     External Verify <ExternalLink size={14} />
-                  </a>
-                 </div>
+                     href={selectedCert.verifyLink}
+                     target="_blank"
+                     rel="noreferrer"
+                     className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold border border-gray-200 dark:border-slate-700 rounded-full text-slate-700 dark:text-slate-300"
+                   >
+                      {t('certificates.btn_ext_verify')} <ExternalLink size={14} />
+                   </a>
+                  </div>
               </div>
 
             </div>

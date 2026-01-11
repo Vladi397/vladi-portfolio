@@ -13,6 +13,112 @@
     "subtitle": "Ik bouw schone, responsieve React-interfaces met sterke UX en focus op prestaties.",
     "cta_primary": "Bekijk mijn werk",
     "cta_secondary": "Neem contact op",
-    "status": "Beschikbaar"
+    "meta_certs": "7 Meta Certificaten",
+    "location": "Eindhoven",
+    "status": "Beschikbaar",
+    "quote": "“Moderne oplossingen gebouwd met technische precisie en schoon ontwerp.”"
+  },
+  "about": {
+    "title": "Over mij",
+    "kicker": "Wie ik ben",
+    "p1": "Ik ben Vladi Georgiev uit Bulgarije. Na mijn middelbare school in elektronische handel heb ik zeven professionele certificaten in front-end development behaald bij Meta.",
+    "p2": "Ik bouw websites met HTML, CSS, JavaScript, React en UI/UX-design. Ik heb ook aan C#-projecten gewerkt met Razor en Blazor.",
+    "skill_csharp": "C# Basis",
+    "btn_resume": "Bekijk CV",
+    "modal_title": "CV Voorbeeld",
+    "download": "Downloaden",
+    "mobile_msg": "Voor de beste ervaring op mobiel, open het bestand direct.",
+    "btn_open": "Open CV"
+  },
+  "skills": {
+    "title": "Vaardigheden",
+    "kicker": "Wat ik gebruik",
+    "cat_frontend": "Frontend",
+    "cat_backend": "Backend & Logica",
+    "cat_tools": "Tools & Design",
+    "responsive": "Responsive Design"
+  },
+  "projects": {
+    "title": "Projecten",
+    "kicker": "Geselecteerd werk",
+    "btn_live": "Live Demo",
+    "btn_code": "Code",
+    "ourgrid": {
+      "title": "OurGrid (OpenRemote)",
+      "desc": "Een platform dat 'netcongestie' demystificeert voor OpenRemote. Ik ontwierp de UI en valideerde de UX met echte gebruikers om complexe data te vertalen naar een schone React-interface.",
+      "role": "Frontend Lead • UI/UX Designer • Onderzoek",
+      "outcome1": "UX gevalideerd via testen met echte gebruikers",
+      "outcome2": "UI ontworpen voor Bewoners vs. Gemeenten",
+      "outcome3": "Technische IoT-data vertaald naar toegankelijke webcomponenten"
+    },
+    "mario": {
+      "title": "Mario & Luigi's Pizza",
+      "desc": "Een full-stack Italiaanse restaurant-app met authenticatie en winkelwagen. Ik ontwierp de visuele identiteit in Figma en bouwde de frontend gekoppeld aan een Python Flask backend.",
+      "role": "UI Designer & Frontend Lead",
+      "outcome1": "UI/UX & assets ontworpen in Figma",
+      "outcome2": "Productraster & winkelwagenlogica ontwikkeld",
+      "outcome3": "Python Flask geïntegreerd voor routing & auth"
+    },
+    "fitfusion": {
+      "title": "Fit Fusion",
+      "desc": "Een gamified gezondheidsecosysteem waar stappen een virtueel huisdier voeden. Ik leidde een agile team van 6 personen en verzorgde de integratie tussen Unity en het webplatform.",
+      "role": "Team Lead • Full Stack Web",
+      "outcome1": "Agile team geleid & integratie gecoördineerd",
+      "outcome2": "Web Frontend & C# Razor Pages ontwikkeld",
+      "outcome3": "Gamekarakters (Tamagotchis) & UI ontworpen"
+    },
+    "space": {
+      "title": "Space Invasion",
+      "desc": "Een klassieke arcade shooter herbouwd met moderne webtechnologieën. Spelers verdedigen de aarde tegen aliens met een custom game-engine op HTML5 Canvas.",
+      "role": "Game Developer",
+      "outcome1": "Collision detection & physics zelf geïmplementeerd",
+      "outcome2": "Pixel art assets & animaties ontworpen",
+      "outcome3": "Game state, levels en lokale high scores beheerd"
+    }
+  },
+  "certificates": {
+    "title": "Certificaten",
+    "kicker": "Geverifieerde Skills",
+    "completed_on": "Behaald op",
+    "btn_view": "BEKIJK",
+    "btn_verify": "Verifieer",
+    "meta_coursera": "Meta / Coursera",
+    "verified": "Geverifieerd",
+    "modal_mobile_msg": "Tik hieronder om de officiële PDF in je browser te openen.",
+    "btn_open_pdf": "Open PDF",
+    "btn_ext_verify": "Externe Verificatie",
+    "c1_title": "Introduction to Front-End Development",
+    "c2_title": "Programming with JavaScript",
+    "c3_title": "Version Control",
+    "c4_title": "HTML and CSS in depth",
+    "c5_title": "React Basics",
+    "c6_title": "Advanced React"
+  },
+  "journey": {
+    "title": "Tijdlijn",
+    "kicker": "Ervaring",
+    "2019_title": "Specialisatie: Elektronische Handel",
+    "2019_desc": "Gestart met een multidisciplinair programma dat Economie, Business en Web Development combineerde. Afgestudeerd als Organisator van Internet Applicaties.",
+    "2023_title": "Internationale Tentoonstelling & Basis",
+    "2023_desc": "Deelgenomen aan TF-FEST Internationale Tentoonstelling. Basiscertificaten behaald in Versiebeheer en Introductie tot Front-End.",
+    "2024_title": "Afstuderen & Meta Certificeringen",
+    "2024_desc": "Front-end expertise verstevigd door HTML, CSS en JavaScript te beheersen. Meta-certificaten behaald in React Basics en Advanced React.",
+    "2025_title": "Fontys Hogeschool (ICT)",
+    "2025_desc": "Uitbreiding naar full-stack development met C#, Razor en Blazor. Focus op UI/UX design en samenwerking in agile teams."
+  },
+  "contact": {
+    "title": "Laten we samenwerken.",
+    "desc": "Heb je een project in gedachten? Ik ben beschikbaar voor freelance werk en nieuwe kansen.",
+    "status": "Beschikbaar voor nieuwe projecten",
+    "copy_fail": "Kopiëren mislukt. Kopieer handmatig.",
+    "success": "Bericht succesvol verzonden!",
+    "fail": "Verzenden mislukt. Probeer het opnieuw.",
+    "label_name": "Naam",
+    "label_email": "E-mail",
+    "label_message": "Bericht",
+    "ph_name": "Jan Jansen",
+    "ph_email": "jan@voorbeeld.nl",
+    "ph_message": "Vertel me over je project...",
+    "btn_send": "Verstuur Bericht"
   }
 }

@@ -3,37 +3,37 @@ import { Layout, Database, Code2 } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
 import TiltedCard from "../ui/TiltedCard";
+import { useTranslation } from 'react-i18next';
 
 const Skills = () => {
+  const { t } = useTranslation();
+
   const skillCategories = [
     {
-      title: "Frontend",
+      title: t('skills.cat_frontend'), // Translated
       icon: <Layout className="w-7 h-7 text-[#0EA5E9]" />,
       skills: ["React", "JavaScript (ES6+)", "Tailwind CSS", "HTML5 & CSS3", "Bootstrap", "Blazor"],
     },
     {
-      title: "Backend & Logic",
+      title: t('skills.cat_backend'), // Translated
       icon: <Database className="w-7 h-7 text-[#0EA5E9]" />,
       skills: ["C#", "Razor Pages", "Python", "REST APIs", "SQL Basics"],
     },
     {
-      title: "Tools & Design",
+      title: t('skills.cat_tools'), // Translated
       icon: <Code2 className="w-7 h-7 text-[#0EA5E9]" />,
-      skills: ["Git & GitHub", "Figma (UI/UX)", "VS Code", "Responsive Design", "Agile"],
+      skills: ["Git & GitHub", "Figma (UI/UX)", "VS Code", t('skills.responsive'), "Agile"], // Translated 'Responsive Design'
     },
   ];
 
   return (
     <section id="skills" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
-      <SectionTitle title="Skills" num="02" kicker="What I use" />
+      <SectionTitle title={t('skills.title')} num="02" kicker={t('skills.kicker')} />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
         {skillCategories.map((cat, idx) => (
           <Reveal key={idx} delay={idx * 80}>
-            {/* Wrapper for Glow Effect */}
             <div className="relative group h-full">
-              
-              {/* THE GLOW - Positioned behind the card */}
               <div className="absolute -inset-0.5 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[22px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
               
               <TiltedCard className="h-full relative">
