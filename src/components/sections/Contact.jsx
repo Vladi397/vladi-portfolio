@@ -97,10 +97,23 @@ const Contact = () => {
                 </button>
 
                 <div className="flex gap-4">
-                  <a href="#" className="flex-1 flex items-center justify-center gap-2 p-4 rounded-2xl border font-bold transition-all bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10">
+                  {/* LINKEDIN LINK UPDATED */}
+                  <a 
+                    href="https://www.linkedin.com/in/vladi-georgiev-b68761295" 
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 p-4 rounded-2xl border font-bold transition-all bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
+                  >
                     LinkedIn <ExternalLink size={18} />
                   </a>
-                  <a href="#" className="flex-1 flex items-center justify-center gap-2 p-4 rounded-2xl border font-bold transition-all bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10">
+                  
+                  {/* GITHUB LINK UPDATED */}
+                  <a 
+                    href="https://github.com/Vladi397/vladi-portfolio" 
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 p-4 rounded-2xl border font-bold transition-all bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
+                  >
                     GitHub <Github size={18} />
                   </a>
                 </div>
