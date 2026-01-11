@@ -4,7 +4,7 @@ import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
 
 // 1. IMAGE IMPORT (Kept because it is in src/assets)
-import Vladi2 from "../../assets/Vladi2.jpg";
+import Vladi2 from "../../assets/vladi-profile2.JPG";
 
 const About = () => {
   const [showResume, setShowResume] = useState(false);
