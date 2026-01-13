@@ -115,18 +115,22 @@
     "2025_desc": "Uitbreiding naar full-stack development met C#, Razor en Blazor. Focus op UI/UX design en samenwerking in agile teams."
   },
   "contact": {
-    "title": "Laten we samenwerken.",
-    "desc": "Heb je een project in gedachten? Ik ben beschikbaar voor freelance werk en nieuwe kansen.",
-    "status": "Beschikbaar voor nieuwe projecten",
-    "copy_fail": "Kopiëren mislukt. Kopieer handmatig.",
-    "success": "Bericht succesvol verzonden!",
-    "fail": "Verzenden mislukt. Probeer het opnieuw.",
-    "label_name": "Naam",
-    "label_email": "E-mail",
-    "label_message": "Bericht",
-    "ph_name": "Jan Jansen",
-    "ph_email": "jan@voorbeeld.nl",
-    "ph_message": "Vertel me over je project...",
-    "btn_send": "Verstuur Bericht"
-  }
+  "title": "Laten we samenwerken.",
+  "desc": "Heb je een project in gedachten? Ik ben beschikbaar voor freelance werk en nieuwe kansen.",
+  "status": "Beschikbaar voor nieuwe projecten",
+  "copy_fail": "Kopiëren mislukt. Kopieer handmatig.",
+  "success": "Bericht succesvol verzonden!",
+  "fail": "Verzenden mislukt. Probeer het opnieuw.",
+  "label_name": "Naam",
+  "label_email": "E-mail",
+  "label_message": "Bericht",
+  "ph_name": "Jan Jansen",
+  "ph_email": "jan@voorbeeld.nl",
+  "ph_message": "Vertel me over je project...",
+  "btn_send": "Verstuur Bericht",
+  "error_name_short": "Vul alstublieft uw volledige naam in.",
+  "error_name_invalid": "Gebruik alstublieft alleen letters voor uw naam.",
+  "error_email_invalid": "Ik heb een geldig e-mailadres nodig om te antwoorden.",
+  "error_message_short": "Vertel me iets meer over uw project (minimaal 10 tekens)."
+}
 }

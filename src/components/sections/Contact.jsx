@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Check, Copy, ExternalLink, Github, Rocket, Mail, Loader2 } from "lucide-react";
+import { Check, Copy, ExternalLink, Github, Rocket, Mail, Loader2, AlertCircle } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import emailjs from '@emailjs/browser';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,10 @@ const Contact = () => {
   const email = "vladi.georgiev.14@gmail.com";
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  // New state for form errors
+  const [errors, setErrors] = useState({});
+
   const form = useRef();
 
   const onCopy = async () => {
@@ -21,8 +25,47 @@ const Contact = () => {
     }
   };
 
+  // --- VALIDATION LOGIC ---
+  const validateForm = () => {
+    const formData = new FormData(form.current);
+    const name = formData.get("user_name");
+    const emailValue = formData.get("user_email");
+    const message = formData.get("message");
+    
+    const newErrors = {};
+
+    // 1. Name Validation (Letters & Spaces only, min 2 chars)
+    const nameRegex = /^[A-Za-z\s]+$/;
+    if (!name || name.length < 2) {
+      newErrors.name = t('contact.error_name_short') || "Name must be at least 2 characters.";
+    } else if (!nameRegex.test(name)) {
+      newErrors.name = t('contact.error_name_invalid') || "Name can only contain letters.";
+    }
+
+    // 2. Email Validation (Simple regex)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailValue || !emailRegex.test(emailValue)) {
+      newErrors.email = t('contact.error_email_invalid') || "Please enter a valid email address.";
+    }
+
+    // 3. Message Validation (Min 10 chars)
+    if (!message || message.length < 10) {
+      newErrors.message = t('contact.error_message_short') || "Message must be at least 10 characters.";
+    }
+
+    setErrors(newErrors);
+    // Return true if no errors
+    return Object.keys(newErrors).length === 0;
+  };
+
   const sendEmail = (e) => {
     e.preventDefault();
+
+    // Run validation before sending
+    if (!validateForm()) {
+      return; // Stop if there are errors
+    }
+
     setLoading(true);
 
     const SERVICE_ID = "service_cpwm64l";   
@@ -38,6 +81,7 @@ const Contact = () => {
           setLoading(false);
           alert(t('contact.success'));
           e.target.reset(); 
+          setErrors({}); // Clear errors on success
         },
         (error) => {
           setLoading(false);
@@ -131,24 +175,28 @@ const Contact = () => {
                   <input
                     type="text"
                     name="user_name"
-                    required
                     placeholder={t('contact.ph_name')}
-                    className="w-full p-4 rounded-xl outline-none font-medium transition-all text-base
-                      bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
-                      dark:bg-[#0B1120] dark:border-white/10 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-sky-500"
+                    // Error styling logic
+                    className={`w-full p-4 rounded-xl outline-none font-medium transition-all text-base
+                      ${errors.name ? "border-red-500 focus:ring-red-500/20 bg-red-50 dark:bg-red-900/10" : "bg-white border-gray-200 dark:bg-[#0B1120] dark:border-white/10 focus:border-sky-500 focus:ring-sky-500/10"}
+                      text-gray-900 placeholder:text-gray-300 border focus:ring-4
+                      dark:text-white dark:placeholder:text-slate-600`}
                   />
+                  {errors.name && <p className="text-xs text-red-500 font-bold flex items-center gap-1"><AlertCircle size={12} /> {errors.name}</p>}
                 </div>
+
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">{t('contact.label_email')}</label>
                   <input
                     type="email"
                     name="user_email"
-                    required
                     placeholder={t('contact.ph_email')}
-                    className="w-full p-4 rounded-xl outline-none font-medium transition-all text-base
-                      bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
-                      dark:bg-[#0B1120] dark:border-white/10 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-sky-500"
+                    className={`w-full p-4 rounded-xl outline-none font-medium transition-all text-base
+                      ${errors.email ? "border-red-500 focus:ring-red-500/20 bg-red-50 dark:bg-red-900/10" : "bg-white border-gray-200 dark:bg-[#0B1120] dark:border-white/10 focus:border-sky-500 focus:ring-sky-500/10"}
+                      text-gray-900 placeholder:text-gray-300 border focus:ring-4
+                      dark:text-white dark:placeholder:text-slate-600`}
                   />
+                  {errors.email && <p className="text-xs text-red-500 font-bold flex items-center gap-1"><AlertCircle size={12} /> {errors.email}</p>}
                 </div>
               </div>
 
@@ -156,13 +204,14 @@ const Contact = () => {
                 <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">{t('contact.label_message')}</label>
                 <textarea
                   name="message"
-                  required
                   placeholder={t('contact.ph_message')}
                   rows="4"
-                  className="w-full p-4 rounded-xl outline-none resize-none font-medium transition-all text-base
-                    bg-white border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10
-                    dark:bg-[#0B1120] dark:border-white/10 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-sky-500"
+                  className={`w-full p-4 rounded-xl outline-none resize-none font-medium transition-all text-base
+                    ${errors.message ? "border-red-500 focus:ring-red-500/20 bg-red-50 dark:bg-red-900/10" : "bg-white border-gray-200 dark:bg-[#0B1120] dark:border-white/10 focus:border-sky-500 focus:ring-sky-500/10"}
+                    text-gray-900 placeholder:text-gray-300 border focus:ring-4
+                    dark:text-white dark:placeholder:text-slate-600`}
                 ></textarea>
+                {errors.message && <p className="text-xs text-red-500 font-bold flex items-center gap-1"><AlertCircle size={12} /> {errors.message}</p>}
               </div>
 
               <button

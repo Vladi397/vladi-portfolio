@@ -115,18 +115,22 @@
     "2025_desc": "Expanding into full-stack development with C#, Razor, and Blazor. Focusing on UI/UX design and collaboration in agile teams."
   },
   "contact": {
-    "title": "Let’s work together.",
-    "desc": "Have a project in mind? I'm available for freelance work and new opportunities.",
-    "status": "Available for new projects",
-    "copy_fail": "Copy failed. Please copy manually.",
-    "success": "Message sent successfully!",
-    "fail": "Failed to send message. Please try again.",
-    "label_name": "Name",
-    "label_email": "Email",
-    "label_message": "Message",
-    "ph_name": "John Doe",
-    "ph_email": "john@example.com",
-    "ph_message": "Tell me about your project...",
-    "btn_send": "Send Message"
-  }
+  "title": "Let’s work together.",
+  "desc": "Have a project in mind? I'm available for freelance work and new opportunities.",
+  "status": "Available for new projects",
+  "copy_fail": "Copy failed. Please copy manually.",
+  "success": "Message sent successfully!",
+  "fail": "Failed to send message. Please try again.",
+  "label_name": "Name",
+  "label_email": "Email",
+  "label_message": "Message",
+  "ph_name": "John Doe",
+  "ph_email": "john@example.com",
+  "ph_message": "Tell me about your project...",
+  "btn_send": "Send Message",
+  "error_name_short": "Could you please enter your full name?",
+  "error_name_invalid": "Please use only letters for your name.",
+  "error_email_invalid": "I need a valid email to reply to you.",
+  "error_message_short": "Please tell me a bit more (at least 10 characters)."
+}
 }
