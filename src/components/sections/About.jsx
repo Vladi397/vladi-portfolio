@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // <--- 1. Added useEffect
 import { X, Download, Eye, FileText } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
 import Vladi2 from "../../assets/vladi-profile2.JPG"; 
 import { useTranslation } from 'react-i18next';
-
-// --- FIXED: Import the new resume file name from assets ---
 import ResumePDF from "../../assets/vladi-resume1.pdf"; 
 
 const About = () => {
   const { t } = useTranslation();
   const [showResume, setShowResume] = useState(false);
+
+  // --- 2. ADDED THIS LOGIC TO PREVENT SCROLLING ---
+  useEffect(() => {
+    if (showResume) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [showResume]);
+  // ------------------------------------------------
 
   return (
     <>
