@@ -67,6 +67,14 @@
       "outcome2": "Разработка на Web Frontend & C# Razor Pages",
       "outcome3": "Дизайн на герои (Tamagotchis) и UI"
     },
+    "brewbuddy": {
+      "title": "BrewBuddy",
+      "desc": "Full Stack приложение за инвентар в студентска квартира. Изградих C# API за управление на данните и го свързах с React frontend, за да гарантирам, че напитките никога не свършват.",
+      "role": "Full Stack Разработчик • React & .NET",
+      "outcome1": "Разработено C# .NET REST API със SQL база данни",
+      "outcome2": "Визуализация и документация на endpoints чрез Swagger",
+      "outcome3": "Създаден mobile-first React интерфейс за следене в реално време"
+    },
     "space": {
       "title": "Space Invasion",
       "desc": "Класически аркаден шутър, пресъздаден с модерни уеб технологии. Играчите защитават Земята от извънземни, използвайки къстъм енджин върху HTML5 Canvas.",

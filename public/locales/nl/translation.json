@@ -67,6 +67,14 @@
       "outcome2": "Web Frontend & C# Razor Pages ontwikkeld",
       "outcome3": "Gamekarakters (Tamagotchis) & UI ontworpen"
     },
+    "brewbuddy": {
+      "title": "BrewBuddy",
+      "desc": "Een Full Stack inventaris-app voor mijn studentenhuis. Ik bouwde een custom C# API voor databeheer en koppelde deze aan een React frontend, zodat onze voorraad nooit opraakte.",
+      "role": "Full Stack Developer • React & .NET",
+      "outcome1": "Een C# .NET REST API ontwikkeld met SQL-database",
+      "outcome2": "Backend endpoints gevisualiseerd en gedocumenteerd met Swagger",
+      "outcome3": "Mobile-first React UI gemaakt voor real-time updates"
+    },
     "space": {
       "title": "Space Invasion",
       "desc": "Een klassieke arcade shooter herbouwd met moderne webtechnologieën. Spelers verdedigen de aarde tegen aliens met een custom game-engine op HTML5 Canvas.",

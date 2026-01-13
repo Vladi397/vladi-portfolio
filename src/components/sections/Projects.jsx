@@ -2,16 +2,17 @@ import React, { useState, useEffect } from "react";
 import { ExternalLink, Github } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
-import { useTranslation } from 'react-i18next'; // <--- Import
+import { useTranslation } from 'react-i18next';
 
 // Imports
 import ourGridImg from "../../assets/OurGrid.png";
 import marioPizzaImg from "../../assets/MarioPizza.png";
 import fitFusionImg from "../../assets/FirFusion.png";
 import spaceInvasionImg from "../../assets/spaceinvasion.png";
+import brewBuddyImg from "../../assets/brewbuddy.png"; 
 
 const Projects = () => {
-  const { t } = useTranslation(); // <--- Init hook
+  const { t } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -23,7 +24,15 @@ const Projects = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // MOVED INSIDE COMPONENT so we can use t()
+  // --- Handle clicks on empty links (triggers alert for Space Invasion) ---
+  const handleLinkClick = (e, url) => {
+    if (url === "#" || !url) {
+      e.preventDefault();
+      // Uses translation key if available, otherwise fallback text
+      alert(t('projects.link_unavailable') || "Sorry, this link is not working right now.");
+    }
+  };
+
   const projects = [
     {
       title: t('projects.ourgrid.title'),
@@ -52,7 +61,8 @@ const Projects = () => {
       ],
       tags: ["Figma", "Python Flask", "JavaScript", "HTML/CSS"],
       liveUrl: "#", 
-      repoUrl: "#", 
+      // UPDATED LINK:
+      repoUrl: "https://git.fhict.nl/I549833/fakeittillyoumakeit", 
     },
     {
       title: t('projects.fitfusion.title'),
@@ -66,7 +76,23 @@ const Projects = () => {
       ],
       tags: ["Team Lead", "C# Razor Pages", "Figma", "Unity"],
       liveUrl: "#", 
-      repoUrl: "#",
+      // UPDATED LINK:
+      repoUrl: "https://git.fhict.nl/I546016/the-merge-conflicts",
+    },
+    {
+      title: t('projects.brewbuddy.title'), 
+      desc: t('projects.brewbuddy.desc'),
+      role: t('projects.brewbuddy.role'),
+      img: brewBuddyImg, 
+      outcomes: [
+        t('projects.brewbuddy.outcome1'),
+        t('projects.brewbuddy.outcome2'),
+        t('projects.brewbuddy.outcome3'),
+      ],
+      tags: ["React", "C# .NET", "Swagger UI", "SQL"],
+      liveUrl: "#", 
+      // UPDATED LINK:
+      repoUrl: "https://git.fhict.nl/I547861/brewbuddy", 
     },
     {
       title: t('projects.space.title'),
@@ -80,6 +106,7 @@ const Projects = () => {
       ],
       tags: ["Game Dev", "JavaScript", "Canvas API", "HTML5"],
       liveUrl: "#", 
+      // This remains "#" so handleLinkClick will trigger the alert
       repoUrl: "#",
     },
   ];
@@ -170,6 +197,7 @@ const Projects = () => {
 
                         <div className="pt-4 flex flex-col sm:flex-row flex-wrap gap-3">
                           
+                          {/* Live Demo Button - Logic Preserved */}
                           {p.liveUrl && p.liveUrl !== "#" && (
                             <a
                               href={p.liveUrl}
@@ -182,8 +210,10 @@ const Projects = () => {
                             </a>
                           )}
 
+                          {/* Code/Repo Button - with Alert Handler */}
                           <a
                             href={p.repoUrl}
+                            onClick={(e) => handleLinkClick(e, p.repoUrl)}
                             target="_blank"
                             rel="noreferrer"
                             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border font-bold transition-all w-full sm:w-auto hover:scale-105 active:scale-95

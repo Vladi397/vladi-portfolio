@@ -67,6 +67,14 @@
       "outcome2": "Developed the Web Frontend & C# Razor Pages",
       "outcome3": "Designed game characters (Tamagotchis) & UI"
     },
+    "brewbuddy": {
+      "title": "BrewBuddy",
+      "desc": "A dedicated Full Stack inventory app for my student house. I built a custom C# API to manage complex storage data and connected it to a responsive React frontend, ensuring our beverages never ran out.",
+      "role": "Full Stack Developer • React & .NET",
+      "outcome1": "Developed a C# .NET REST API with an SQL database",
+      "outcome2": "Visualized and documented backend endpoints using Swagger",
+      "outcome3": "Created a mobile-first React UI for real-time stock updates"
+    },
     "space": {
       "title": "Space Invasion",
       "desc": "A classic arcade shooter reimagined with modern web technologies. Players defend Earth from waves of alien invaders using a custom-built game engine on the HTML5 Canvas.",
