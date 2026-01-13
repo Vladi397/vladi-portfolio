@@ -65,10 +65,8 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
     </button>
   );
 
-  // --- THE "HOLOGRAPHIC REACTOR" SWITCHER ---
   const LangSwitcher = ({ className = "" }) => (
     <div className={`relative ${className} z-50`}>
-      {/* 1. THE TRIGGER BUTTON (The Reactor) */}
       <button
         onClick={() => setLangMenuOpen(!langMenuOpen)}
         className={`group relative flex items-center gap-2 p-1 pl-3 pr-1 rounded-full border transition-all duration-500
@@ -78,24 +76,18 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
           }
         `}
       >
-        {/* Label Text */}
         <span className={`text-xs font-black tracking-widest transition-colors duration-300
           ${langMenuOpen ? "text-sky-600 dark:text-sky-400" : "text-gray-600 dark:text-slate-400"}
         `}>
           {currentLang.short}
         </span>
-
-        {/* The Rotating Reactor Core */}
         <div className="relative w-8 h-8 flex items-center justify-center">
-          {/* Outer Ring (Spins) */}
           <div className={`absolute inset-0 rounded-full border-2 border-dashed transition-all duration-700 ease-in-out
             ${langMenuOpen 
               ? "border-sky-500 rotate-[180deg] scale-100 opacity-100" 
               : "border-gray-300 dark:border-slate-600 rotate-0 scale-75 opacity-50 group-hover:border-sky-400 group-hover:opacity-100"
             }
           `} />
-          
-          {/* Inner Core (Pulses) */}
           <div className={`relative z-10 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-500
             ${langMenuOpen 
               ? "bg-sky-500 shadow-lg shadow-sky-500/50 scale-100" 
@@ -107,12 +99,10 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
         </div>
       </button>
 
-      {/* Backdrop */}
       {langMenuOpen && (
         <div className="fixed inset-0 z-10" onClick={() => setLangMenuOpen(false)} />
       )}
 
-      {/* 2. THE DROPDOWN (The Holographic Projection) */}
       <div 
         className={`absolute top-full right-0 mt-4 w-60 p-2 rounded-2xl z-20 border backdrop-blur-2xl origin-top-right overflow-hidden
           transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1)
@@ -120,15 +110,11 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
             ? "opacity-100 scale-100 translate-y-0 rotate-0" 
             : "opacity-0 scale-90 -translate-y-8 rotate-3 pointer-events-none"
           }
-          /* Visual Styles */
           bg-white/80 border-white/60 shadow-2xl
           dark:bg-[#0B1120]/90 dark:border-sky-500/30 dark:shadow-[0_0_50px_-10px_rgba(14,165,233,0.25)]
         `}
       >
-        {/* Alive "Scanner" Line (Moves up and down) */}
         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-sky-400 to-transparent opacity-50 animate-scan pointer-events-none z-0" />
-        
-        {/* Background Grid for Tech Feel */}
         <div className="absolute inset-0 bg-grid-slate-200 [mask-image:linear-gradient(0deg,rgba(255,255,255,0.5),transparent)] dark:bg-grid-slate-700/30 dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.2),transparent)] pointer-events-none z-0" />
 
         <div className="relative z-10 flex flex-col gap-2 p-1">
@@ -148,30 +134,24 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
                 `}
               >
                 <div className="flex items-center gap-3">
-                  {/* Glowing Dot */}
                   <div className={`w-1.5 h-1.5 rounded-full shadow-[0_0_8px_currentColor] transition-all duration-300
                     ${isActive 
                       ? "bg-sky-500 scale-125 shadow-sky-500" 
                       : "bg-gray-300 dark:bg-slate-600 group-hover:bg-sky-400"
                     }
                   `} />
-                  
                   <span className={`text-sm font-bold tracking-wide transition-colors
                     ${isActive ? "text-sky-700 dark:text-sky-300" : "text-gray-600 dark:text-slate-300 group-hover:text-black dark:group-hover:text-white"}
                   `}>
                     {lang.label}
                   </span>
                 </div>
-
-                {/* Active Indicator Arrow */}
                 <ChevronRight 
                   size={16} 
                   className={`transition-all duration-300 
                     ${isActive ? "text-sky-500 opacity-100 translate-x-0" : "text-gray-400 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"}
                   `} 
                 />
-
-                {/* Alive "Glint" Effect on Hover */}
                 <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/40 to-transparent dark:via-sky-400/10 pointer-events-none" />
               </button>
             );
@@ -208,14 +188,22 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
                 <button
                   key={l.id}
                   onClick={() => handleNav(l.id)}
-                  className={[
-                    "text-xs lg:text-sm font-semibold tracking-widest uppercase theme-color-transition transition-colors hover:-translate-y-0.5 duration-200",
-                    isActive
+                  // --- FIX APPLIED HERE ---
+                  // 1. Used 'group' relative to the button
+                  // 2. Applied hover effect to span instead of button to keep button stable
+                  // 3. Added invisible padding to keep cursor active area large
+                  className={`group relative text-xs lg:text-sm font-semibold tracking-widest uppercase theme-color-transition transition-colors duration-200
+                    ${isActive
                       ? "text-sky-600 dark:text-sky-400"
-                      : "text-gray-600 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-400",
-                  ].join(" ")}
+                      : "text-gray-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400"
+                    }
+                  `}
                 >
-                  {l.label}
+                  <span className="block transform transition-transform duration-200 group-hover:-translate-y-0.5">
+                    {l.label}
+                  </span>
+                  {/* Invisible 'hitbox' to prevent cursor flickering */}
+                  <span className="absolute inset-0 -bottom-2" />
                 </button>
               );
             })}
