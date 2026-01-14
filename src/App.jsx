@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import { ArrowUpRight } from "lucide-react";
 
 import useActiveSection from "./hooks/useActiveSection";
-import useTheme from "./hooks/useTheme"; // <--- Hook is back
+import useTheme from "./hooks/useTheme"; 
 import { scrollToId } from "./utils/scrollHelpers";
 
 import LoadingScreen from "./components/ui/LoadingScreen";
@@ -21,7 +21,7 @@ import Journey from "./components/sections/Journey";
 import Contact from "./components/sections/Contact";
 
 export default function App() {
-  const { theme, toggleTheme } = useTheme(); // <--- Using the hook again
+  const { theme, toggleTheme } = useTheme();
 
   const sectionIds = useMemo(
     () => ["about", "skills", "projects", "certificates", "journey", "contact"],
@@ -40,19 +40,30 @@ export default function App() {
 
   return (
     <>
+      {/* 1. Loading Screen: It stays on top until it calls onComplete */}
       {!isLoaded && <LoadingScreen onComplete={() => setIsLoaded(true)} />}
 
+      {/* 2. Main Content: 
+           - We removed "opacity-0" so the Hero/Background is visible immediately behind the loader.
+           - This prevents the grey flash when the loader slides up. 
+      */}
       <div
         className={`min-h-screen font-sans theme-color-transition transition-colors duration-300
         selection:bg-[#0EA5E9] selection:text-white
         text-gray-900 dark:text-slate-100
-        ${isLoaded ? "opacity-100" : "opacity-0"}`}
+        opacity-100`} 
       >
         <div className="fixed inset-0 -z-50 bg-slate-50 dark:bg-[#050505] transition-colors duration-300" />
         <MouseSpotlight />
         <UniverseBackground theme={theme} />
         
-        <Navbar activeId={activeId} theme={theme} toggleTheme={toggleTheme} />
+        {/* 3. Navbar Fix: 
+             - We only render Navbar AFTER loading is done (isLoaded && ...).
+             - This prevents it from appearing on top of your Loading Screen. 
+        */}
+        {isLoaded && (
+          <Navbar activeId={activeId} theme={theme} toggleTheme={toggleTheme} />
+        )}
 
         <main className="relative z-10">
           <Hero />

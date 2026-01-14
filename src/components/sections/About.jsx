@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react"; // <--- 1. Added useEffect
+import React, { useState, useEffect } from "react";
 import { X, Download, Eye, FileText } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
 import Vladi2 from "../../assets/vladi-profile2.JPG"; 
 import { useTranslation } from 'react-i18next';
-import ResumePDF from "../../assets/vladi-resume1.pdf"; 
+
+// --- UPDATED IMPORT: New CV File ---
+import ResumePDF from "../../assets/vladi-cv.pdf"; 
 
 const About = () => {
   const { t } = useTranslation();
   const [showResume, setShowResume] = useState(false);
 
-  // --- 2. ADDED THIS LOGIC TO PREVENT SCROLLING ---
+  // Logic to prevent scrolling when modal is open
   useEffect(() => {
     if (showResume) {
       document.body.style.overflow = "hidden";
@@ -18,7 +20,6 @@ const About = () => {
       document.body.style.overflow = "unset";
     }
   }, [showResume]);
-  // ------------------------------------------------
 
   return (
     <>
@@ -104,7 +105,7 @@ const About = () => {
               <div className="flex items-center gap-3">
                 <a 
                   href={ResumePDF} 
-                  download="Vladi_Georgiev_Resume.pdf"
+                  download="Vladi_Georgiev_CV.pdf" 
                   className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-sky-600 hover:bg-sky-700 rounded-lg transition-colors"
                 >
                   <Download size={16} /> {t('about.download')}
