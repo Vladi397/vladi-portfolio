@@ -1,5 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { ArrowUpRight } from "lucide-react";
+// 1. Add this import
+import { Analytics } from "@vercel/analytics/react"; 
 
 import useActiveSection from "./hooks/useActiveSection";
 import useTheme from "./hooks/useTheme"; 
@@ -40,13 +42,11 @@ export default function App() {
 
   return (
     <>
-      {/* 1. Loading Screen: It stays on top until it calls onComplete */}
+      {/* 2. Add the component here. It's invisible and won't affect the UI. */}
+      <Analytics />
+
       {!isLoaded && <LoadingScreen onComplete={() => setIsLoaded(true)} />}
 
-      {/* 2. Main Content: 
-           - We removed "opacity-0" so the Hero/Background is visible immediately behind the loader.
-           - This prevents the grey flash when the loader slides up. 
-      */}
       <div
         className={`min-h-screen font-sans theme-color-transition transition-colors duration-300
         selection:bg-[#0EA5E9] selection:text-white
@@ -57,10 +57,6 @@ export default function App() {
         <MouseSpotlight />
         <UniverseBackground theme={theme} />
         
-        {/* 3. Navbar Fix: 
-             - We only render Navbar AFTER loading is done (isLoaded && ...).
-             - This prevents it from appearing on top of your Loading Screen. 
-        */}
         {isLoaded && (
           <Navbar activeId={activeId} theme={theme} toggleTheme={toggleTheme} />
         )}
