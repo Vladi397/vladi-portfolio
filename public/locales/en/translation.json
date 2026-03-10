@@ -44,8 +44,8 @@
     "btn_live": "Live Demo",
     "btn_code": "Code",
     "ourgrid": {
-      "title": "OurGrid (OpenRemote)",
-      "desc": "A platform demystifying 'grid congestion' for OpenRemote. I designed the UI and validated the UX with real users (students & coaches) to translate complex data into a clean React interface.",
+      "title": "OurGrid (Client OpenRemote)",
+      "desc": "A platform demystifying 'grid congestion' for the company OpenRemote. I designed the UI and validated the UX with real users (students & coaches) to translate complex data into a clean React interface.",
       "role": "Frontend Lead • UI/UX Designer • Research",
       "outcome1": "Validated UX via testing with real users",
       "outcome2": "Architected a split-view UI for Residents vs. Municipalities",
