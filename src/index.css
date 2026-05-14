@@ -13,10 +13,17 @@
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   }
-  
+
   .dark .glass-panel {
     background: rgba(0, 0, 0, 0.3); /* Darker glass for better contrast in dark mode */
     border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* --- CUSTOM CURSOR (desktop / precise pointer only) --- */
+@media (pointer: fine) {
+  *, *::before, *::after {
+    cursor: none !important;
   }
 }
 

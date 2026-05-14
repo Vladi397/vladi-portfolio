@@ -133,8 +133,8 @@ const UniverseBackground = ({ theme }) => {
 
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
-      <Canvas 
-        camera={{ position: [0, 0, 10], fov: 45 }} 
+      <Canvas
+        camera={{ position: [0, 0, 10], fov: 45 }}
         dpr={[1, 2]}
         eventSource={document.getElementById('root')}
         eventPrefix="client"

@@ -1,14 +1,16 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { ArrowUpRight } from "lucide-react";
-// 1. Add this import
-import { Analytics } from "@vercel/analytics/react"; 
+import { Analytics } from "@vercel/analytics/react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import useActiveSection from "./hooks/useActiveSection";
-import useTheme from "./hooks/useTheme"; 
+import useTheme from "./hooks/useTheme";
 import { scrollToId } from "./utils/scrollHelpers";
+import NotFound from "./pages/NotFound";
 
 import LoadingScreen from "./components/ui/LoadingScreen";
 import GlareHover from "./components/ui/GlareHover";
+import CustomCursor from "./components/ui/CustomCursor";
 
 import UniverseBackground from "./components/ui/UniverseBackground";
 import MouseSpotlight from "./components/ui/MouseSpotlight";
@@ -41,8 +43,11 @@ export default function App() {
   }, []);
 
   return (
-    <>
-      {/* 2. Add the component here. It's invisible and won't affect the UI. */}
+    <BrowserRouter>
+      <CustomCursor />
+      <Routes>
+        <Route path="*" element={<NotFound />} />
+        <Route path="/" element={<>
       <Analytics />
 
       {!isLoaded && <LoadingScreen onComplete={() => setIsLoaded(true)} />}
@@ -96,6 +101,8 @@ export default function App() {
           </div>
         )}
       </div>
-    </>
+    </>} />
+      </Routes>
+    </BrowserRouter>
   );
 }

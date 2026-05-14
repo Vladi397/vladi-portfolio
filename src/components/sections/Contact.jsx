@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Check, Copy, ExternalLink, Github, Rocket, Mail, Loader2, AlertCircle } from "lucide-react";
+import { Check, Copy, ExternalLink, Github, Mail, Loader2, AlertCircle } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import emailjs from '@emailjs/browser';
 import { useTranslation } from 'react-i18next';
@@ -217,10 +217,9 @@ const Contact = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-xl font-bold text-white shadow-lg shadow-sky-500/25 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2
-                bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full py-4 rounded-xl font-bold text-white shadow-lg shadow-sky-500/30 transition-all hover:brightness-110 hover:scale-[1.02] active:scale-95 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed bg-[#0EA5E9]"
               >
-                {loading ? <Loader2 className="animate-spin" /> : <>{t('contact.btn_send')} <Rocket size={20} /></>}
+                {loading ? <Loader2 className="animate-spin" /> : t('contact.btn_send')}
               </button>
             </form>
           </div>

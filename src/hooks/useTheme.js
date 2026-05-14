@@ -8,7 +8,7 @@ function getInitialTheme() {
     const saved = localStorage.getItem("theme");
     if (saved === "dark" || saved === "light") return saved;
   }
-  
+
   // 2. If no saved preference, DEFAULT TO DARK
   return "dark";
 }

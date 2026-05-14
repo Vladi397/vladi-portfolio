@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"d:\\\\Desktop\\\\portfolio\" -Recurse -Force | Where-Object { $_.FullName -notmatch 'node_modules|\\\\.git' } | Select-Object -ExpandProperty FullName | ForEach-Object { $_.Replace\\('d:\\\\Desktop\\\\portfolio\\\\', ''\\) } | Sort-Object | Select-Object -First 150)",
+      "Bash(npm install *)",
+      "Bash(npm run *)"
+    ]
+  }
+}
