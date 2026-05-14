@@ -80,7 +80,7 @@ export default function App() {
           © 2025 Vladi Georgiev.
         </footer>
 
-        {showTop && (
+        {isLoaded && showTop && (
           <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50">
             <GlareHover
               borderRadius="50%"
