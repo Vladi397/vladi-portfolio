@@ -41,7 +41,7 @@ const TiltedCard = ({ children, className = "" }) => {
       }}
     >
       <div
-        className="w-full h-full bg-white rounded-[20px] border border-gray-100 p-6 sm:p-8 shadow-sm transition-all duration-200 ease-out group-hover:shadow-2xl group-hover:shadow-sky-200/50"
+        className="w-full h-full bg-[#0EA5E9] rounded-[20px] p-6 sm:p-8 shadow-sm transition-all duration-200 ease-out group-hover:shadow-2xl group-hover:shadow-sky-500/40"
         style={{
           transform: `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) scale(${scale})`,
           transformStyle: "preserve-3d",

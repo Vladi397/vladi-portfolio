@@ -1,14 +1,103 @@
-import React from "react";
-import { ArrowUpRight, CheckCircle, MapPin } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { ArrowUpRight, CheckCircle, MapPin, ScanLine } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import PrimaryButton from "../ui/PrimaryButton";
 import SecondaryButton from "../ui/SecondaryButton";
 import { scrollToId } from "../../utils/scrollHelpers";
 import Vladi1 from "../../assets/vladi-profile1.png";
+import VladiSkeleton from "../../assets/vladi-xray-cut.png";
 import { useTranslation } from 'react-i18next'; // <--- Import hook
 
 const Hero = () => {
   const { t } = useTranslation(); // <--- Init hook
+
+  // X-ray lens: a circular hole is punched in the photo at the cursor, revealing the
+  // skeleton (which sits underneath) over the site background — so there is never any
+  // photo behind the skeleton to bleed through. Hover follows the cursor; clicking
+  // animates the hole open to the full skeleton, and closed again on the next click.
+  // Everything is written straight to the photo's DOM node, so mouse-move never
+  // re-renders React — that keeps it smooth.
+  const HOVER_R = 60; // lens radius in px (~120px circle)
+  const photoRef = useRef(null);
+  const lockedRef = useRef(false);
+  const hoverRef = useRef(false);
+  const posRef = useRef({ x: 0, y: 0 });
+  const rRef = useRef(0); // current hole radius
+  const moveRaf = useRef(0);
+  const animRaf = useRef(0);
+  const [locked, setLocked] = useState(false); // drives the hint pill only
+
+  const applyMask = () => {
+    const el = photoRef.current;
+    if (!el) return;
+    const r = rRef.current;
+    if (r <= 0.5) {
+      el.style.maskImage = "";
+      el.style.webkitMaskImage = "";
+      return;
+    }
+    const { x, y } = posRef.current;
+    const g = `radial-gradient(circle ${r}px at ${x}px ${y}px, transparent 0, transparent 99%, #000 100%)`;
+    el.style.maskImage = g;
+    el.style.webkitMaskImage = g;
+  };
+
+  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+  const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+  const animateR = (to, dur, ease) => {
+    cancelAnimationFrame(animRaf.current);
+    const from = rRef.current;
+    const start = performance.now();
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / dur);
+      rRef.current = from + (to - from) * ease(t);
+      applyMask();
+      if (t < 1) animRaf.current = requestAnimationFrame(step);
+    };
+    animRaf.current = requestAnimationFrame(step);
+  };
+
+  const localXY = (e) => {
+    const b = e.currentTarget.getBoundingClientRect();
+    return { x: e.clientX - b.left, y: e.clientY - b.top, w: b.width, h: b.height };
+  };
+
+  const onMove = (e) => {
+    if (lockedRef.current) return;
+    posRef.current = localXY(e);
+    if (!moveRaf.current) {
+      moveRaf.current = requestAnimationFrame(() => {
+        moveRaf.current = 0;
+        applyMask(); // follow the cursor with the current radius
+      });
+    }
+  };
+  const onEnter = (e) => {
+    if (lockedRef.current) return;
+    hoverRef.current = true;
+    posRef.current = localXY(e);
+    animateR(HOVER_R, 200, easeOutCubic); // grow the lens in
+  };
+  const onLeave = () => {
+    if (lockedRef.current) return;
+    hoverRef.current = false;
+    animateR(0, 260, easeOutCubic); // shrink the lens out
+  };
+  const onToggle = (e) => {
+    const p = localXY(e);
+    posRef.current = p;
+    const next = !lockedRef.current;
+    lockedRef.current = next;
+    setLocked(next);
+    if (next) animateR(Math.hypot(p.w, p.h) * 1.15, 720, easeInOutCubic); // open to full
+    else animateR(hoverRef.current ? HOVER_R : 0, 600, easeInOutCubic);   // close again
+  };
+
+  useEffect(() => () => {
+    cancelAnimationFrame(moveRaf.current);
+    cancelAnimationFrame(animRaf.current);
+  }, []);
 
   return (
     <section
@@ -121,9 +210,9 @@ const Hero = () => {
           <div className="relative isolate">
             <div
               className={[
-                "absolute inset-0 -z-20 rounded-[32px]",
-                "bg-[radial-gradient(circle_at_50%_40%,rgba(14,165,233,0.14),transparent_60%)]",
-                "dark:bg-[radial-gradient(circle_at_50%_40%,rgba(14,165,233,0.18),transparent_55%)]",
+                "absolute -inset-x-6 -top-24 bottom-0 -z-20 rounded-[36px]",
+                "bg-[radial-gradient(circle_at_50%_48%,rgba(14,165,233,0.14),transparent_60%)]",
+                "dark:bg-[radial-gradient(circle_at_50%_48%,rgba(14,165,233,0.18),transparent_55%)]",
               ].join(" ")}
             />
 
@@ -133,21 +222,59 @@ const Hero = () => {
             />
 
             <div
-              className="relative z-10"
+              className="relative z-10 cursor-crosshair select-none"
+              onMouseEnter={onEnter}
+              onMouseMove={onMove}
+              onMouseLeave={onLeave}
+              onClick={onToggle}
               style={{
                 maskImage: "linear-gradient(to bottom, black 72%, transparent 100%)",
                 WebkitMaskImage: "linear-gradient(to bottom, black 72%, transparent 100%)",
               }}
             >
+              {/* Skeleton — base layer underneath, shown wherever the photo is holed */}
               <img
-                src={Vladi1}
-                alt="Vladi Georgiev"
+                src={VladiSkeleton}
+                alt=""
+                aria-hidden="true"
+                draggable="false"
+                decoding="async"
                 className={[
-                  "w-full h-auto object-cover select-none",
+                  "absolute inset-0 w-full h-full object-cover select-none pointer-events-none",
                   "drop-shadow-[0_28px_55px_rgba(2,6,23,0.18)]",
-                  "dark:drop-shadow-[0_0_35px_rgba(14,165,233,0.25)]", 
+                  "dark:drop-shadow-[0_0_45px_rgba(14,165,233,0.5)]",
                 ].join(" ")}
               />
+
+              {/* Real photo — on top; a circular hole is punched at the cursor (mask) */}
+              <img
+                ref={photoRef}
+                src={Vladi1}
+                alt="Vladi Georgiev"
+                draggable="false"
+                decoding="async"
+                className={[
+                  "relative block w-full h-auto object-cover select-none",
+                  "drop-shadow-[0_28px_55px_rgba(2,6,23,0.18)]",
+                  "dark:drop-shadow-[0_0_35px_rgba(14,165,233,0.25)]",
+                ].join(" ")}
+                style={{ willChange: "mask-image" }}
+              />
+
+              {/* Hint pill */}
+              <span
+                className={[
+                  "absolute bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-none",
+                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full",
+                  "text-[11px] font-medium tracking-wide whitespace-nowrap",
+                  "bg-slate-900/70 text-sky-200 ring-1 ring-sky-400/30 backdrop-blur-sm shadow-lg",
+                  "transition-opacity duration-500",
+                  locked ? "opacity-0" : "opacity-90",
+                ].join(" ")}
+              >
+                <ScanLine size={13} className="text-sky-400" />
+                {t("hero.xray_hint", "Hover to scan · click to hold")}
+              </span>
             </div>
 
             <div
