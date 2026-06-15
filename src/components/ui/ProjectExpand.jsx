@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { X, ExternalLink, Github, ChevronRight, Sparkles, Images } from "lucide-react";
+import { X, ExternalLink, Github, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ProjectCardInner from "./ProjectCardInner";
 
@@ -260,17 +260,18 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
   };
 
   const gallery = project.gallery && project.gallery.length ? project.gallery : [project.img];
-  const gBase = 200;
-  const fBase = gBase + gallery.length * 90 + 120;
+  const gBase = 150;
+  const fBase = gBase + gallery.length * 110 + 170;
 
   const detail = (
     <div className="min-h-full text-gray-900 dark:text-white">
+      {/* Sticky top bar */}
       <div
-        className="sticky top-0 z-20 flex items-center justify-between gap-4 px-5 sm:px-8 py-3.5
-          bg-white/80 dark:bg-[#0B1120]/80 backdrop-blur-md border-b border-gray-200 dark:border-sky-900/40"
+        className="sticky top-0 z-30 flex items-center justify-between gap-4 px-5 sm:px-8 py-3.5
+          bg-white/75 dark:bg-[#0B1120]/75 backdrop-blur-xl border-b border-gray-200/70 dark:border-sky-900/40"
       >
         <div className="min-w-0 flex items-center gap-3">
-          <span className="text-[#0EA5E9] font-black tracking-widest uppercase text-[10px] sm:text-xs bg-sky-50 dark:bg-sky-900/20 px-2.5 py-1 rounded-full whitespace-nowrap">
+          <span className="hidden sm:inline text-[#0EA5E9] font-bold tracking-[0.18em] uppercase text-[11px]">
             {project.role}
           </span>
           <span className="font-bold truncate text-sm sm:text-base">{project.title}</span>
@@ -288,23 +289,29 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
         </button>
       </div>
 
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-8 sm:py-12 space-y-12 sm:space-y-14">
-        <header className="space-y-4" style={rv(0)}>
-          <h2 className="text-3xl sm:text-5xl font-black leading-tight">{project.title}</h2>
-          <p className="text-base sm:text-lg leading-relaxed text-gray-600 dark:text-slate-300 max-w-3xl">
+      <article className="mx-auto w-full max-w-5xl px-5 sm:px-8 pb-16 sm:pb-24">
+        {/* Header — eyebrow, display title, lead, tags, actions */}
+        <header className="pt-10 sm:pt-16 pb-10 sm:pb-14" style={rv(0)}>
+          <p className="text-[#0EA5E9] font-bold tracking-[0.22em] uppercase text-xs sm:text-sm">
+            {project.role}
+          </p>
+          <h2 className="font-black tracking-tight leading-[1.03] text-4xl sm:text-6xl mt-4 text-gray-900 dark:text-white">
+            {project.title}
+          </h2>
+          <p className="mt-6 max-w-2xl text-lg sm:text-xl leading-relaxed text-gray-600 dark:text-slate-300">
             {project.desc}
           </p>
-          <div className="flex flex-wrap gap-2 pt-1">
+          <div className="mt-7 flex flex-wrap gap-2">
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-3 py-1 rounded-lg text-xs font-bold border bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/20"
+                className="px-3 py-1.5 rounded-lg text-xs font-bold border bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/20"
               >
                 {tag}
               </span>
             ))}
           </div>
-          <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-2">
+          <div className="mt-7 flex flex-col sm:flex-row flex-wrap gap-3">
             {project.liveUrl && project.liveUrl !== "#" && (
               <a
                 href={project.liveUrl}
@@ -320,7 +327,7 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
                 href={project.repoUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border font-bold transition-transform hover:scale-105 active:scale-95 bg-white border-gray-200 text-gray-700 hover:bg-gray-50 dark:bg-white/5 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border font-bold transition-transform hover:scale-105 active:scale-95 bg-white border-gray-200 text-gray-700 hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700"
               >
                 {t("projects.btn_code", "View Code")} <Github size={18} />
               </a>
@@ -328,55 +335,62 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
           </div>
         </header>
 
-        <section className="space-y-5">
-          <h3 className="flex items-center gap-2 text-xl sm:text-2xl font-black" style={rv(gBase - 80)}>
-            <Images size={20} className="text-[#0EA5E9]" />
-            {t("projects.detail_gallery", "Gallery")}
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-            {gallery.map((src, i) => (
-              <div
-                key={i}
-                style={rv(gBase + i * 90)}
-                className="rounded-2xl overflow-hidden border shadow-md border-gray-200 dark:border-slate-700/60 bg-gray-50 dark:bg-slate-800/50"
-              >
-                <img
-                  src={src}
-                  alt={`${project.title} — screenshot ${i + 1}`}
-                  loading="lazy"
-                  className="w-full h-full object-cover aspect-[4/3]"
-                />
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Big imagery — uncropped, framed. Side-by-side when there are several. */}
+        <div className={gallery.length > 1 ? "grid gap-5 sm:gap-6 sm:grid-cols-2 items-start" : "space-y-6"}>
+          {gallery.map((src, i) => (
+            <figure
+              key={i}
+              style={rv(gBase + i * 110)}
+              className="overflow-hidden rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-white/10
+                bg-gray-50 dark:bg-white/[0.03] shadow-xl shadow-slate-900/5 dark:shadow-black/40"
+            >
+              <img
+                src={src}
+                alt={`${project.title} — ${i + 1}`}
+                loading="lazy"
+                decoding="async"
+                className="block w-full h-auto"
+              />
+            </figure>
+          ))}
+        </div>
 
-        <section className="space-y-5">
-          <h3 className="flex items-center gap-2 text-xl sm:text-2xl font-black" style={rv(fBase - 80)}>
-            <Sparkles size={20} className="text-[#0EA5E9]" />
+        {/* Interesting facts — numbered cards */}
+        <section className="mt-16 sm:mt-24">
+          <h3
+            className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8"
+            style={rv(fBase - 90)}
+          >
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-sky-500/10 text-[#0EA5E9]">
+              <Sparkles size={18} />
+            </span>
             {t("projects.detail_facts", "Interesting facts")}
           </h3>
-          <ul className="space-y-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             {(project.facts || []).map((fact, i) => {
               const isTodo = /^todo/i.test(String(fact).trim());
               return (
-                <li
+                <div
                   key={i}
-                  style={rv(fBase + i * 80)}
-                  className={`flex gap-3 items-start rounded-xl p-4 border ${
+                  style={rv(fBase + i * 70)}
+                  className={`rounded-2xl p-5 sm:p-6 border ${
                     isTodo
                       ? "border-dashed border-amber-300/70 bg-amber-50/60 text-amber-700 italic dark:border-amber-400/30 dark:bg-amber-400/5 dark:text-amber-300/90"
-                      : "border-gray-200 bg-gray-50 text-gray-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
+                      : "border-gray-200 bg-gray-50/80 text-gray-700 dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-300"
                   }`}
                 >
-                  <ChevronRight size={18} className="text-[#0EA5E9] flex-shrink-0 mt-0.5" />
-                  <span className="font-medium text-sm sm:text-base">{fact}</span>
-                </li>
+                  <div className="flex items-start gap-3.5">
+                    <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-500/10 text-[#0EA5E9] text-xs font-black">
+                      {i + 1}
+                    </span>
+                    <p className="text-[15px] sm:text-base leading-relaxed">{fact}</p>
+                  </div>
+                </div>
               );
             })}
-          </ul>
+          </div>
         </section>
-      </div>
+      </article>
     </div>
   );
 

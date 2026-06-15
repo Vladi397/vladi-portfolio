@@ -97,7 +97,7 @@ const Certificates = () => {
                     {/* Header */}
                     <div className="flex items-center justify-between mb-7">
                       <div className="flex items-center gap-3">
-                        <img src={MetaLogo} alt="Meta" className="w-12 h-12 object-contain" />
+                        <img src={MetaLogo} alt="Meta" loading="lazy" decoding="async" className="w-12 h-12 object-contain" />
                         <div className="leading-tight">
                           <div className="text-sm font-black text-gray-900 dark:text-white">Meta</div>
                           <div className="text-xs text-gray-400 font-semibold">Coursera</div>

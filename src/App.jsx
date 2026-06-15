@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, Suspense, lazy } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Analytics } from "@vercel/analytics/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -6,14 +6,20 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import useActiveSection from "./hooks/useActiveSection";
 import useTheme from "./hooks/useTheme";
 import { scrollToId } from "./utils/scrollHelpers";
-import NotFound from "./pages/NotFound";
 
 import LoadingScreen from "./components/ui/LoadingScreen";
 import GlareHover from "./components/ui/GlareHover";
 import CustomCursor from "./components/ui/CustomCursor";
 
-import UniverseBackground from "./components/ui/UniverseBackground";
 import MouseSpotlight from "./components/ui/MouseSpotlight";
+
+// Code-split: the 3D background pulls in the entire three.js stack, and the 404
+// page is only ever shown on a non-"/" route. Both load on demand so they stay
+// out of the initial bundle. Behaviour is unchanged — the background is a fixed,
+// decorative canvas behind a solid dark bg layer + the loading screen, and the
+// 404 renders identically once its chunk arrives.
+const UniverseBackground = lazy(() => import("./components/ui/UniverseBackground"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 import Navbar from "./components/sections/Navbar";
 import Hero from "./components/sections/Hero";
@@ -45,6 +51,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <CustomCursor />
+      <Suspense fallback={null}>
       <Routes>
         <Route path="*" element={<NotFound />} />
         <Route path="/" element={<>
@@ -60,7 +67,9 @@ export default function App() {
       >
         <div className="fixed inset-0 -z-50 bg-slate-50 dark:bg-[#050505] transition-colors duration-300" />
         <MouseSpotlight />
-        <UniverseBackground theme={theme} />
+        <Suspense fallback={null}>
+          <UniverseBackground theme={theme} />
+        </Suspense>
         
         {isLoaded && (
           <Navbar activeId={activeId} theme={theme} toggleTheme={toggleTheme} />
@@ -103,6 +112,7 @@ export default function App() {
       </div>
     </>} />
       </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

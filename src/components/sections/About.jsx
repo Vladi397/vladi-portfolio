@@ -80,6 +80,8 @@ const About = () => {
                    <img
                     src={Vladi2}
                     alt="About Vladi"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-105 select-none"
                   />
                 </div>

@@ -49,7 +49,7 @@ const DEFAULT_TAG =
 const LIVE_BTN =
   "inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-white shadow-lg shadow-sky-500/20 transition-all hover:scale-105 active:scale-95 w-full sm:w-auto bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500";
 const CODE_BTN =
-  "inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border font-bold transition-all w-full sm:w-auto hover:scale-105 active:scale-95 bg-white border-gray-200 text-gray-700 hover:bg-gray-50 dark:bg-white/5 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10";
+  "inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border font-bold transition-all w-full sm:w-auto hover:scale-105 active:scale-95 bg-white border-gray-200 text-gray-700 hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700";
 
 export default function ProjectCardInner({ project, isFlipped, urlLabel, t, interactive = false, onLinkClick }) {
   const hasLive = project.liveUrl && project.liveUrl !== "#";
@@ -95,6 +95,8 @@ export default function ProjectCardInner({ project, isFlipped, urlLabel, t, inte
               <img
                 src={project.img}
                 alt={project.title}
+                loading="lazy"
+                decoding="async"
                 className={`w-full h-full object-cover transition-transform duration-700 group-hover/image:scale-[1.04] ${project.customImgClass || ""}`}
               />
             </div>
