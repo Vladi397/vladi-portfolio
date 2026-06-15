@@ -6,10 +6,12 @@ import ProjectCardInner from "../ui/ProjectCardInner";
 import { useTranslation } from 'react-i18next';
 
 import ourGridImg     from "../../assets/OurGrid.png";
-import marioPizzaImg  from "../../assets/MarioPizza.png";
 import fitFusionImg   from "../../assets/FirFusion.png";
 import spaceInvasionImg from "../../assets/spaceinvasion.png";
 import brewBuddyImg   from "../../assets/brewbuddy.png";
+// Visiobal — replace these two placeholder files with your real images (keep the names)
+import visiobalAppImg      from "../../assets/visiobal-app.png";
+import visiobalHardwareImg from "../../assets/visiobal-hardware.jpg";
 
 const Projects = () => {
   const { t } = useTranslation();
@@ -86,21 +88,29 @@ const Projects = () => {
       repoUrl: "https://github.com/Marto8090/OurGrid_Website",
     },
     {
-      title: t('projects.mario.title'),
-      desc: t('projects.mario.desc'),
-      role: t('projects.mario.role'),
-      img: marioPizzaImg,
-      customImgClass: "object-[center_35%] scale-110",
-      gallery: [marioPizzaImg], // TODO: add more Mario Pizza screenshots here
+      // Visiobal — an accessible audio ball for visually impaired people.
+      title: "Visiobal",
+      role: "Embedded + App",
+      desc:
+        "An interactive audio ball that lets visually impaired people find, connect to and play with it through sound. A 3D-printed sphere houses an ESP32 that synthesises music on-device and pairs with a companion app over Bluetooth LE - scan to connect, set the volume, and switch between tracks.",
+      img: visiobalAppImg,
+      customImgClass: "object-top",
+      gallery: [visiobalAppImg, visiobalHardwareImg],
       facts: [
-        "TODO: add an interesting fact about Mario Pizza",
-        "TODO: add a second interesting fact",
-        "TODO: add a third interesting fact",
+        "Runs on an ESP32 (PlatformIO + Arduino) and synthesises its music live on-device with the Mozzi audio library: triangle and square oscillators, ADSR envelopes and smoothing, played out over I2S.",
+        "Ships with several built-in tracks - a bright C-major tune, a funky E-minor groove (with a cheeky blue note) and a slow G-major-pentatonic 'Zen' arc - switchable from the app.",
+        "Pairs with the companion app over Bluetooth LE: 'Scan for Ball' to connect, a live volume slider and play / skip controls, with sleep-wake power handling on the ball itself.",
+        "Built for inclusive play - the whole point is that visually impaired users can locate and interact with the ball by sound.",
+        "Custom 3D-printed enclosure packs the speaker, battery pack and a volume potentiometer around the ESP32 board.",
       ],
-      outcomes: [t('projects.mario.outcome1'), t('projects.mario.outcome2'), t('projects.mario.outcome3')],
-      tags: ["Figma", "Python Flask", "JavaScript", "HTML/CSS"],
+      outcomes: [
+        "Real-time on-device audio synthesis on an ESP32 (Mozzi + I2S)",
+        "BLE companion app: scan-to-connect, volume and track controls",
+        "Accessible-by-design play for visually impaired users",
+      ],
+      tags: ["ESP32", "C++", "Bluetooth LE", "Mozzi Audio", "Accessibility"],
       liveUrl: "#",
-      repoUrl: "https://git.fhict.nl/I549833/fakeittillyoumakeit",
+      repoUrl: "#", // TODO: add the Visiobal repo URL (your git.fhict.nl / GitHub link)
     },
     {
       title: t('projects.fitfusion.title'),

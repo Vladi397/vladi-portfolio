@@ -35,6 +35,12 @@ const TAG_COLORS = {
   "Team Lead":      "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
   "User Testing":   "bg-pink-50   text-pink-700   border-pink-200   dark:bg-pink-500/10   dark:text-pink-400   dark:border-pink-500/20",
   "Swagger UI":     "bg-teal-50   text-teal-700   border-teal-200   dark:bg-teal-500/10   dark:text-teal-400   dark:border-teal-500/20",
+  "ESP32":          "bg-rose-50   text-rose-700   border-rose-200   dark:bg-rose-500/10   dark:text-rose-400   dark:border-rose-500/20",
+  "C++":            "bg-blue-50   text-blue-700   border-blue-200   dark:bg-blue-500/10   dark:text-blue-400   dark:border-blue-500/20",
+  "Bluetooth LE":   "bg-sky-50    text-sky-700    border-sky-200    dark:bg-sky-500/10    dark:text-sky-400    dark:border-sky-500/20",
+  "Mozzi Audio":    "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-500/10 dark:text-violet-400 dark:border-violet-500/20",
+  "Accessibility":  "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
+  "PlatformIO":     "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20",
 };
 
 const DEFAULT_TAG =
