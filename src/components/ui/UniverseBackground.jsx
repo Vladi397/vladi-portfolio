@@ -112,10 +112,85 @@ const NetworkLines = ({ theme }) => {
     )
 }
 
+// --- 3. NEBULA HAZE (soft atmospheric depth) ---
+// A handful of large, very low-opacity colour clouds drifting slowly far behind
+// the stars. Adds depth and richness without drawing attention. Built once from
+// a canvas radial gradient (no shaders); honours prefers-reduced-motion.
+const makeGlowTexture = () => {
+  const c = document.createElement("canvas");
+  c.width = c.height = 128;
+  const ctx = c.getContext("2d");
+  const g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(0.35, "rgba(255,255,255,0.35)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 128, 128);
+  return new THREE.CanvasTexture(c);
+};
+const GLOW_TEX = typeof document !== "undefined" ? makeGlowTexture() : null;
+
+// Clustered toward the upper-left so the glow is a contained accent, not a
+// full-screen wash. Hand-placed for a calm, intentional composition.
+const HAZE = [
+  { x: -4.5, y: 4,   z: -7,  s: 20, tint: "#0EA5E9", spd: 0.8 },
+  { x: -1,   y: 5.5, z: -10, s: 26, tint: "#6366f1", spd: -0.6 },
+  { x: -3,   y: 2.5, z: -6,  s: 15, tint: "#38bdf8", spd: 0.5 },
+  { x: 1.5,  y: 5,   z: -9,  s: 18, tint: "#4f46e5", spd: -0.45 },
+];
+
+const NebulaHaze = ({ theme, reduced = false }) => {
+  const spriteRefs = useRef([]);
+  // Dark: faint additive glow. Light: normal-blended blue on a near-white bg needs
+  // far more opacity to be visible at all (0.11 was imperceptible).
+  const baseOp = theme === "dark" ? 0.06 : 0.34;
+
+  useFrame((state) => {
+    if (reduced) return;
+    const t = state.clock.getElapsedTime();
+    for (let i = 0; i < HAZE.length; i++) {
+      const m = spriteRefs.current[i];
+      if (!m) continue;
+      const h = HAZE[i];
+      m.position.x = h.x + Math.sin(t * 0.06 * h.spd + i) * 1.6;
+      m.position.y = h.y + Math.cos(t * 0.05 * h.spd + i * 1.3) * 1.2;
+      m.material.opacity = baseOp * (0.65 + 0.35 * Math.sin(t * 0.3 + i)); // gentle breathing
+    }
+  });
+
+  return (
+    <group>
+      {HAZE.map((h, i) => (
+        <sprite
+          key={i}
+          ref={(el) => (spriteRefs.current[i] = el)}
+          position={[h.x, h.y, h.z]}
+          scale={[h.s, h.s, 1]}
+        >
+          <spriteMaterial
+            map={GLOW_TEX}
+            color={h.tint}
+            transparent
+            opacity={baseOp}
+            depthWrite={false}
+            blending={theme === "dark" ? THREE.AdditiveBlending : THREE.NormalBlending}
+          />
+        </sprite>
+      ))}
+    </group>
+  );
+};
+
 // --- MAIN COMPONENT ---
 const UniverseBackground = ({ theme }) => {
   // OPTIMIZATION: Detect mobile screen to reduce particle count
   const [starCount, setStarCount] = useState(5000);
+  const [reduced] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -142,6 +217,7 @@ const UniverseBackground = ({ theme }) => {
         {/* Pass the dynamic count here */}
         <StarField count={starCount} theme={theme} />
         <NetworkLines theme={theme} />
+        <NebulaHaze theme={theme} reduced={reduced} />
         
         <EffectComposer multisampling={0} disableNormalPass={true}>
             <Bloom 
