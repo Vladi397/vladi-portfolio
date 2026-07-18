@@ -47,7 +47,9 @@ const DEFAULT_TAG =
   "bg-gray-50 text-gray-600 border-gray-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/10";
 
 const LIVE_BTN =
-  "inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-white shadow-lg shadow-sky-500/20 transition-all hover:scale-105 active:scale-95 w-full sm:w-auto bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500";
+  "inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-white shadow-lg shadow-sky-500/20 transition-all hover:scale-105 hover:brightness-110 active:scale-95 w-full sm:w-auto";
+// Solid brand light-blue via inline style so it can never be purged/overridden.
+const LIVE_BG = { backgroundColor: "#0EA5E9" };
 const CODE_BTN =
   "inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border font-bold transition-all w-full sm:w-auto hover:scale-105 active:scale-95 bg-white border-gray-200 text-gray-700 hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700";
 
@@ -145,11 +147,12 @@ export default function ProjectCardInner({ project, isFlipped, urlLabel, t, inte
                   target="_blank"
                   rel="noreferrer"
                   className={LIVE_BTN}
+                  style={LIVE_BG}
                 >
                   {t("projects.btn_live")} <ExternalLink size={18} />
                 </a>
               ) : (
-                <span className={LIVE_BTN} aria-hidden="true">
+                <span className={LIVE_BTN} style={LIVE_BG} aria-hidden="true">
                   {t("projects.btn_live")} <ExternalLink size={18} />
                 </span>
               ))}

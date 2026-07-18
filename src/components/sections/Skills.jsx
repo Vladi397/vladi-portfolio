@@ -27,7 +27,7 @@ const Skills = () => {
   ];
 
   return (
-    <section id="skills" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
+    <section id="skills" className="py-12 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
       <SectionTitle title={t('skills.title')} num="02" kicker={t('skills.kicker')} />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">

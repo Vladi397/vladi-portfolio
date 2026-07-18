@@ -179,16 +179,6 @@ const Hero = () => {
               <MapPin className="text-sky-600 dark:text-sky-400" size={16} />
               {t('hero.location')}
             </span>
-
-            <span
-              className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-full transition-colors border
-              bg-white/85 border-gray-200 text-gray-900 shadow-sm
-              hover:bg-white hover:border-gray-300
-              dark:bg-slate-800/60 dark:border-slate-700 dark:text-slate-300"
-            >
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse motion-reduce:animate-none"></span>
-              {t('hero.status')}
-            </span>
           </div>
         </Reveal>
 

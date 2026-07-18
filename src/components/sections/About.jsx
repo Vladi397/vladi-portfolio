@@ -23,7 +23,7 @@ const About = () => {
 
   return (
     <>
-      <section id="about" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
+      <section id="about" className="py-12 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
         <SectionTitle title={t('about.title')} num="01" kicker={t('about.kicker')} />
 
         <div className="flex flex-col-reverse md:flex-row items-center gap-12 md:gap-16">

@@ -1,8 +1,10 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { X, ExternalLink, Github, Sparkles } from "lucide-react";
+import { X, ExternalLink, Github, Sparkles, BookOpen } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ProjectCardInner from "./ProjectCardInner";
+import OurGridMotif from "./OurGridMotif";
+import VisiobalMotif from "./VisiobalMotif";
 
 /*
   ProjectExpand
@@ -35,6 +37,21 @@ const lerp = (a, b, t) => a + (b - a) * t;
 const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const liftPeak = () => Math.min(Math.max((typeof window !== "undefined" ? window.innerHeight : 800) * 0.09, 56), 130);
 
+// Per-project accent palette for the expanded detail view. Projects can supply
+// their own brand colours via `project.theme`; anything omitted falls back to
+// the portfolio's default sky/indigo so untouched cards look unchanged.
+const DEFAULT_THEME = { accent: "#0EA5E9", accent2: "#6366F1", deep: "#0B1120" };
+
+// hex (#rgb or #rrggbb) → rgba() string, so we can control alpha for glows/tints.
+const hexA = (hex, a) => {
+  const n = String(hex).replace("#", "");
+  const f = n.length === 3 ? n.split("").map((c) => c + c).join("") : n;
+  const r = parseInt(f.slice(0, 2), 16);
+  const g = parseInt(f.slice(2, 4), 16);
+  const b = parseInt(f.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+};
+
 const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   typeof window.matchMedia === "function" &&
@@ -43,6 +60,31 @@ const prefersReducedMotion = () =>
 export default function ProjectExpand({ project, cardEl, isFlipped = false, onClose }) {
   const { t } = useTranslation();
   const reduce = useRef(prefersReducedMotion()).current;
+  // Phones skip the heavy 3D flip and get a clean sheet instead — the flip's
+  // card→fullscreen morph is a desktop flourish that feels like too much on a
+  // small screen.
+  const isMobile = useRef(
+    typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(max-width: 640px)").matches
+  ).current;
+  const lite = reduce || isMobile;
+
+  // Resolve this project's brand palette (falls back to the default sky/indigo).
+  const theme = { ...DEFAULT_THEME, ...(project.theme || {}) };
+  // Per-project decorative side motif (OurGrid → electric waves, Visiobal → sonar).
+  const MotifComp =
+    project.motif === "grid" ? OurGridMotif : project.motif === "sonar" ? VisiobalMotif : null;
+
+  // A viewport-pinned decorative layer that flanks the content as you scroll.
+  const motifLayer = MotifComp ? (
+    <div
+      className="pointer-events-none sticky top-0 -z-10"
+      style={{ height: "100vh", marginBottom: "-100vh" }}
+    >
+      <MotifComp accent={theme.accent} accent2={theme.accent2} />
+    </div>
+  ) : null;
 
   // Address-bar label shown on the flip's front-face card (mirrors the grid).
   const urlLabel =
@@ -59,11 +101,21 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
   const revealTimer = useRef(0);
   const geomRef = useRef({ dx: 0, dy: 0, sx: 1, sy: 1 });
 
+  // Scroll-driven story timeline ("journey" line that draws in on scroll).
+  const scrollRef = useRef(null); // the scrollable detail container
+  const timelineRef = useRef(null); // the <ol>
+  const railRef = useRef(null); // faint full rail (node 1 → node 5)
+  const fillRef = useRef(null); // bright brand fill that grows with scroll
+  const firstNodeRef = useRef(null);
+  const lastNodeRef = useRef(null);
+  const chapterRefs = useRef([]); // each story <li>, for scroll-in reveal
+
   const [backdropOn, setBackdropOn] = useState(false);
   const [revealed, setRevealed] = useState(reduce); // detail content stagger
   const [settled, setSettled] = useState(reduce); // open finished → static blur ok
   const [closing, setClosing] = useState(false);
   const [geom, setGeom] = useState(null); // drives the front-face counter-scale
+  const [revealedChapters, setRevealedChapters] = useState(() => new Set()); // story steps scrolled into view
 
   // Measure the *live* card rect → FLIP geometry (origin = panel centre).
   const measure = () => {
@@ -133,8 +185,8 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
     setBackdropOn(false);
 
     const panel = panelRef.current;
-    if (reduce || !panel || typeof panel.animate !== "function") {
-      window.setTimeout(onClose, 300);
+    if (lite || !panel || typeof panel.animate !== "function") {
+      window.setTimeout(onClose, reduce ? 240 : 320); // sheet slide-out / fade
       return;
     }
     const g = measure(); // re-measure the card's CURRENT position → lands in place
@@ -175,7 +227,7 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
     const g = measure();
 
     const panel = panelRef.current;
-    if (!reduce && panel && typeof panel.animate === "function") {
+    if (!lite && panel && typeof panel.animate === "function") {
       animsRef.current.forEach((x) => x.cancel());
       animsRef.current = [];
 
@@ -245,6 +297,88 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Draw the story timeline as the reader scrolls: a faint rail spans node 1 →
+  // node 5 (and stops there), while a brand-coloured fill grows to track how far
+  // down the journey they've read. Geometry is measured live so it survives the
+  // open flip, the entrance stagger, and resizes. reduced-motion → fully drawn.
+  useEffect(() => {
+    if (!story) return;
+    const rail = railRef.current;
+    const fill = fillRef.current;
+    const ol = timelineRef.current;
+    const first = firstNodeRef.current;
+    const last = lastNodeRef.current;
+    if (!rail || !fill || !ol || !first || !last) return;
+
+    const update = () => {
+      const olRect = ol.getBoundingClientRect();
+      const fr = first.getBoundingClientRect();
+      const lr = last.getBoundingClientRect();
+      const firstCenter = fr.top + fr.height / 2;
+      const lastCenter = lr.top + lr.height / 2;
+      const railTop = firstCenter - olRect.top; // relative to the <ol>
+      const railHeight = Math.max(lastCenter - firstCenter, 0);
+      rail.style.top = `${railTop}px`;
+      rail.style.height = `${railHeight}px`;
+      fill.style.top = `${railTop}px`;
+      if (reduce) {
+        fill.style.height = `${railHeight}px`;
+        return;
+      }
+      // Fill up to a trigger line ~72% down the viewport, so the last node lands
+      // "read" only once it has scrolled up into view.
+      const trigger = window.innerHeight * 0.72;
+      const filled = Math.min(Math.max(trigger - firstCenter, 0), railHeight);
+      fill.style.height = `${filled}px`;
+    };
+
+    const scroller = scrollRef.current || panelRef.current;
+    update();
+    const raf1 = requestAnimationFrame(update);
+    const raf2 = requestAnimationFrame(() => requestAnimationFrame(update));
+    const settle = window.setTimeout(update, DURATION + 40); // after the open flip
+    scroller && scroller.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      clearTimeout(settle);
+      scroller && scroller.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Reveal each story chapter (its node + text) as it scrolls into view, and
+  // hide it again when it scrolls back out — so the journey folds and unfolds
+  // with the reader both ways. The panel is a full-viewport fixed layer, so a
+  // null (viewport) root tracks the internal scroll correctly.
+  useEffect(() => {
+    if (!story) return;
+    if (reduce) {
+      setRevealedChapters(new Set(story.map((_, i) => i)));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const idx = Number(entry.target.dataset.idx);
+          setRevealedChapters((prev) => {
+            if (entry.isIntersecting === prev.has(idx)) return prev; // no change
+            const next = new Set(prev);
+            if (entry.isIntersecting) next.add(idx);
+            else next.delete(idx);
+            return next;
+          });
+        });
+      },
+      { root: null, rootMargin: "0px 0px -25% 0px", threshold: 0.01 }
+    );
+    chapterRefs.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // staggered reveal style helper (instant uniform hide while closing)
   const rv = (delay) => {
     if (reduce) return undefined;
@@ -259,19 +393,43 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
     };
   };
 
+  // Per-chapter reveal — driven by scroll position, not a timed stagger. Each
+  // step stays hidden until the observer marks it in view (see effect above).
+  const chapterStyle = (i) => {
+    if (reduce) return undefined;
+    const shown = revealedChapters.has(i) && !closing;
+    return {
+      opacity: shown ? 1 : 0,
+      transform: shown ? "translateY(0)" : "translateY(26px)",
+      transition: closing
+        ? "opacity 130ms ease, transform 130ms ease"
+        : `opacity 640ms ${SPRING}, transform 640ms ${SPRING}`,
+      willChange: "opacity, transform",
+    };
+  };
+
   const gallery = project.gallery && project.gallery.length ? project.gallery : [project.img];
+  const story = project.story && project.story.length ? project.story : null;
   const gBase = 150;
-  const fBase = gBase + gallery.length * 110 + 170;
+  const storyBase = gBase + gallery.length * 110 + 60;
+  const storyCount = story ? story.length : 0;
+  const fBase = storyBase + storyCount * 90 + 190;
+
+  // Reusable brand gradient (accent → accent2) for buttons, nodes, accents.
+  const brandGradient = `linear-gradient(135deg, ${theme.accent}, ${theme.accent2})`;
 
   const detail = (
     <div className="min-h-full text-gray-900 dark:text-white">
       {/* Sticky top bar */}
       <div
         className="sticky top-0 z-30 flex items-center justify-between gap-4 px-5 sm:px-8 py-3.5
-          bg-white/75 dark:bg-[#0B1120]/75 backdrop-blur-xl border-b border-gray-200/70 dark:border-sky-900/40"
+          bg-white/75 dark:bg-[#0B1120]/75 backdrop-blur-xl border-b border-gray-200/70 dark:border-white/10"
       >
         <div className="min-w-0 flex items-center gap-3">
-          <span className="hidden sm:inline text-[#0EA5E9] font-bold tracking-[0.18em] uppercase text-[11px]">
+          <span
+            className="hidden sm:inline font-bold tracking-[0.18em] uppercase text-[11px]"
+            style={{ color: theme.accent }}
+          >
             {project.role}
           </span>
           <span className="font-bold truncate text-sm sm:text-base">{project.title}</span>
@@ -283,41 +441,68 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
           className="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full transition-colors
             bg-gray-100 hover:bg-gray-200 text-gray-700
             dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-200
-            focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+            focus:outline-none focus-visible:ring-2"
+          style={{ "--tw-ring-color": theme.accent }}
         >
           <X size={20} />
         </button>
       </div>
 
-      <article className="mx-auto w-full max-w-5xl px-5 sm:px-8 pb-16 sm:pb-24">
+      {/* Brand wash across the top of the story, tinted with the project colours */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-72"
+        style={{
+          background: `radial-gradient(80% 100% at 50% 0%, ${hexA(theme.accent, 0.16)}, ${hexA(
+            theme.accent2,
+            0.08
+          )} 45%, transparent 72%)`,
+        }}
+      />
+
+      <article className="relative mx-auto w-full max-w-5xl px-5 sm:px-8 pb-14 sm:pb-24">
         {/* Header — eyebrow, display title, lead, tags, actions */}
-        <header className="pt-10 sm:pt-16 pb-10 sm:pb-14" style={rv(0)}>
-          <p className="text-[#0EA5E9] font-bold tracking-[0.22em] uppercase text-xs sm:text-sm">
+        <header className="pt-8 sm:pt-16 pb-8 sm:pb-14" style={rv(0)}>
+          <p
+            className="font-bold tracking-[0.22em] uppercase text-xs sm:text-sm"
+            style={{ color: theme.accent }}
+          >
             {project.role}
           </p>
-          <h2 className="font-black tracking-tight leading-[1.03] text-4xl sm:text-6xl mt-4 text-gray-900 dark:text-white">
+          <h2 className="font-black tracking-tight leading-[1.05] sm:leading-[1.03] text-3xl sm:text-6xl mt-3 sm:mt-4 text-gray-900 dark:text-white">
             {project.title}
           </h2>
-          <p className="mt-6 max-w-2xl text-lg sm:text-xl leading-relaxed text-gray-600 dark:text-slate-300">
+          {/* Brand underline */}
+          <div
+            className="mt-4 sm:mt-5 h-1.5 w-20 sm:w-24 rounded-full"
+            style={{ background: brandGradient }}
+          />
+          <p className="mt-5 sm:mt-6 max-w-2xl text-base sm:text-xl leading-relaxed text-gray-600 dark:text-slate-300">
             {project.desc}
           </p>
-          <div className="mt-7 flex flex-wrap gap-2">
+          <div className="mt-6 sm:mt-7 flex flex-wrap gap-2">
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-3 py-1.5 rounded-lg text-xs font-bold border bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/20"
+                className="px-3 py-1.5 rounded-lg text-xs font-bold border"
+                style={{
+                  color: theme.accent,
+                  background: hexA(theme.accent, 0.1),
+                  borderColor: hexA(theme.accent, 0.28),
+                }}
               >
                 {tag}
               </span>
             ))}
           </div>
-          <div className="mt-7 flex flex-col sm:flex-row flex-wrap gap-3">
+          <div className="mt-6 sm:mt-7 flex flex-col sm:flex-row flex-wrap gap-3">
             {project.liveUrl && project.liveUrl !== "#" && (
               <a
                 href={project.liveUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-white shadow-lg shadow-sky-500/20 transition-transform hover:scale-105 active:scale-95 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-white transition-all hover:scale-105 hover:brightness-110 active:scale-95 shadow-lg shadow-sky-500/30"
+                style={{ backgroundColor: "#0EA5E9" }}
               >
                 {t("projects.btn_live", "Live Demo")} <ExternalLink size={18} />
               </a>
@@ -335,84 +520,190 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
           </div>
         </header>
 
-        {/* Big imagery — uncropped, framed. Side-by-side when there are several. */}
-        <div className={gallery.length > 1 ? "grid gap-5 sm:gap-6 sm:grid-cols-2 items-start" : "space-y-6"}>
-          {gallery.map((src, i) => (
-            <figure
-              key={i}
-              style={rv(gBase + i * 110)}
-              className="overflow-hidden rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-white/10
-                bg-gray-50 dark:bg-white/[0.03] shadow-xl shadow-slate-900/5 dark:shadow-black/40"
+        {/* Big imagery — framed. When there are several, they share one fixed
+            aspect box so every photo renders at the same size (contain, so mixed
+            portrait/landscape shots are never cropped). */}
+        {(() => {
+          const multi = gallery.length > 1;
+          return (
+            <div className={multi ? "grid gap-5 sm:gap-6 sm:grid-cols-2" : "space-y-6"}>
+              {gallery.map((src, i) => (
+                <figure
+                  key={i}
+                  style={rv(gBase + i * 110)}
+                  className="overflow-hidden rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-white/10
+                    bg-gray-50 dark:bg-white/[0.03] shadow-xl shadow-slate-900/5 dark:shadow-black/40"
+                >
+                  <img
+                    src={src}
+                    alt={`${project.title} ${i + 1}`}
+                    loading="lazy"
+                    decoding="async"
+                    className={
+                      multi
+                        ? "block w-full aspect-[4/3] object-contain p-2"
+                        : "block w-full h-auto"
+                    }
+                  />
+                </figure>
+              ))}
+            </div>
+          );
+        })()}
+
+        {/* The story — a chapter timeline, threaded with the brand gradient */}
+        {story && (
+          <section className="mt-12 sm:mt-24">
+            <h3
+              className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8 sm:mb-10"
+              style={rv(storyBase - 60)}
             >
-              <img
-                src={src}
-                alt={`${project.title} — ${i + 1}`}
-                loading="lazy"
-                decoding="async"
-                className="block w-full h-auto"
+              <span
+                className="inline-flex h-9 w-9 items-center justify-center rounded-xl"
+                style={{ color: theme.accent, background: hexA(theme.accent, 0.12) }}
+              >
+                <BookOpen size={18} />
+              </span>
+              {t("projects.detail_story", "The story")}
+            </h3>
+
+            <ol ref={timelineRef} className="relative">
+              {/* faint rail — measured to start at node 1 and stop at node 5 */}
+              <span
+                ref={railRef}
+                aria-hidden="true"
+                className="absolute left-[17px] sm:left-[21px] w-[2px] rounded-full"
+                style={{ top: 0, height: 0, background: hexA(theme.accent, 0.15) }}
               />
-            </figure>
-          ))}
-        </div>
+              {/* brand fill — draws downward as the reader scrolls the journey */}
+              <span
+                ref={fillRef}
+                aria-hidden="true"
+                className="absolute left-[17px] sm:left-[21px] w-[2px] rounded-full"
+                style={{
+                  top: 0,
+                  height: 0,
+                  background: `linear-gradient(to bottom, ${theme.accent}, ${theme.accent2})`,
+                  transition: "height 90ms linear",
+                  willChange: "height",
+                }}
+              />
+              {story.map((ch, i) => (
+                <li
+                  key={i}
+                  ref={(el) => (chapterRefs.current[i] = el)}
+                  data-idx={i}
+                  className="relative pl-11 sm:pl-16 pb-8 sm:pb-12 last:pb-0"
+                  style={chapterStyle(i)}
+                >
+                  <span
+                    ref={i === 0 ? firstNodeRef : i === story.length - 1 ? lastNodeRef : null}
+                    className="absolute left-0 top-0 inline-flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full text-sm font-black text-white"
+                    style={{ background: brandGradient, boxShadow: `0 8px 20px ${hexA(theme.accent, 0.35)}` }}
+                  >
+                    {i + 1}
+                  </span>
+                  {ch.kicker && (
+                    <p
+                      className="text-[11px] font-black uppercase tracking-[0.2em]"
+                      style={{ color: theme.accent }}
+                    >
+                      {ch.kicker}
+                    </p>
+                  )}
+                  <h4 className="mt-1.5 text-xl sm:text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                    {ch.title}
+                  </h4>
+                  <p className="mt-2.5 max-w-2xl text-[15px] sm:text-base leading-relaxed text-gray-600 dark:text-slate-300">
+                    {ch.body}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
 
         {/* Interesting facts — numbered cards */}
-        <section className="mt-16 sm:mt-24">
-          <h3
-            className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8"
-            style={rv(fBase - 90)}
-          >
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-sky-500/10 text-[#0EA5E9]">
-              <Sparkles size={18} />
-            </span>
-            {t("projects.detail_facts", "Interesting facts")}
-          </h3>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {(project.facts || []).map((fact, i) => {
-              const isTodo = /^todo/i.test(String(fact).trim());
-              return (
-                <div
-                  key={i}
-                  style={rv(fBase + i * 70)}
-                  className={`rounded-2xl p-5 sm:p-6 border ${
-                    isTodo
-                      ? "border-dashed border-amber-300/70 bg-amber-50/60 text-amber-700 italic dark:border-amber-400/30 dark:bg-amber-400/5 dark:text-amber-300/90"
-                      : "border-gray-200 bg-gray-50/80 text-gray-700 dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-300"
-                  }`}
-                >
-                  <div className="flex items-start gap-3.5">
-                    <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-500/10 text-[#0EA5E9] text-xs font-black">
-                      {i + 1}
-                    </span>
-                    <p className="text-[15px] sm:text-base leading-relaxed">{fact}</p>
+        {project.facts && project.facts.length > 0 && (
+          <section className="mt-12 sm:mt-24">
+            <h3
+              className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8"
+              style={rv(fBase - 90)}
+            >
+              <span
+                className="inline-flex h-9 w-9 items-center justify-center rounded-xl"
+                style={{ color: theme.accent, background: hexA(theme.accent, 0.12) }}
+              >
+                <Sparkles size={18} />
+              </span>
+              {t("projects.detail_facts", "Interesting facts")}
+            </h3>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {project.facts.map((fact, i) => {
+                const isTodo = /^todo/i.test(String(fact).trim());
+                return (
+                  <div
+                    key={i}
+                    style={rv(fBase + i * 70)}
+                    className={`rounded-2xl p-5 sm:p-6 border ${
+                      isTodo
+                        ? "border-dashed border-amber-300/70 bg-amber-50/60 text-amber-700 italic dark:border-amber-400/30 dark:bg-amber-400/5 dark:text-amber-300/90"
+                        : "border-gray-200 bg-gray-50/80 text-gray-700 dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-300"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3.5">
+                      <span
+                        className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black"
+                        style={
+                          isTodo
+                            ? undefined
+                            : { color: theme.accent, background: hexA(theme.accent, 0.12) }
+                        }
+                      >
+                        {i + 1}
+                      </span>
+                      <p className="text-[15px] sm:text-base leading-relaxed">{fact}</p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </article>
     </div>
   );
 
-  // ---- Reduced motion: plain cross-fade ----
-  if (reduce) {
+  // ---- Lite mode: phones + reduced-motion. A clean sheet, no 3D flip. ----
+  if (lite) {
     return createPortal(
       <div className="fixed inset-0 z-[999]">
         <div
-          className={`absolute inset-0 bg-slate-950/75 backdrop-blur-md transition-opacity duration-300 ${
+          onClick={requestClose}
+          className={`absolute inset-0 transition-opacity duration-300 ${
             backdropOn ? "opacity-100" : "opacity-0"
           }`}
-          onClick={requestClose}
+          style={{ background: "rgba(2,6,23,0.80)" }}
         />
         <div
           ref={panelRef}
           role="dialog"
           aria-modal="true"
           aria-label={project.title}
-          className={`absolute inset-0 overflow-y-auto overscroll-contain bg-white dark:bg-[#0B1120] transition-opacity duration-300 ${
-            backdropOn ? "opacity-100" : "opacity-0"
+          className={`absolute inset-0 overflow-y-auto overscroll-contain isolate bg-white dark:bg-[#0B1120] ${
+            reduce ? `transition-opacity duration-300 ${backdropOn ? "opacity-100" : "opacity-0"}` : ""
           }`}
+          style={
+            reduce
+              ? undefined
+              : {
+                  animation: closing
+                    ? "pe-sheet-out 220ms ease forwards"
+                    : "pe-sheet-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both",
+                }
+          }
         >
+          {motifLayer}
           {detail}
         </div>
       </div>,
@@ -431,8 +722,10 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
         }`}
         style={{
           opacity: backdropOn ? 1 : 0,
-          background:
-            "radial-gradient(120% 90% at 50% -10%, rgba(14,165,233,0.20), rgba(99,102,241,0.10) 38%, rgba(2,6,23,0) 60%), rgba(2,6,23,0.82)",
+          background: `radial-gradient(120% 90% at 50% -10%, ${hexA(theme.accent, 0.2)}, ${hexA(
+            theme.accent2,
+            0.1
+          )} 38%, rgba(2,6,23,0) 60%), rgba(2,6,23,0.82)`,
         }}
       />
 
@@ -444,8 +737,10 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
         style={{
           transform: "translate(-50%, -50%) scale(0.6)",
           opacity: 0,
-          background:
-            "radial-gradient(closest-side, rgba(14,165,233,0.55), rgba(99,102,241,0.28) 55%, rgba(99,102,241,0) 75%)",
+          background: `radial-gradient(closest-side, ${hexA(theme.accent, 0.55)}, ${hexA(
+            theme.accent2,
+            0.28
+          )} 55%, ${hexA(theme.accent2, 0)} 75%)`,
         }}
       />
 
@@ -518,13 +813,15 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
 
         {/* BACK face — detail, counter-rotated so it lands upright */}
         <div
-          className="absolute inset-0 overflow-y-auto overscroll-contain bg-white dark:bg-[#0B1120]"
+          ref={scrollRef}
+          className="absolute inset-0 overflow-y-auto overscroll-contain isolate bg-white dark:bg-[#0B1120]"
           style={{
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
             transform: "rotateX(180deg)",
           }}
         >
+          {motifLayer}
           {detail}
         </div>
       </div>

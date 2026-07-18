@@ -159,7 +159,7 @@ const Journey = () => {
   return (
     <section
       id="journey"
-      className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32"
+      className="py-12 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32"
       ref={sectionRef}
     >
       <SectionTitle title={t('journey.title')} num="05" kicker={t('journey.kicker')} />

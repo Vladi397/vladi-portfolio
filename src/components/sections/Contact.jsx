@@ -92,12 +92,12 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
+    <section id="contact" className="py-12 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
       <Reveal>
         <div className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[40px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
           
-          <div className="relative rounded-[32px] p-8 sm:p-12 md:p-16 flex flex-col lg:flex-row gap-12 lg:gap-20 items-start overflow-hidden
+          <div className="relative rounded-[24px] sm:rounded-[32px] p-6 sm:p-12 md:p-16 flex flex-col lg:flex-row gap-8 sm:gap-10 lg:gap-20 items-start overflow-hidden
             bg-white shadow-2xl
             dark:bg-[#0B1120] dark:shadow-none"
           >
@@ -105,44 +105,36 @@ const Contact = () => {
 
             {/* LEFT SIDE */}
             <div className="flex-1 w-full relative z-10">
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 transition-colors text-gray-900 dark:text-white">
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-3 sm:mb-6 transition-colors text-gray-900 dark:text-white">
                 {t('contact.title')}
               </h2>
-              <p className="text-lg mb-8 max-w-md transition-colors text-gray-600 dark:text-slate-400">
+              <p className="text-base sm:text-lg mb-8 sm:mb-10 max-w-md transition-colors text-[#0EA5E9] dark:text-sky-400">
                 {t('contact.desc')}
               </p>
-              
-              <div className="flex items-center gap-3 font-bold mb-10 transition-colors text-emerald-600 dark:text-emerald-400">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                </span>
-                {t('contact.status')}
-              </div>
 
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3 sm:gap-4">
                 <button
                   onClick={onCopy}
-                  className="group flex items-center justify-between gap-4 p-4 rounded-2xl border transition-all
+                  className="group flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border transition-all
                     bg-gray-50 border-gray-200 hover:border-sky-300 hover:bg-sky-50
                     dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10 dark:hover:border-white/20"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="p-2.5 rounded-xl bg-sky-100 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400">
+                  <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-sky-100 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400 shrink-0">
                       <Mail size={20} />
                     </div>
-                    <span className="font-semibold text-gray-700 dark:text-slate-200 break-all text-left">
+                    <span className="font-semibold text-gray-700 dark:text-slate-200 break-all text-left text-sm sm:text-base">
                       {email}
                     </span>
                   </div>
                   {copied ? (
-                    <Check size={18} className="text-emerald-500" />
+                    <Check size={18} className="text-emerald-500 shrink-0" />
                   ) : (
-                    <Copy size={18} className="text-gray-400 group-hover:text-sky-500 transition-colors" />
+                    <Copy size={18} className="text-gray-400 group-hover:text-sky-500 transition-colors shrink-0" />
                   )}
                 </button>
 
-                <div className="flex gap-4">
+                <div className="flex gap-3 sm:gap-4">
                   <a 
                     href="https://www.linkedin.com/in/vladi-georgiev-b68761295" 
                     target="_blank"
@@ -167,7 +159,7 @@ const Contact = () => {
             <form
               ref={form}
               onSubmit={sendEmail}
-              className="flex-1 w-full relative z-10 bg-gray-50 dark:bg-white/5 p-6 sm:p-8 rounded-[24px] border border-gray-100 dark:border-white/5"
+              className="flex-1 w-full relative z-10 bg-gray-50 dark:bg-white/5 p-5 sm:p-8 rounded-[20px] sm:rounded-[24px] border border-gray-100 dark:border-white/5"
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div className="space-y-2">
@@ -177,7 +169,7 @@ const Contact = () => {
                     name="user_name"
                     placeholder={t('contact.ph_name')}
                     // Error styling logic
-                    className={`w-full p-4 rounded-xl outline-none font-medium transition-all text-base
+                    className={`w-full p-3.5 sm:p-4 rounded-xl outline-none font-medium transition-all text-base
                       ${errors.name ? "border-red-500 focus:ring-red-500/20 bg-red-50 dark:bg-red-900/10" : "bg-white border-gray-200 dark:bg-[#0B1120] dark:border-white/10 focus:border-sky-500 focus:ring-sky-500/10"}
                       text-gray-900 placeholder:text-gray-300 border focus:ring-4
                       dark:text-white dark:placeholder:text-slate-600`}
@@ -191,7 +183,7 @@ const Contact = () => {
                     type="email"
                     name="user_email"
                     placeholder={t('contact.ph_email')}
-                    className={`w-full p-4 rounded-xl outline-none font-medium transition-all text-base
+                    className={`w-full p-3.5 sm:p-4 rounded-xl outline-none font-medium transition-all text-base
                       ${errors.email ? "border-red-500 focus:ring-red-500/20 bg-red-50 dark:bg-red-900/10" : "bg-white border-gray-200 dark:bg-[#0B1120] dark:border-white/10 focus:border-sky-500 focus:ring-sky-500/10"}
                       text-gray-900 placeholder:text-gray-300 border focus:ring-4
                       dark:text-white dark:placeholder:text-slate-600`}
@@ -200,13 +192,13 @@ const Contact = () => {
                 </div>
               </div>
 
-              <div className="space-y-2 mb-6">
+              <div className="space-y-2 mb-5 sm:mb-6">
                 <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">{t('contact.label_message')}</label>
                 <textarea
                   name="message"
                   placeholder={t('contact.ph_message')}
                   rows="4"
-                  className={`w-full p-4 rounded-xl outline-none resize-none font-medium transition-all text-base
+                  className={`w-full p-3.5 sm:p-4 rounded-xl outline-none resize-none font-medium transition-all text-base
                     ${errors.message ? "border-red-500 focus:ring-red-500/20 bg-red-50 dark:bg-red-900/10" : "bg-white border-gray-200 dark:bg-[#0B1120] dark:border-white/10 focus:border-sky-500 focus:ring-sky-500/10"}
                     text-gray-900 placeholder:text-gray-300 border focus:ring-4
                     dark:text-white dark:placeholder:text-slate-600`}
@@ -217,7 +209,7 @@ const Contact = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-xl font-bold text-white shadow-lg shadow-sky-500/30 transition-all hover:brightness-110 hover:scale-[1.02] active:scale-95 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed bg-[#0EA5E9]"
+                className="w-full py-3.5 sm:py-4 rounded-xl font-bold text-white shadow-lg shadow-sky-500/30 transition-all hover:brightness-110 hover:scale-[1.02] active:scale-95 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed bg-[#0EA5E9]"
               >
                 {loading ? <Loader2 className="animate-spin" /> : t('contact.btn_send')}
               </button>

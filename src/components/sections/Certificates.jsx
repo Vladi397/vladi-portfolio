@@ -74,7 +74,7 @@ const Certificates = () => {
 
   return (
     <>
-      <section id="certificates" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
+      <section id="certificates" className="py-12 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
         <SectionTitle title={t('certificates.title')} num="04" kicker={t('certificates.kicker')} />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">

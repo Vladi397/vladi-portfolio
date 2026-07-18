@@ -101,11 +101,14 @@ const NetworkLines = ({ theme }) => {
         <group ref={lineRef}>
             <mesh>
                 <icosahedronGeometry args={[30, 2]} />
-                <meshBasicMaterial 
-                    wireframe 
-                    color={theme === "dark" ? "#0EA5E9" : "#94a3b8"} 
-                    transparent 
-                    opacity={theme === "dark" ? 0.03 : 0.05} 
+                <meshBasicMaterial
+                    wireframe
+                    // Light mode: the slate-grey lines were invisible on the near-white
+                    // bg — use the site's light blue, a touch stronger so they read but
+                    // stay in the background. Dark mode unchanged.
+                    color="#0EA5E9"
+                    transparent
+                    opacity={theme === "dark" ? 0.03 : 0.5}
                 />
             </mesh>
         </group>

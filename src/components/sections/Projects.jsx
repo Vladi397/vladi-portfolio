@@ -77,10 +77,44 @@ const Projects = () => {
       role: t('projects.ourgrid.role'),
       img: ourGridImg,
       gallery: [ourGridImg], // TODO: add more OurGrid screenshots here
+      // OurGrid brand palette — used to theme the expanded detail view.
+      // grid-green primary, reward-amber accent, deep plum ink.
+      theme: { accent: "#01AC51", accent2: "#F4B14A", deep: "#4F2E39" },
+      // Renders the flowing "electric current" side waves on this card only.
+      motif: "grid",
+      // A narrative walkthrough shown as a chapter timeline in the expanded view.
+      story: [
+        {
+          kicker: "The problem",
+          title: "Local grids are hitting their limit",
+          body: "Heat pumps, EVs and solar panels are spreading far faster than the grid can be upgraded. When a whole neighbourhood draws power at the same peak hours, local transformers overload, raising the risk of outages, pushing up bills, and blocking new homes and EV chargers. Physically reinforcing the grid can take 3 to 5 years.",
+        },
+        {
+          kicker: "The idea",
+          title: "Keep the grid in balance, together",
+          body: "Instead of waiting years for hardware, OurGrid eases the peaks through the community. If neighbours shift a little flexible energy use away from the busiest hours, the same transformers can carry far more, with no digging required.",
+        },
+        {
+          kicker: "For residents",
+          title: "Saving energy becomes a game",
+          body: "The app links to your smart meter (P1 dongle), EV charger, battery and heat pump. It shows live power use and warns you when your area nears a peak. During a 'congestion challenge' it suggests simple actions, like delaying the EV charge or the laundry, and each one earns points and trophies for the energy you shift.",
+        },
+        {
+          kicker: "For cities",
+          title: "A privacy-safe view of the whole neighbourhood",
+          body: "Officials and grid managers get an aggregated dashboard: congestion hotspots on a live map, neighbourhood load curves, participation rates and total energy shifted. Everything is measured at transformer level, so no single household is ever exposed, with exportable GDPR-compliant reports.",
+        },
+        {
+          kicker: "My role",
+          title: "Turning dense grid data into a calm interface",
+          body: "Built with OpenRemote in the Netherlands, I designed the split-view UI for residents and municipalities, validated the UX with real users, and translated technical IoT and grid-congestion data into clean, accessible React components.",
+        },
+      ],
       facts: [
-        "TODO: add an interesting fact about OurGrid (e.g. a result from user testing)",
-        "TODO: add a second fact (e.g. tech decision or accessibility win)",
-        "TODO: add a third fact (e.g. something you'd do differently)",
+        "The whole product splits into two experiences from a single landing screen: a gamified resident app and a municipal dashboard, so each audience only sees what's relevant to them.",
+        "'Congestion challenges' turn demand-response into a game: stay under a live target during peak hours and collect points and trophies for the energy you move off-peak.",
+        "Every dashboard metric is aggregated at the transformer / neighbourhood level, so congestion maps and load curves reveal grid stress without ever exposing a single household (GDPR by design).",
+        "It runs alongside existing grid infrastructure (residents just connect a P1 dongle, EV charger, battery or heat pump), and the app never controls devices automatically; it only guides.",
       ],
       outcomes: [t('projects.ourgrid.outcome1'), t('projects.ourgrid.outcome2'), t('projects.ourgrid.outcome3')],
       tags: ["React", "Tailwind", "User Testing", "Figma"],
@@ -92,15 +126,46 @@ const Projects = () => {
       title: "Visiobal",
       role: "Embedded + App",
       desc:
-        "An interactive audio ball that lets visually impaired people find, connect to and play with it through sound. A 3D-printed sphere houses an ESP32 that synthesises music on-device and pairs with a companion app over Bluetooth LE - scan to connect, set the volume, and switch between tracks.",
+        "An interactive audio ball that lets visually impaired people find, connect to and play with it through sound. A 3D-printed sphere houses an ESP32 that synthesises music on-device and pairs with a companion app over Bluetooth LE: scan to connect, set the volume, and switch between tracks.",
       img: visiobalAppImg,
       customImgClass: "object-top",
       gallery: [visiobalAppImg, visiobalHardwareImg],
+      // Visiobal app palette — violet primary, pink accent, deep navy ink.
+      theme: { accent: "#A855F7", accent2: "#F472B6", deep: "#080F1E" },
+      // Renders the expanding "sonar" pulse rings (echoes the app's radar scan).
+      motif: "sonar",
+      story: [
+        {
+          kicker: "The client",
+          title: "Built for Visio",
+          body: "Visio is an organisation that supports blind and visually impaired children. They wanted something these kids could simply play with, a toy that doesn't depend on sight. That brief became the VisioBall.",
+        },
+        {
+          kicker: "The problem",
+          title: "How do you play with a ball you can't see?",
+          body: "A ball is no fun to a blind child if they can't tell where it is. The VisioBall answers back with sound and light, so it can be located, reached for and interacted with, turning a plain sphere into inclusive play.",
+        },
+        {
+          kicker: "The ball",
+          title: "A 3D-printed sphere with a brain",
+          body: "Inside a custom 3D-printed shell sits an ESP32 that synthesises its music live on-device (Mozzi + I2S), driving a speaker, an LED behaviour and sleep/wake power handling, all run from an onboard battery, with a volume dial on the outside.",
+        },
+        {
+          kicker: "The app",
+          title: "Find it, connect, and play",
+          body: "The companion app (Expo + React Native) scans over Bluetooth LE with an animated radar, connects to the ball, then hands over control: a 3D model you can spin, a music player with volume and frequency, and simple commands like on/off, blink rate and sleep/wake. It ships in five languages with light and dark themes.",
+        },
+        {
+          kicker: "My role",
+          title: "Making play accessible",
+          body: "Across embedded and app: the ESP32 firmware that gives the ball its voice, and the React Native app that finds and controls it over Bluetooth. The whole point is inclusion, so a blind child can locate the ball by ear and just play.",
+        },
+      ],
       facts: [
         "Runs on an ESP32 (PlatformIO + Arduino) and synthesises its music live on-device with the Mozzi audio library: triangle and square oscillators, ADSR envelopes and smoothing, played out over I2S.",
-        "Ships with several built-in tracks - a bright C-major tune, a funky E-minor groove (with a cheeky blue note) and a slow G-major-pentatonic 'Zen' arc - switchable from the app.",
+        "Ships with several built-in tracks: a bright C-major tune, a funky E-minor groove (with a cheeky blue note) and a slow G-major-pentatonic 'Zen' arc, all switchable from the app.",
         "Pairs with the companion app over Bluetooth LE: 'Scan for Ball' to connect, a live volume slider and play / skip controls, with sleep-wake power handling on the ball itself.",
-        "Built for inclusive play - the whole point is that visually impaired users can locate and interact with the ball by sound.",
+        "Built for inclusive play; the whole point is that visually impaired users can locate and interact with the ball by sound.",
         "Custom 3D-printed enclosure packs the speaker, battery pack and a volume potentiometer around the ESP32 board.",
       ],
       outcomes: [
@@ -110,7 +175,7 @@ const Projects = () => {
       ],
       tags: ["ESP32", "C++", "Bluetooth LE", "Mozzi Audio", "Accessibility"],
       liveUrl: "#",
-      repoUrl: "#", // TODO: add the Visiobal repo URL (your git.fhict.nl / GitHub link)
+      repoUrl: "https://github.com/Marto8090/visiobal",
     },
     {
       title: t('projects.fitfusion.title'),
@@ -163,7 +228,7 @@ const Projects = () => {
   ];
 
   return (
-    <section id="projects" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto relative scroll-mt-24 md:scroll-mt-32">
+    <section id="projects" className="py-12 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto relative scroll-mt-24 md:scroll-mt-32">
       <SectionTitle title={t('projects.title')} num="03" kicker={t('projects.kicker')} />
 
       <div className="flex flex-col">

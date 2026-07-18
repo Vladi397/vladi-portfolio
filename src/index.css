@@ -66,3 +66,50 @@ html[data-theme-switching="true"] .theme-color-transition {
 html[data-theme-switching="true"] * {
   animation-play-state: paused !important;
 }
+
+/* ------------------------------- */
+/* OurGrid card — flowing "electric current" side waves */
+/* ------------------------------- */
+@keyframes og-flow-up {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-130px); }   /* == wave wavelength → seamless loop */
+}
+@keyframes og-flow-down {
+  from { transform: translateY(-130px); }
+  to   { transform: translateY(0); }
+}
+.og-wave {
+  transform-box: view-box;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .og-wave { animation: none !important; }
+}
+
+/* ------------------------------- */
+/* Visiobal card — expanding sonar / radar pulse rings */
+/* ------------------------------- */
+@keyframes vb-pulse {
+  0%   { transform: scale(0.12); opacity: 0; }
+  18%  { opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+.vb-ring {
+  transform-box: view-box;
+  will-change: transform, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .vb-ring { animation: none !important; opacity: 0.12 !important; transform: scale(0.6); }
+}
+
+/* ------------------------------- */
+/* Project detail — mobile sheet entrance / exit (no 3D flip on phones) */
+/* ------------------------------- */
+@keyframes pe-sheet-in {
+  from { transform: translateY(26px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes pe-sheet-out {
+  from { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(26px); opacity: 0; }
+}
