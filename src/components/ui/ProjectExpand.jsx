@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import ProjectCardInner from "./ProjectCardInner";
 import OurGridMotif from "./OurGridMotif";
 import VisiobalMotif from "./VisiobalMotif";
+import DevMatchMotif from "./DevMatchMotif";
 
 /*
   ProjectExpand
@@ -74,7 +75,13 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
   const theme = { ...DEFAULT_THEME, ...(project.theme || {}) };
   // Per-project decorative side motif (OurGrid → electric waves, Visiobal → sonar).
   const MotifComp =
-    project.motif === "grid" ? OurGridMotif : project.motif === "sonar" ? VisiobalMotif : null;
+    project.motif === "grid"
+      ? OurGridMotif
+      : project.motif === "sonar"
+        ? VisiobalMotif
+        : project.motif === "match"
+          ? DevMatchMotif
+          : null;
 
   // A viewport-pinned decorative layer that flanks the content as you scroll.
   const motifLayer = MotifComp ? (
@@ -525,6 +532,9 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
             portrait/landscape shots are never cropped). */}
         {(() => {
           const multi = gallery.length > 1;
+          // Portrait galleries (e.g. phone screenshots) opt into a tall aspect
+          // via project.galleryAspect ("w / h"); default is landscape 4/3.
+          const aspect = project.galleryAspect || "4 / 3";
           return (
             <div className={multi ? "grid gap-5 sm:gap-6 sm:grid-cols-2" : "space-y-6"}>
               {gallery.map((src, i) => (
@@ -539,11 +549,8 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
                     alt={`${project.title} ${i + 1}`}
                     loading="lazy"
                     decoding="async"
-                    className={
-                      multi
-                        ? "block w-full aspect-[4/3] object-contain p-2"
-                        : "block w-full h-auto"
-                    }
+                    className={multi ? "block w-full object-contain p-2" : "block w-full h-auto"}
+                    style={multi ? { aspectRatio: aspect } : undefined}
                   />
                 </figure>
               ))}

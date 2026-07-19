@@ -12,6 +12,12 @@ import brewBuddyImg   from "../../assets/brewbuddy.png";
 // Visiobal — replace these two placeholder files with your real images (keep the names)
 import visiobalAppImg      from "../../assets/visiobal-app.png";
 import visiobalHardwareImg from "../../assets/visiobal-hardware.jpg";
+// DevMatch — real app screenshots.
+import devMatchHome   from "../../assets/devmatch-home.jpg";
+import devMatchJobs   from "../../assets/devmatch-jobs.jpg";
+import devMatchApply  from "../../assets/devmatch-apply.jpg";
+import devMatchResume from "../../assets/devmatch-resume.jpg";
+import devMatchLogin  from "../../assets/devmatch-login.jpg";
 
 const Projects = () => {
   const { t } = useTranslation();
@@ -36,6 +42,30 @@ const Projects = () => {
   const cardRefs = useRef([]);
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeCard, setActiveCard] = useState(null); // the live card DOM node
+
+  // Equalise the sticky cards to the tallest one so the scroll-stack sits flush:
+  // if a taller card is behind a shorter one, its bottom peeks out as a "gap".
+  const [cardMinH, setCardMinH] = useState(0);
+  useEffect(() => {
+    if (isMobile) return; // stack-equalising only applies to the desktop sticky layout
+    const measure = () => {
+      let max = 0;
+      cardRefs.current.forEach((el) => {
+        if (!el) return;
+        const prev = el.style.minHeight;
+        el.style.minHeight = "0px"; // read each card's natural height
+        if (el.offsetHeight > max) max = el.offsetHeight;
+        el.style.minHeight = prev;
+      });
+      setCardMinH(max);
+    };
+    const raf = requestAnimationFrame(measure);
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", measure);
+    };
+  }, [isMobile]);
 
   const openProject = (index) => {
     const el = cardRefs.current[index];
@@ -71,6 +101,64 @@ const Projects = () => {
                   you want them translated like the rest of the copy.)
   */
   const projects = [
+    {
+      // DevMatch — a full-stack, AI-powered job assistant for developers.
+      title: "DevMatch",
+      role: "Full-Stack • Mobile • AI",
+      desc:
+        "A full-stack, AI-powered job assistant for developers. An Expo React Native app backed by a Node and Express API finds jobs, scores your resume against each listing with ATS analysis, and helps you apply with tailored cover letters.",
+      img: devMatchHome,
+      // Portrait phone shots — show the branded top of the dashboard on the cover.
+      customImgClass: "object-top",
+      gallery: [devMatchHome, devMatchJobs, devMatchApply, devMatchResume, devMatchLogin],
+      galleryAspect: "1048 / 2046", // portrait phone screenshots
+      // DevMatch brand palette — cyan "DEV" + pink "MATCH" on deep navy.
+      theme: { accent: "#00D4FF", accent2: "#FF2D8A", deep: "#0D0F1E" },
+      // Renders the breathing "match score" bars on the expanded detail view.
+      motif: "match",
+      story: [
+        {
+          kicker: "The idea",
+          title: "One place to run the whole job hunt",
+          body: "Job hunting as a developer is scattered across a dozen tabs: finding roles, tailoring a resume for each one, writing cover letters, then tracking who you applied to. DevMatch pulls all of that into a single app that actually understands your resume.",
+        },
+        {
+          kicker: "The match",
+          title: "Every job gets a match score",
+          body: "Listings are ranked with a calculated match percentage based on how your skills and resume line up with each role, so you spend your time on the jobs you are actually a fit for instead of scrolling endlessly.",
+        },
+        {
+          kicker: "The ATS boost",
+          title: "Beat the resume robots",
+          body: "Upload a PDF resume and the AI scores it against a specific job description the way an applicant tracking system would, then rewrites it to lift the match: a clear before and after jump, like 78 percent to 85 percent.",
+        },
+        {
+          kicker: "The letters",
+          title: "Cover letters in your voice",
+          body: "For any role, DevMatch auto-generates a tailored motivation letter you can set to a tone that fits: casual, professional, confident or creative, so applying is one tap instead of a blank page.",
+        },
+        {
+          kicker: "The build",
+          title: "Full-stack, end to end",
+          body: "I built both sides: an Expo React Native app for Android, iOS and web, and a Node and Express backend with Prisma and PostgreSQL, secured with JWT auth. A dashboard ties it together with a saved to applied to interview funnel and recent activity.",
+        },
+      ],
+      facts: [
+        "Full-stack and cross-platform: one Expo React Native codebase runs on Android, iOS and the web, talking to a Node and Express API with Prisma over PostgreSQL.",
+        "Every listing shows a calculated match percentage, so the feed surfaces the roles that fit your resume first.",
+        "The ATS boost scores your resume against a real job description and shows a measurable before and after lift, not just vague advice.",
+        "Motivation letters are generated per job in four selectable tones (casual, professional, confident, creative).",
+        "A saved, applied, interview and rejected funnel plus a recent-activity feed keep the whole application pipeline in one dashboard.",
+      ],
+      outcomes: [
+        "Built a cross-platform Expo React Native app plus a typed Node, Express, Prisma and PostgreSQL backend",
+        "Designed an AI ATS flow that scores and rewrites resumes against a job description",
+        "Shipped JWT auth, job matching, resume upload and application tracking end to end",
+      ],
+      tags: ["React Native", "Expo", "Node.js", "PostgreSQL", "AI / ATS"],
+      liveUrl: "#",
+      repoUrl: "https://github.com/Vladi397/devmatch",
+    },
     {
       title: t('projects.ourgrid.title'),
       desc: t('projects.ourgrid.desc'),
@@ -260,7 +348,9 @@ const Projects = () => {
                   role="button"
                   tabIndex={0}
                   aria-label={`${p.title} — ${t('projects.open_details', 'open details')}`}
+                  style={{ minHeight: !isMobile && cardMinH ? `${cardMinH}px` : undefined }}
                   className="relative rounded-[32px] p-7 sm:p-10 md:p-14 overflow-hidden cursor-pointer transition-colors duration-300
+                  md:flex md:flex-col md:justify-center
                   bg-white shadow-xl border border-sky-100
                   dark:bg-[#0B1120] dark:shadow-none dark:border-sky-900/40
                   focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#0B1120]"

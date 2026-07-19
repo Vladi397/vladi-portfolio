@@ -3,30 +3,28 @@ import React from "react";
 /*
   VisiobalMotif
   -------------
-  Decorative "sonar" pulse rings for the Visiobal project. Concentric rings
-  expand outward from a source point on each side edge — echoing the app's radar
-  scan screen and the idea of finding the ball by sound. Rendered in Visiobal's
-  brand violet + pink. Purely decorative (aria-hidden), flanks the expanded
-  detail view and fades inward toward the centred content.
+  Decorative "sonar" pulse rings for the Visiobal project. Two sources on each
+  side edge emit trains of concentric rings that expand outward and fade, echoing
+  the app's radar scan and the idea of finding the ball by sound. Rings are drawn
+  with a violet -> pink gradient stroke. Purely decorative (aria-hidden), flanks
+  the expanded detail view and fades inward toward the centred content.
 */
 
 const VIOLET = "#A855F7";
 const PINK = "#F472B6";
 
-const VB_W = 340; // strip coordinate width
-const VB_H = 680; // tall enough to cover any viewport via slice
-const CY = VB_H / 2; // pulse origin sits at the vertical middle of the edge
-const BASE_R = 150; // ring radius at scale 1
+const VB_W = 360;
+const VB_H = 700;
+const BASE_R = 165; // ring radius at scale 1
 
-function RingColumn({ accent, accent2, mirror }) {
-  // A train of rings on a shared origin, staggered so pulses emanate continuously.
-  const rings = [
-    { color: accent, delay: 0, op: 0.5 },
-    { color: accent2, delay: 1.4, op: 0.42 },
-    { color: accent, delay: 2.8, op: 0.34 },
-    { color: accent2, delay: 4.2, op: 0.26 },
-  ];
-  const DUR = 5.6;
+// Two ping sources per edge (fraction of height), each with a staggered train
+// of rings [delay, peak opacity]. Different speeds so they never sync up.
+const SOURCES = [
+  { cy: 0.3, dur: 5.4, rings: [[0, 0.55], [1.8, 0.4], [3.6, 0.26]] },
+  { cy: 0.72, dur: 6.6, rings: [[0.9, 0.5], [3.0, 0.36], [5.1, 0.22]] },
+];
+
+function RingColumn({ accent, accent2, gradId, mirror }) {
   return (
     <svg
       className="h-full w-full"
@@ -36,26 +34,40 @@ function RingColumn({ accent, accent2, mirror }) {
       aria-hidden="true"
       style={mirror ? { transform: "scaleX(-1)" } : undefined}
     >
-      {/* faint source glow + dot at the edge origin */}
-      <circle cx="0" cy={CY} r="26" fill={accent} opacity="0.12" />
-      <circle cx="0" cy={CY} r="5" fill={accent} opacity="0.7" />
+      <defs>
+        <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor={accent} />
+          <stop offset="1" stopColor={accent2} />
+        </linearGradient>
+      </defs>
 
-      {rings.map((r, i) => (
-        <circle
-          key={i}
-          className="vb-ring"
-          cx="0"
-          cy={CY}
-          r={BASE_R}
-          stroke={r.color}
-          strokeWidth="2"
-          opacity={r.op}
-          style={{
-            transformOrigin: `0px ${CY}px`,
-            animation: `vb-pulse ${DUR}s ease-out ${r.delay}s infinite`,
-          }}
-        />
-      ))}
+      {SOURCES.map((s, si) => {
+        const cy = VB_H * s.cy;
+        return (
+          <g key={si}>
+            {/* soft source glow + core dot */}
+            <circle cx="0" cy={cy} r="30" fill={accent} opacity="0.13" />
+            <circle cx="0" cy={cy} r="6" fill={accent2} opacity="0.75" />
+
+            {s.rings.map(([delay, peak], ri) => (
+              <circle
+                key={ri}
+                className="vb-ring"
+                cx="0"
+                cy={cy}
+                r={BASE_R}
+                stroke={`url(#${gradId})`}
+                strokeWidth="2.5"
+                style={{
+                  "--vb-peak": peak,
+                  transformOrigin: `0px ${cy}px`,
+                  animation: `vb-pulse ${s.dur}s ease-out ${delay}s infinite`,
+                }}
+              />
+            ))}
+          </g>
+        );
+      })}
     </svg>
   );
 }
@@ -63,22 +75,22 @@ function RingColumn({ accent, accent2, mirror }) {
 export default function VisiobalMotif({ accent = VIOLET, accent2 = PINK }) {
   // Fade the rings inward (toward the centred content) so nothing crowds the text.
   const leftMask = {
-    WebkitMaskImage: "linear-gradient(to right, #000 10%, transparent 85%)",
-    maskImage: "linear-gradient(to right, #000 10%, transparent 85%)",
+    WebkitMaskImage: "linear-gradient(to right, #000 12%, transparent 92%)",
+    maskImage: "linear-gradient(to right, #000 12%, transparent 92%)",
   };
   const rightMask = {
-    WebkitMaskImage: "linear-gradient(to left, #000 10%, transparent 85%)",
-    maskImage: "linear-gradient(to left, #000 10%, transparent 85%)",
+    WebkitMaskImage: "linear-gradient(to left, #000 12%, transparent 92%)",
+    maskImage: "linear-gradient(to left, #000 12%, transparent 92%)",
   };
   const stripW = "hidden sm:block w-24 md:w-40 lg:w-64";
 
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
       <div className={`absolute inset-y-0 left-0 ${stripW}`} style={leftMask}>
-        <RingColumn accent={accent} accent2={accent2} />
+        <RingColumn accent={accent} accent2={accent2} gradId="vb-grad-l" />
       </div>
       <div className={`absolute inset-y-0 right-0 ${stripW}`} style={rightMask}>
-        <RingColumn accent={accent} accent2={accent2} mirror />
+        <RingColumn accent={accent} accent2={accent2} gradId="vb-grad-r" mirror />
       </div>
     </div>
   );

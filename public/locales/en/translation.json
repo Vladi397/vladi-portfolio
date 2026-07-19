@@ -40,7 +40,7 @@
   },
   "projects": {
     "title": "Projects",
-    "kicker": "Selected work",
+    "kicker": "Recent work",
     "btn_live": "Live Demo",
     "btn_code": "Code",
     "ourgrid": {

@@ -90,9 +90,9 @@ html[data-theme-switching="true"] * {
 /* Visiobal card — expanding sonar / radar pulse rings */
 /* ------------------------------- */
 @keyframes vb-pulse {
-  0%   { transform: scale(0.12); opacity: 0; }
-  18%  { opacity: 1; }
-  100% { transform: scale(1); opacity: 0; }
+  0%   { transform: scale(0.1);  opacity: 0; }
+  16%  { opacity: var(--vb-peak, 0.5); }
+  100% { transform: scale(1);    opacity: 0; }
 }
 .vb-ring {
   transform-box: view-box;
@@ -112,4 +112,19 @@ html[data-theme-switching="true"] * {
 @keyframes pe-sheet-out {
   from { transform: translateY(0);    opacity: 1; }
   to   { transform: translateY(26px); opacity: 0; }
+}
+
+/* ------------------------------- */
+/* DevMatch card — breathing "match score" bars */
+/* ------------------------------- */
+@keyframes dm-bar {
+  0%, 100% { transform: scaleY(0.55); }
+  50%      { transform: scaleY(1); }
+}
+.dm-bar {
+  transform-box: view-box;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dm-bar { animation: none !important; }
 }

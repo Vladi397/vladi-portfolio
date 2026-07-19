@@ -40,7 +40,7 @@
   },
   "projects": {
     "title": "Projecten",
-    "kicker": "Geselecteerd werk",
+    "kicker": "Recent werk",
     "btn_live": "Live Demo",
     "btn_code": "Code",
     "ourgrid": {

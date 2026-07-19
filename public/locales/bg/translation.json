@@ -40,7 +40,7 @@
   },
   "projects": {
     "title": "Проекти",
-    "kicker": "Избрани творби",
+    "kicker": "Скорошни проекти",
     "btn_live": "Демо",
     "btn_code": "Код",
     "ourgrid": {
