@@ -127,6 +127,7 @@ const StarField = ({ count = 5000, theme }) => {
           size={0.07}
           sizeAttenuation={true}
           depthWrite={false}
+          fog={false} /* stars stay crisp at any depth — only the wireframe fogs */
           opacity={theme === "dark" ? 0.8 : 1.0}
         />
       </Points>
@@ -222,6 +223,7 @@ const NebulaHaze = ({ theme, reduced = false }) => {
             transparent
             opacity={baseOp}
             depthWrite={false}
+            fog={false}
             blending={theme === "dark" ? THREE.AdditiveBlending : THREE.NormalBlending}
           />
         </sprite>
@@ -291,6 +293,14 @@ const UniverseBackground = ({ theme }) => {
         eventSource={document.getElementById('root')}
         eventPrefix="client"
       >
+        {/* Distance fog matched to the page background: the wireframe's far
+            edges dissolve into it instead of ending in a hard line. Stars and
+            nebula opt out (fog={false}) so only the wireframe is affected. */}
+        <fog
+          attach="fog"
+          args={[theme === "dark" ? "#050505" : "#f8fafc", 16, 50]}
+        />
+
         {/* Re-keyed on count so the star buffer is rebuilt at the right size */}
         <StarField key={starCount} count={starCount} theme={theme} />
         <NetworkLines theme={theme} />
