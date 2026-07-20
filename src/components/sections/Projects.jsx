@@ -251,7 +251,15 @@ const Projects = () => {
   ];
 
   return (
-    <section id="projects" className="py-12 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto relative scroll-mt-24 md:scroll-mt-32">
+    <section
+      id="projects"
+      className="py-12 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto relative scroll-mt-24 md:scroll-mt-32"
+      // Desktop only: pull the next section up into the last card's trailing
+      // 40vh so the empty gap after the scroll-stack shrinks, without touching
+      // the card margins (which the stack depends on). By the time the next
+      // section rises into that region the last card has scrolled off the top.
+      style={{ marginBottom: isMobile ? undefined : "-30vh" }}
+    >
       <SectionTitle title={t('projects.title')} num="03" kicker={t('projects.kicker')} />
 
       <div className="flex flex-col">
@@ -267,13 +275,15 @@ const Projects = () => {
               className={isMobile ? "relative mb-12" : "sticky top-28 md:top-32"}
               style={{
                 zIndex: (index + 1) * 10,
-                // Desktop: 40vh below each card is the scroll distance for the
-                // next card to slide up and pin over it. The last card gets no
-                // margin — the spacer after the map (below) gives it its dwell
-                // and the gap before the next section.
+                // 40vh below each card is the scroll distance for the next card
+                // to slide up and lock over it (the last card's tail is what
+                // keeps the second-to-last pinned long enough to be covered, so
+                // it must stay 40vh too — shrinking it breaks the stack). The
+                // trailing gap before the next section is closed by pulling that
+                // section up instead (negative margin on the section below).
                 marginBottom: isMobile
                   ? (index < projects.length - 1 ? "4rem" : "2rem")
-                  : (index < projects.length - 1 ? "40vh" : "0"),
+                  : "40vh",
               }}
             >
               <div
@@ -326,14 +336,6 @@ const Projects = () => {
             </div>
           );
         })}
-
-        {/* Spacer so the LAST card has something to pin against and actually
-            settles at the top like the others. A sticky item only holds while a
-            sibling sits below it inside the flex container; the last card had
-            only a bottom margin, which doesn't give it that room, so it just
-            scrolled past the top. This spacer's height is the last card's dwell
-            AND the gap before Certificates — kept modest. */}
-        {!isMobile && <div aria-hidden="true" style={{ height: "26vh" }} />}
       </div>
 
       {activeIndex !== null && (
