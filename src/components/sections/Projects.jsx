@@ -268,12 +268,12 @@ const Projects = () => {
               style={{
                 zIndex: (index + 1) * 10,
                 // Desktop: 40vh below each card is the scroll distance for the
-                // next card to slide up and pin over it. The LAST card has no
-                // next card, so its 40vh was just empty space before the next
-                // section — give it a small tail instead.
+                // next card to slide up and pin over it. The last card gets no
+                // margin — the spacer after the map (below) gives it its dwell
+                // and the gap before the next section.
                 marginBottom: isMobile
                   ? (index < projects.length - 1 ? "4rem" : "2rem")
-                  : (index < projects.length - 1 ? "40vh" : "12vh"),
+                  : (index < projects.length - 1 ? "40vh" : "0"),
               }}
             >
               <div
@@ -326,6 +326,14 @@ const Projects = () => {
             </div>
           );
         })}
+
+        {/* Spacer so the LAST card has something to pin against and actually
+            settles at the top like the others. A sticky item only holds while a
+            sibling sits below it inside the flex container; the last card had
+            only a bottom margin, which doesn't give it that room, so it just
+            scrolled past the top. This spacer's height is the last card's dwell
+            AND the gap before Certificates — kept modest. */}
+        {!isMobile && <div aria-hidden="true" style={{ height: "26vh" }} />}
       </div>
 
       {activeIndex !== null && (
