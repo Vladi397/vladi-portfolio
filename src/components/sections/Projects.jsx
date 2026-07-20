@@ -272,7 +272,17 @@ const Projects = () => {
                   : "40vh",
               }}
             >
-              <div className="relative group">
+              <div
+                className="relative group"
+                // Hide the real card (glow included) for the whole time its
+                // detail overlay is open/animating, so the flip looks like THIS
+                // card lifting off — not a duplicate spawning on top of it.
+                // visibility:hidden keeps the layout box, so ProjectExpand can
+                // still measure it for the flip origin. Reappears in the same
+                // commit the overlay unmounts (activeIndex → null), so the
+                // hand-off is seamless.
+                style={{ visibility: activeIndex === index ? "hidden" : undefined }}
+              >
                 {/* Outer glow */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-indigo-600 rounded-[40px] blur-xl opacity-20 dark:opacity-30 group-hover:opacity-50 dark:group-hover:opacity-60 transition-all duration-700 pointer-events-none" />
 
