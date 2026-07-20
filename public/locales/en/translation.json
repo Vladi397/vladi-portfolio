@@ -73,9 +73,9 @@
       "fact3": "The ATS boost scores your resume against a real job description and shows a measurable before and after lift, not just vague advice.",
       "fact4": "Motivation letters are generated per job in four selectable tones (casual, professional, confident, creative).",
       "fact5": "A saved, applied, interview and rejected funnel plus a recent-activity feed keep the whole application pipeline in one dashboard.",
-      "outcome1": "Built a cross-platform Expo React Native app plus a typed Node, Express, Prisma and PostgreSQL backend",
-      "outcome2": "Designed an AI ATS flow that scores and rewrites resumes against a job description",
-      "outcome3": "Shipped JWT auth, job matching, resume upload and application tracking end to end"
+      "outcome1": "Cross-platform Expo app + typed Node/Prisma backend",
+      "outcome2": "AI ATS flow that scores and rewrites resumes per job",
+      "outcome3": "JWT auth, job matching, resume upload and tracking"
     },
     "ourgrid": {
       "title": "OurGrid (Client OpenRemote)",

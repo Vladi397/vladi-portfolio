@@ -73,9 +73,9 @@
       "fact3": "De ATS-boost scoort je cv tegen een echte vacaturetekst en toont een meetbare verbetering van voor naar na, geen vage adviezen.",
       "fact4": "Motivatiebrieven worden per vacature gegenereerd in vier kiesbare tonen (casual, professioneel, zelfverzekerd, creatief).",
       "fact5": "Een trechter met opgeslagen, gesolliciteerd, interview en afgewezen plus een activiteitenfeed houden de hele sollicitatiepijplijn in één dashboard.",
-      "outcome1": "Cross-platform Expo React Native-app plus een getypeerde Node-, Express-, Prisma- en PostgreSQL-backend gebouwd",
-      "outcome2": "Een AI ATS-flow ontworpen die cv's scoort en herschrijft tegen een vacaturetekst",
-      "outcome3": "JWT-auth, vacaturematching, cv-upload en sollicitatietracking end-to-end opgeleverd"
+      "outcome1": "Cross-platform Expo-app + getypeerde Node/Prisma-backend",
+      "outcome2": "AI ATS-flow die cv's scoort en herschrijft per vacature",
+      "outcome3": "JWT-auth, matching, cv-upload en sollicitatietracking"
     },
     "ourgrid": {
       "title": "OurGrid (OpenRemote)",
