@@ -267,9 +267,13 @@ const Projects = () => {
               className={isMobile ? "relative mb-12" : "sticky top-28 md:top-32"}
               style={{
                 zIndex: (index + 1) * 10,
+                // Desktop: 40vh below each card is the scroll distance for the
+                // next card to slide up and pin over it. The LAST card has no
+                // next card, so its 40vh was just empty space before the next
+                // section — give it a small tail instead.
                 marginBottom: isMobile
                   ? (index < projects.length - 1 ? "4rem" : "2rem")
-                  : "40vh",
+                  : (index < projects.length - 1 ? "40vh" : "12vh"),
               }}
             >
               <div
