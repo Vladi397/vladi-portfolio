@@ -34,8 +34,9 @@ const Contact = () => {
     
     const newErrors = {};
 
-    // 1. Name Validation (Letters & Spaces only, min 2 chars)
-    const nameRegex = /^[A-Za-z\s]+$/;
+    // 1. Name Validation (letters in any script — Cyrillic, accents, etc. —
+    // plus spaces, hyphens and apostrophes; min 2 chars)
+    const nameRegex = /^[\p{L}\s'’-]+$/u;
     if (!name || name.length < 2) {
       newErrors.name = t('contact.error_name_short') || "Name must be at least 2 characters.";
     } else if (!nameRegex.test(name)) {

@@ -3,74 +3,120 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
 import { EffectComposer, Bloom, Noise, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
+import StaticBackdrop from "./StaticBackdrop";
+
+// Machines with WebGL blocked or broken (old GPUs, remote desktop, strict
+// policies) get the static CSS backdrop instead of a crash.
+const supportsWebGL = () => {
+  try {
+    const c = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (c.getContext("webgl2") || c.getContext("webgl"))
+    );
+  } catch {
+    return false;
+  }
+};
+
+// Rough low-end detection (few cores / little RAM). Used to trim pixel count
+// and star density on machines that would otherwise drop frames — the scene
+// and animations themselves stay identical.
+const LOW_END = (() => {
+  if (typeof navigator === "undefined") return false;
+  const cores = navigator.hardwareConcurrency || 8;
+  const mem = navigator.deviceMemory; // undefined outside Chromium
+  return cores <= 4 || (mem !== undefined && mem <= 4);
+})();
+
+const pickStarCount = () =>
+  typeof window !== "undefined" &&
+  (window.innerWidth < 768 || window.innerHeight < 520) // phones incl. landscape
+    ? 1500
+    : LOW_END
+      ? 3000
+      : 5000;
 
 // --- 1. THE STARS (With Mouse Repulsion) ---
 const StarField = ({ count = 5000, theme }) => {
   const ref = useRef();
   const { viewport } = useThree();
 
+  // Built once per mount at the current count — the parent re-keys this whole
+  // component when the count changes (breakpoint crossings), so the buffer is
+  // always the right size from the first frame.
   const [positions] = useState(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       const r = 40 * Math.cbrt(Math.random());
       const theta = Math.random() * 2 * Math.PI;
       const phi = Math.acos(2 * Math.random() - 1);
-      
-      const x = r * Math.sin(phi) * Math.cos(theta);
-      const y = r * Math.sin(phi) * Math.sin(theta);
-      const z = r * Math.cos(phi);
 
-      pos[i * 3] = x;
-      pos[i * 3 + 1] = y;
-      pos[i * 3 + 2] = z;
+      pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      pos[i * 3 + 2] = r * Math.cos(phi);
     }
     return pos;
   });
 
-  // Re-memoize if count changes (though typically count stays stable after mount)
   const initialPositions = useMemo(() => new Float32Array(positions), [positions]);
+
+  // Idle bookkeeping: the per-star loop + GPU buffer upload only run while the
+  // pointer is moving or stars are still drifting home. In steady state the
+  // group rotation (a free GPU transform) is the only per-frame work.
+  const lastPointer = useRef({ x: NaN, y: NaN });
+  const dirtyRef = useRef(false);
 
   useFrame((state, delta) => {
     ref.current.rotation.x -= delta / 50;
     ref.current.rotation.y -= delta / 60;
 
-    const xMult = viewport.width / 2;
-    const yMult = viewport.height / 2;
-    const mx = state.pointer.x * xMult;
-    const my = state.pointer.y * yMult;
+    const mx = state.pointer.x * (viewport.width / 2);
+    const my = state.pointer.y * (viewport.height / 2);
+    const pointerMoved = mx !== lastPointer.current.x || my !== lastPointer.current.y;
+    if (!pointerMoved && !dirtyRef.current) return;
+    lastPointer.current.x = mx;
+    lastPointer.current.y = my;
 
-    const currentPositions = ref.current.geometry.attributes.position.array;
-    
+    const arr = ref.current.geometry.attributes.position.array;
+    let active = false;
+
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
-      const x = currentPositions[i3];
-      const y = currentPositions[i3 + 1];
-      const z = currentPositions[i3 + 2];
-
-      const ix = initialPositions[i3];
-      const iy = initialPositions[i3 + 1];
-      const iz = initialPositions[i3 + 2];
+      const x = arr[i3];
+      const y = arr[i3 + 1];
+      const z = arr[i3 + 2];
 
       const dx = mx - x;
       const dy = my - y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
+      const dSq = dx * dx + dy * dy;
 
-      if (dist < 6) {
-         const force = (6 - dist) / 6;
-         const angle = Math.atan2(dy, dx);
-         currentPositions[i3] -= Math.cos(angle) * force * 20 * delta; 
-         currentPositions[i3 + 1] -= Math.sin(angle) * force * 20 * delta;
+      if (dSq < 36) {
+        // (dx/dist, dy/dist) is exactly (cos, sin) of the old atan2 — same
+        // push, no trig, and sqrt only runs for the few stars near the cursor.
+        const dist = Math.sqrt(dSq) || 0.0001;
+        const push = ((6 - dist) / 6) * 20 * delta;
+        arr[i3] -= (dx / dist) * push;
+        arr[i3 + 1] -= (dy / dist) * push;
+        active = true;
       } else {
-         currentPositions[i3] += (ix - x) * 2.5 * delta; 
-         currentPositions[i3 + 1] += (iy - y) * 2.5 * delta;
-         currentPositions[i3 + 2] += (iz - z) * 2.5 * delta;
+        const rx = initialPositions[i3] - x;
+        const ry = initialPositions[i3 + 1] - y;
+        const rz = initialPositions[i3 + 2] - z;
+        if (rx * rx + ry * ry + rz * rz > 1e-6) {
+          arr[i3] += rx * 2.5 * delta;
+          arr[i3 + 1] += ry * 2.5 * delta;
+          arr[i3 + 2] += rz * 2.5 * delta;
+          active = true;
+        }
       }
     }
-    
-    ref.current.geometry.attributes.position.needsUpdate = true;
+
+    dirtyRef.current = active;
+    if (active) ref.current.geometry.attributes.position.needsUpdate = true;
   });
 
-  const color = "#0EA5E9"; 
+  const color = "#0EA5E9";
 
   return (
     <group>
@@ -81,7 +127,7 @@ const StarField = ({ count = 5000, theme }) => {
           size={0.07}
           sizeAttenuation={true}
           depthWrite={false}
-          opacity={theme === "dark" ? 0.8 : 1.0} 
+          opacity={theme === "dark" ? 0.8 : 1.0}
         />
       </Points>
     </group>
@@ -91,7 +137,7 @@ const StarField = ({ count = 5000, theme }) => {
 // --- 2. NETWORK LINES (Static) ---
 const NetworkLines = ({ theme }) => {
     const lineRef = useRef();
-    
+
     useFrame((state) => {
         const t = state.clock.getElapsedTime();
         lineRef.current.rotation.y = t * 0.02;
@@ -186,8 +232,13 @@ const NebulaHaze = ({ theme, reduced = false }) => {
 
 // --- MAIN COMPONENT ---
 const UniverseBackground = ({ theme }) => {
-  // OPTIMIZATION: Detect mobile screen to reduce particle count
-  const [starCount, setStarCount] = useState(5000);
+  // Star density picked synchronously so the buffer is built at the right size
+  // from the start (the old resize-effect version ran after the geometry was
+  // already created, so mobile silently kept the full 5000).
+  const [starCount, setStarCount] = useState(pickStarCount);
+  const [paused, setPaused] = useState(false);
+  const [supported] = useState(supportsWebGL);
+  const [contextLost, setContextLost] = useState(false);
   const [reduced] = useState(
     () =>
       typeof window !== "undefined" &&
@@ -196,37 +247,60 @@ const UniverseBackground = ({ theme }) => {
   );
 
   useEffect(() => {
-    const handleResize = () => {
-      // If width < 768px (Mobile), use 1500 stars. Else 5000.
-      setStarCount(window.innerWidth < 768 ? 1500 : 5000);
-    };
-
-    // Run once on mount
-    handleResize();
-
-    // Optional: Update on resize
+    const handleResize = () => setStarCount(pickStarCount());
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // The project-detail overlay dispatches these while it fully covers the
+  // viewport — no point rendering a universe nobody can see. Resumes the moment
+  // the overlay starts closing.
+  useEffect(() => {
+    const pause = () => setPaused(true);
+    const resume = () => setPaused(false);
+    window.addEventListener("universe:pause", pause);
+    window.addEventListener("universe:resume", resume);
+    return () => {
+      window.removeEventListener("universe:pause", pause);
+      window.removeEventListener("universe:resume", resume);
+    };
+  }, []);
+
+  // No WebGL, or the GPU dropped the context (driver reset, too many tabs):
+  // fall back to the static glow instead of a blank/black background.
+  if (!supported || contextLost) return <StaticBackdrop />;
 
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
       <Canvas
         camera={{ position: [0, 0, 10], fov: 45 }}
-        dpr={[1, 2]}
+        // 1.5x pixel cap (1x on low-end): the bloom-blurred background looks the
+        // same, at roughly half the retina pixel work.
+        dpr={LOW_END ? 1 : [1, 1.5]}
+        // MSAA never survives the post-processing chain, so the default
+        // antialias buffer was pure cost.
+        gl={{ antialias: false, powerPreference: "high-performance", stencil: false }}
+        frameloop={paused ? "never" : "always"}
+        onCreated={({ gl }) =>
+          gl.domElement.addEventListener(
+            "webglcontextlost",
+            () => setContextLost(true),
+            { once: true }
+          )
+        }
         eventSource={document.getElementById('root')}
         eventPrefix="client"
       >
-        {/* Pass the dynamic count here */}
-        <StarField count={starCount} theme={theme} />
+        {/* Re-keyed on count so the star buffer is rebuilt at the right size */}
+        <StarField key={starCount} count={starCount} theme={theme} />
         <NetworkLines theme={theme} />
         <NebulaHaze theme={theme} reduced={reduced} />
-        
+
         <EffectComposer multisampling={0} disableNormalPass={true}>
-            <Bloom 
-                luminanceThreshold={0} 
-                mipmapBlur 
-                intensity={theme === "dark" ? 1.5 : 0.5} 
+            <Bloom
+                luminanceThreshold={0}
+                mipmapBlur
+                intensity={theme === "dark" ? 1.5 : 0.5}
                 radius={0.6}
             />
             <Noise opacity={0.025} />

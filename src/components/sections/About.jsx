@@ -40,9 +40,10 @@ const About = () => {
             <Reveal delay={140}>
               <div className="pt-3 flex flex-wrap gap-2 sm:gap-3">
                 {[
-                  "React + Tailwind",
+                  "React + Next.js",
+                  "TypeScript",
+                  "Expo + React Native",
                   "UI/UX in Figma",
-                  t('about.skill_csharp') 
                 ].map((skill) => (
                   <span key={skill} className="px-4 py-2 rounded-full font-semibold text-sm border transition-colors
                     bg-sky-50 text-sky-700 border-sky-100

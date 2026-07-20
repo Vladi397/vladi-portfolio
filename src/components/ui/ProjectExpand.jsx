@@ -6,6 +6,7 @@ import ProjectCardInner from "./ProjectCardInner";
 import OurGridMotif from "./OurGridMotif";
 import VisiobalMotif from "./VisiobalMotif";
 import DevMatchMotif from "./DevMatchMotif";
+import FanGallery from "./FanGallery";
 
 /*
   ProjectExpand
@@ -63,11 +64,11 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
   const reduce = useRef(prefersReducedMotion()).current;
   // Phones skip the heavy 3D flip and get a clean sheet instead — the flip's
   // card→fullscreen morph is a desktop flourish that feels like too much on a
-  // small screen.
+  // small screen. Short viewports (landscape phones) count as phones too.
   const isMobile = useRef(
     typeof window !== "undefined" &&
       typeof window.matchMedia === "function" &&
-      window.matchMedia("(max-width: 640px)").matches
+      window.matchMedia("(max-width: 640px), (max-height: 520px)").matches
   ).current;
   const lite = reduce || isMobile;
 
@@ -82,16 +83,6 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
         : project.motif === "match"
           ? DevMatchMotif
           : null;
-
-  // A viewport-pinned decorative layer that flanks the content as you scroll.
-  const motifLayer = MotifComp ? (
-    <div
-      className="pointer-events-none sticky top-0 -z-10"
-      style={{ height: "100vh", marginBottom: "-100vh" }}
-    >
-      <MotifComp accent={theme.accent} accent2={theme.accent2} />
-    </div>
-  ) : null;
 
   // Address-bar label shown on the flip's front-face card (mirrors the grid).
   const urlLabel =
@@ -121,6 +112,20 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
   const [revealed, setRevealed] = useState(reduce); // detail content stagger
   const [settled, setSettled] = useState(reduce); // open finished → static blur ok
   const [closing, setClosing] = useState(false);
+
+  // A viewport-pinned decorative layer that flanks the content as you scroll.
+  // Mounted only once the open flip has SETTLED: rendering the SVG while the
+  // panel is still scaling during the flip rasterises it at low resolution
+  // (the "pixely on first open, crisp on second" bug). Fades in when it lands.
+  const motifLayer =
+    MotifComp && settled && !closing ? (
+      <div
+        className="pointer-events-none sticky top-0 -z-10"
+        style={{ height: "100vh", marginBottom: "-100vh", animation: "motif-in 600ms ease both" }}
+      >
+        <MotifComp accent={theme.accent} accent2={theme.accent2} />
+      </div>
+    ) : null;
   const [geom, setGeom] = useState(null); // drives the front-face counter-scale
   const [revealedChapters, setRevealedChapters] = useState(() => new Set()); // story steps scrolled into view
 
@@ -186,6 +191,11 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
   const requestClose = () => {
     if (closingRef.current) return;
     closingRef.current = true;
+    // Consume the history entry pushed on open (no-op when closing came from
+    // the back button itself — the browser already popped it).
+    if (window.history.state && window.history.state.projectExpand) {
+      window.history.back();
+    }
     clearTimeout(revealTimer.current);
     setClosing(true); // hide detail instantly so the reverse flip stays light
     setRevealed(false);
@@ -386,6 +396,30 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // While the settled panel fully covers the viewport, pause the WebGL universe
+  // behind it — it would otherwise keep rendering frames nobody can see.
+  // Resumes the moment closing starts (the backdrop turns translucent again).
+  useEffect(() => {
+    if (!settled || closing) return undefined;
+    window.dispatchEvent(new Event("universe:pause"));
+    return () => window.dispatchEvent(new Event("universe:resume"));
+  }, [settled, closing]);
+
+  // The browser/Android back button should close the overlay, not leave the
+  // site: push one history entry on open (guarded so StrictMode's double-mount
+  // doesn't push twice) and close on popstate. requestClose consumes the entry
+  // itself, so this cleanup never navigates — a cleanup-time history.back()
+  // would fire popstate into the remounted listener and instantly self-close.
+  useEffect(() => {
+    const onPop = () => requestClose();
+    if (!(window.history.state && window.history.state.projectExpand)) {
+      window.history.pushState({ projectExpand: true }, "");
+    }
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // staggered reveal style helper (instant uniform hide while closing)
   const rv = (delay) => {
     if (reduce) return undefined;
@@ -527,36 +561,40 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
           </div>
         </header>
 
-        {/* Big imagery — framed. When there are several, they share one fixed
-            aspect box so every photo renders at the same size (contain, so mixed
-            portrait/landscape shots are never cropped). */}
-        {(() => {
-          const multi = gallery.length > 1;
-          // Portrait galleries (e.g. phone screenshots) opt into a tall aspect
-          // via project.galleryAspect ("w / h"); default is landscape 4/3.
-          const aspect = project.galleryAspect || "4 / 3";
-          return (
-            <div className={multi ? "grid gap-5 sm:gap-6 sm:grid-cols-2" : "space-y-6"}>
-              {gallery.map((src, i) => (
-                <figure
-                  key={i}
-                  style={rv(gBase + i * 110)}
-                  className="overflow-hidden rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-white/10
-                    bg-gray-50 dark:bg-white/[0.03] shadow-xl shadow-slate-900/5 dark:shadow-black/40"
-                >
-                  <img
-                    src={src}
-                    alt={`${project.title} ${i + 1}`}
-                    loading="lazy"
-                    decoding="async"
-                    className={multi ? "block w-full object-contain p-2" : "block w-full h-auto"}
-                    style={multi ? { aspectRatio: aspect } : undefined}
-                  />
-                </figure>
-              ))}
-            </div>
-          );
-        })()}
+        {/* Big imagery. galleryLayout:"fan" spreads the shots like a hand of
+            cards; otherwise a framed grid (with a per-project aspect ratio so
+            mixed portrait/landscape shots share one size and never crop). */}
+        {project.galleryLayout === "fan" ? (
+          <div style={rv(gBase)}>
+            <FanGallery images={gallery} title={project.title} />
+          </div>
+        ) : (
+          (() => {
+            const multi = gallery.length > 1;
+            const aspect = project.galleryAspect || "4 / 3";
+            return (
+              <div className={multi ? "grid gap-5 sm:gap-6 sm:grid-cols-2" : "space-y-6"}>
+                {gallery.map((src, i) => (
+                  <figure
+                    key={i}
+                    style={rv(gBase + i * 110)}
+                    className="overflow-hidden rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-white/10
+                      bg-gray-50 dark:bg-white/[0.03] shadow-xl shadow-slate-900/5 dark:shadow-black/40"
+                  >
+                    <img
+                      src={src}
+                      alt={`${project.title} ${i + 1}`}
+                      loading="lazy"
+                      decoding="async"
+                      className={multi ? "block w-full object-contain p-2" : "block w-full h-auto"}
+                      style={multi ? { aspectRatio: aspect } : undefined}
+                    />
+                  </figure>
+                ))}
+              </div>
+            );
+          })()
+        )}
 
         {/* The story — a chapter timeline, threaded with the brand gradient */}
         {story && (

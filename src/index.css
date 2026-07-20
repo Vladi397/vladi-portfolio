@@ -113,6 +113,11 @@ html[data-theme-switching="true"] * {
   from { transform: translateY(0);    opacity: 1; }
   to   { transform: translateY(26px); opacity: 0; }
 }
+/* Decorative side motif fades in once the flip lands (see ProjectExpand). */
+@keyframes motif-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
 
 /* ------------------------------- */
 /* DevMatch card — breathing "match score" bars */

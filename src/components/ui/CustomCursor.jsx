@@ -8,59 +8,71 @@ const CustomCursor = () => {
   const pos = useRef({ x: 0, y: 0 });
   const ringPos = useRef({ x: 0, y: 0 });
   const rafRef = useRef(null);
+  const visibleRef = useRef(false); // mirrors isVisible so mousemove never churns state
+  const hoverRef = useRef(false); // mirrors isHovering — state flips only on change
 
   useEffect(() => {
     const isMobile = window.matchMedia("(pointer: coarse)").matches;
     if (isMobile) return;
 
+    const setVisible = (v) => {
+      if (visibleRef.current === v) return;
+      visibleRef.current = v;
+      setIsVisible(v);
+    };
+
     const onMove = (e) => {
       pos.current = { x: e.clientX, y: e.clientY };
-      if (!isVisible) setIsVisible(true);
+      setVisible(true);
 
       if (dotRef.current) {
         dotRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
       }
     };
 
-    const onEnter = () => setIsVisible(true);
-    const onLeave = () => setIsVisible(false);
+    const onEnter = () => setVisible(true);
+    const onLeave = () => setVisible(false);
 
     const loop = () => {
       const lerp = 0.12;
-      ringPos.current.x += (pos.current.x - ringPos.current.x) * lerp;
-      ringPos.current.y += (pos.current.y - ringPos.current.y) * lerp;
+      const dx = pos.current.x - ringPos.current.x;
+      const dy = pos.current.y - ringPos.current.y;
+      ringPos.current.x += dx * lerp;
+      ringPos.current.y += dy * lerp;
 
-      if (ringRef.current) {
+      // Skip the style write once the ring has visually settled on the target —
+      // avoids invalidating styles 60×/s while the mouse is idle.
+      if ((Math.abs(dx) > 0.05 || Math.abs(dy) > 0.05) && ringRef.current) {
         ringRef.current.style.transform = `translate(${ringPos.current.x}px, ${ringPos.current.y}px)`;
       }
       rafRef.current = requestAnimationFrame(loop);
     };
 
-    const addHover = () => {
-      const targets = document.querySelectorAll(
-        "a, button, [role='button'], input, textarea, select, label, [tabindex]"
-      );
-      targets.forEach((el) => {
-        el.addEventListener("mouseenter", () => setIsHovering(true));
-        el.addEventListener("mouseleave", () => setIsHovering(false));
-      });
+    // One delegated listener instead of per-element listeners plus a
+    // MutationObserver rescan — the old approach re-attached duplicate handlers
+    // to every interactive element on every DOM change.
+    const HOVERABLE =
+      "a, button, [role='button'], input, textarea, select, label, [tabindex]";
+    const onOver = (e) => {
+      const hovering = e.target instanceof Element && !!e.target.closest(HOVERABLE);
+      if (hoverRef.current !== hovering) {
+        hoverRef.current = hovering;
+        setIsHovering(hovering);
+      }
     };
 
-    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mousemove", onMove, { passive: true });
     document.addEventListener("mouseenter", onEnter);
     document.addEventListener("mouseleave", onLeave);
+    document.addEventListener("mouseover", onOver, { passive: true });
     rafRef.current = requestAnimationFrame(loop);
-    addHover();
-
-    const observer = new MutationObserver(addHover);
-    observer.observe(document.body, { childList: true, subtree: true });
 
     return () => {
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseenter", onEnter);
       document.removeEventListener("mouseleave", onLeave);
+      document.removeEventListener("mouseover", onOver);
       cancelAnimationFrame(rafRef.current);
-      observer.disconnect();
     };
   }, []);
 

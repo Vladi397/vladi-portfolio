@@ -11,7 +11,10 @@ const Reveal = ({ children, className = "", delay = 0 }) => {
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting) setShow(true);
+          if (e.isIntersecting) {
+            setShow(true);
+            io.unobserve(e.target); // one-shot reveal — stop tracking after it fires
+          }
         });
       },
       { threshold: 0.15 }

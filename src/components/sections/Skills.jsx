@@ -10,19 +10,19 @@ const Skills = () => {
 
   const skillCategories = [
     {
-      title: t('skills.cat_frontend'), // Translated
+      title: t('skills.cat_frontend'), // "Frontend & Mobile"
       icon: <Layout className="w-7 h-7 text-[#0EA5E9]" />,
-      skills: ["React", "JavaScript (ES6+)", "Tailwind CSS", "HTML5 & CSS3", "Bootstrap", "Blazor"],
+      skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Expo / React Native", "HTML5 & CSS3"],
     },
     {
-      title: t('skills.cat_backend'), // Translated
+      title: t('skills.cat_backend'), // "Backend & Data"
       icon: <Database className="w-7 h-7 text-[#0EA5E9]" />,
-      skills: ["C#", "Razor Pages", "Python", "REST APIs", "SQL Basics"],
+      skills: ["C#", "Node.js", "Python", "REST & External APIs", "PostgreSQL", "Microsoft SQL"],
     },
     {
-      title: t('skills.cat_tools'), // Translated
+      title: t('skills.cat_tools'), // "Tools, AI & Design"
       icon: <Code2 className="w-7 h-7 text-[#0EA5E9]" />,
-      skills: ["Git & GitHub", "Figma (UI/UX)", "VS Code", t('skills.responsive'), "Agile"], // Translated 'Responsive Design'
+      skills: ["Figma (UI/UX)", "MCP + AI Agents", "C++ (hardware)", "Git & GitHub", "VS Code", "Agile"],
     },
   ];
 

@@ -1,38 +1,60 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
+
+/*
+  MouseSpotlight
+  --------------
+  A 200px-radius sky glow that follows the cursor. The gradient is painted once
+  onto a fixed-size layer and moved with a compositor-only transform — the old
+  version re-rendered React state and rewrote a full-viewport radial-gradient on
+  every mousemove, repainting the whole screen (a big frame cost on weak GPUs).
+  Visually identical.
+*/
+
+const SIZE = 400; // px — the 200px gradient circle lives centered in this square
 
 const MouseSpotlight = () => {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const [opacity, setOpacity] = useState(0);
+  const ref = useRef(null);
+  const raf = useRef(0);
+  const xy = useRef({ x: -SIZE, y: -SIZE });
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setPos({ x: e.clientX, y: e.clientY });
-      setOpacity(1);
+    const el = ref.current;
+    if (!el) return;
+
+    const apply = () => {
+      raf.current = 0;
+      el.style.transform = `translate3d(${xy.current.x - SIZE / 2}px, ${xy.current.y - SIZE / 2}px, 0)`;
+    };
+    const onMove = (e) => {
+      xy.current.x = e.clientX;
+      xy.current.y = e.clientY;
+      if (el.style.opacity !== "1") el.style.opacity = "1";
+      if (!raf.current) raf.current = requestAnimationFrame(apply);
+    };
+    const onLeave = () => {
+      el.style.opacity = "0";
     };
 
-    const handleMouseLeave = () => {
-      setOpacity(0);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseleave", handleMouseLeave);
-
+    window.addEventListener("mousemove", onMove, { passive: true });
+    window.addEventListener("mouseleave", onLeave);
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseleave", handleMouseLeave);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseleave", onLeave);
+      if (raf.current) cancelAnimationFrame(raf.current);
     };
   }, []);
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-500 hidden md:block"
+      ref={ref}
+      className="pointer-events-none fixed top-0 left-0 z-30 transition-opacity duration-500 hidden md:block will-change-transform"
       style={{
-        opacity: opacity,
-        // CHANGED: 
-        // 1. Size reduced to 200px (very compressed).
-        // 2. Opacity increased to 0.25 (brighter blue).
-        // 3. Cutoff changed to 60% (sharper edge).
-        background: `radial-gradient(200px circle at ${pos.x}px ${pos.y}px, rgba(14, 165, 233, 0.25), transparent 60%)`,
+        width: SIZE,
+        height: SIZE,
+        opacity: 0,
+        transform: `translate3d(-${SIZE}px, -${SIZE}px, 0)`,
+        background:
+          "radial-gradient(200px circle at center, rgba(14, 165, 233, 0.25), transparent 60%)",
       }}
     />
   );

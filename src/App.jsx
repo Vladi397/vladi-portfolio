@@ -12,6 +12,25 @@ import GlareHover from "./components/ui/GlareHover";
 import CustomCursor from "./components/ui/CustomCursor";
 
 import MouseSpotlight from "./components/ui/MouseSpotlight";
+import StaticBackdrop from "./components/ui/StaticBackdrop";
+
+// If the 3D background throws anywhere (WebGL init, driver quirks), swap in the
+// static backdrop instead of white-screening the whole site.
+class BackgroundBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { failed: false };
+  }
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch() {
+    // Decorative layer only — nothing to report, the fallback covers it.
+  }
+  render() {
+    return this.state.failed ? <StaticBackdrop /> : this.props.children;
+  }
+}
 
 // Code-split: the 3D background pulls in the entire three.js stack, and the 404
 // page is only ever shown on a non-"/" route. Both load on demand so they stay
@@ -67,9 +86,11 @@ export default function App() {
       >
         <div className="fixed inset-0 -z-50 bg-slate-50 dark:bg-[#050505] transition-colors duration-300" />
         <MouseSpotlight />
-        <Suspense fallback={null}>
-          <UniverseBackground theme={theme} />
-        </Suspense>
+        <BackgroundBoundary>
+          <Suspense fallback={null}>
+            <UniverseBackground theme={theme} />
+          </Suspense>
+        </BackgroundBoundary>
         
         {isLoaded && (
           <Navbar activeId={activeId} theme={theme} toggleTheme={toggleTheme} />
