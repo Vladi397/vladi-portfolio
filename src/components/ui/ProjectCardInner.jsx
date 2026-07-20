@@ -78,7 +78,7 @@ export default function ProjectCardInner({ project, isFlipped, urlLabel, t, inte
       <div className="absolute bottom-0 right-0 w-72 h-72 bg-indigo-500/5 dark:bg-indigo-500/8 rounded-full blur-3xl pointer-events-none translate-x-1/2 translate-y-1/2" />
 
       {/* Content row — alternates direction on desktop */}
-      <div className={`relative z-10 flex flex-col gap-8 md:gap-14 w-full ${isFlipped ? "md:flex-row-reverse" : "md:flex-row"}`}>
+      <div className={`relative z-10 flex flex-col gap-6 md:gap-10 w-full ${isFlipped ? "md:flex-row-reverse" : "md:flex-row"}`}>
         {/* ── Image with browser chrome ── */}
         <div className="w-full md:w-1/2">
           <div className="rounded-2xl overflow-hidden border shadow-md border-gray-200 dark:border-slate-700/60">
@@ -93,7 +93,7 @@ export default function ProjectCardInner({ project, isFlipped, urlLabel, t, inte
             </div>
 
             {/* Screenshot */}
-            <div className="aspect-[4/3] min-h-[240px] sm:min-h-[300px] relative overflow-hidden group/image bg-gray-50 dark:bg-slate-800/50">
+            <div className="aspect-[16/10] min-h-[180px] sm:min-h-[220px] relative overflow-hidden group/image bg-gray-50 dark:bg-slate-800/50">
               <img
                 src={project.img}
                 alt={project.title}
@@ -106,12 +106,12 @@ export default function ProjectCardInner({ project, isFlipped, urlLabel, t, inte
         </div>
 
         {/* ── Text content ── */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center space-y-5">
+        <div className="w-full md:w-1/2 flex flex-col justify-center space-y-4">
           <div className="flex flex-col items-start">
             <span className="text-[#0EA5E9] font-black tracking-widest uppercase text-xs mb-2 bg-sky-50 dark:bg-sky-900/20 px-3 py-1 rounded-full">
               {project.role}
             </span>
-            <h3 className="text-3xl md:text-4xl font-black leading-tight text-gray-900 dark:text-white">
+            <h3 className="text-2xl md:text-3xl font-black leading-tight text-gray-900 dark:text-white">
               {project.title}
             </h3>
           </div>

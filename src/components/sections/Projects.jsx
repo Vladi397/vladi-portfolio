@@ -294,7 +294,7 @@ const Projects = () => {
                   tabIndex={0}
                   aria-label={`${p.title} — ${t('projects.open_details', 'open details')}`}
                   style={{ minHeight: !isMobile && cardMinH ? `${cardMinH}px` : undefined }}
-                  className="relative rounded-[32px] p-7 sm:p-10 md:p-14 overflow-hidden cursor-pointer transition-colors duration-300
+                  className="relative rounded-[32px] p-6 sm:p-8 md:p-10 overflow-hidden cursor-pointer transition-colors duration-300
                   md:flex md:flex-col md:justify-center
                   bg-white shadow-xl border border-sky-100
                   dark:bg-[#0B1120] dark:shadow-none dark:border-sky-900/40

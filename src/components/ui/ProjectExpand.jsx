@@ -826,7 +826,7 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
               }}
             >
               <div
-                className="relative w-full h-full overflow-hidden rounded-[32px] p-7 sm:p-10 md:p-14
+                className="relative w-full h-full overflow-hidden rounded-[32px] p-6 sm:p-8 md:p-10
                   bg-white shadow-xl border border-sky-100
                   dark:bg-[#0B1120] dark:shadow-none dark:border-sky-900/40"
               >
