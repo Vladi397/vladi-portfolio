@@ -80,8 +80,8 @@ const Certificates = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {certs.map((cert, idx) => (
             <Reveal key={idx} delay={idx * 90}>
-              <div className="glass-shadow relative group h-full min-h-[320px] rounded-[22px]">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[22px] blur opacity-0 dark:opacity-25 transition duration-1000 group-hover:opacity-50"></div>
+              <div className="glass relative group h-full min-h-[320px] rounded-[22px]">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[22px] blur opacity-0 dark:opacity-25 transition duration-1000 group-hover:opacity-50 -z-10"></div>
 
                 <GlareHover
                   className="h-full relative"
@@ -94,7 +94,7 @@ const Certificates = () => {
                   glareAngle={-1200}
                   transitionDuration={800}
                 >
-                  <div className="glass p-7 sm:p-8 flex flex-col h-full rounded-[22px]">
+                  <div className="p-7 sm:p-8 flex flex-col h-full rounded-[22px]">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-7">
                       <div className="flex items-center gap-3">
