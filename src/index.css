@@ -20,6 +20,67 @@
   }
 }
 
+/* ------------------------------- */
+/* GLASS — frosted panels over the animated starfield. What sells the glass:
+   backdrop blur + saturate (pulls the nebula colour through the pane), a
+   diagonal translucency gradient (light hitting the surface), a bright inset
+   top-edge highlight, a hairline outer ring for definition on the light bg, and
+   a soft float shadow. Purposeful here — there is a live background to refract. */
+/* ------------------------------- */
+.glass {
+  background-image: linear-gradient(140deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.40));
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    0 0 0 1px rgba(15, 23, 42, 0.05),
+    0 20px 46px -18px rgba(15, 23, 42, 0.30);
+}
+html.dark .glass {
+  background-image: linear-gradient(140deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.16),
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 20px 46px -18px rgba(0, 0, 0, 0.55);
+}
+
+/* Recessed inner panel (the contact form) — pressed into the glass rather than
+   a second card stacked on it. */
+.glass-inset {
+  background-color: rgba(255, 255, 255, 0.30);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    inset 0 2px 5px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+}
+html.dark .glass-inset {
+  background-color: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* Float shadow + hairline ring for cards whose own overflow is clipped (the
+   certificate cards sit inside GlareHover, which hides overflow), so the drop
+   shadow has to live on an outer wrapper instead of the .glass surface. */
+.glass-shadow {
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.05),
+    0 20px 46px -18px rgba(15, 23, 42, 0.30);
+}
+html.dark .glass-shadow {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 20px 46px -18px rgba(0, 0, 0, 0.55);
+}
+
+/* Drop the blur mid theme-switch (compositing cost) and while dragging perf. */
+html[data-theme-switching="true"] .glass {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 /* --- CUSTOM CURSOR (desktop / precise pointer only) --- */
 @media (pointer: fine) {
   *, *::before, *::after {

@@ -98,11 +98,7 @@ const Contact = () => {
         <div className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[40px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
           
-          <div className="relative rounded-[24px] sm:rounded-[32px] p-6 sm:p-12 md:p-16 flex flex-col lg:flex-row gap-8 sm:gap-10 lg:gap-20 items-start overflow-hidden
-            theme-heavy-blur backdrop-blur-2xl
-            bg-white/70 border border-slate-200/80 ring-1 ring-slate-900/5 shadow-2xl shadow-slate-900/10
-            dark:bg-[#0B1120]/70 dark:border-white/10 dark:ring-white/5 dark:shadow-none"
-          >
+          <div className="glass relative rounded-[24px] sm:rounded-[32px] p-6 sm:p-12 md:p-16 flex flex-col lg:flex-row gap-8 sm:gap-10 lg:gap-20 items-start overflow-hidden">
             <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))] pointer-events-none" />
 
             {/* LEFT SIDE */}
@@ -161,7 +157,7 @@ const Contact = () => {
             <form
               ref={form}
               onSubmit={sendEmail}
-              className="flex-1 w-full relative z-10 p-5 sm:p-8 rounded-[20px] sm:rounded-[24px] backdrop-blur-md theme-heavy-blur bg-white/55 border border-white/70 ring-1 ring-slate-900/[0.04] shadow-lg shadow-slate-900/5 dark:bg-white/[0.03] dark:border-white/10 dark:ring-white/5 dark:shadow-none"
+              className="glass-inset flex-1 w-full relative z-10 p-5 sm:p-8 rounded-[20px] sm:rounded-[24px]"
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div className="space-y-2">
