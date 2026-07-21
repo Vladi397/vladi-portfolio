@@ -84,6 +84,49 @@ html[data-theme-switching="true"] .glass {
   -webkit-backdrop-filter: none;
 }
 
+/* ------------------------------- */
+/* LIGHTNING STRIKE + BURN — OurGrid gallery image (fits the grid/electric
+   theme). Bolt flickers, screen flashes, the frame shakes, then the image
+   settles into a scorched state with glowing embers. */
+/* ------------------------------- */
+@keyframes lg-flash {
+  0%, 100% { opacity: 0; }
+  4%  { opacity: 0.92; }
+  9%  { opacity: 0.06; }
+  14% { opacity: 0.8; }
+  20% { opacity: 0; }
+  33% { opacity: 0.4; }
+  40% { opacity: 0; }
+}
+@keyframes lg-bolt {
+  0%, 100% { opacity: 0; }
+  3%  { opacity: 1; }
+  8%  { opacity: 0.15; }
+  13% { opacity: 1; }
+  21% { opacity: 0; }
+  32% { opacity: 0.75; }
+  39% { opacity: 0; }
+}
+@keyframes lg-shake {
+  0%, 100% { transform: translate(0, 0); }
+  8%  { transform: translate(-5px, 3px); }
+  17% { transform: translate(5px, -3px); }
+  26% { transform: translate(-4px, -2px); }
+  35% { transform: translate(3px, 2px); }
+  46% { transform: translate(-2px, 1px); }
+  60% { transform: translate(1px, -1px); }
+}
+@keyframes lg-ember {
+  0%, 100% { opacity: 0.25; transform: translateY(0) scale(0.85); }
+  50%      { opacity: 1;    transform: translateY(-2px) scale(1.2); }
+}
+.lg-burned {
+  filter: brightness(0.5) contrast(1.22) saturate(0.5) sepia(0.42) hue-rotate(-12deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lg-ember { animation: none !important; opacity: 0.6; }
+}
+
 /* --- CUSTOM CURSOR (desktop / precise pointer only) --- */
 @media (pointer: fine) {
   *, *::before, *::after {

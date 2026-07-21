@@ -156,6 +156,7 @@ const Projects = () => {
       role: t('projects.ourgrid.role'),
       img: ourGridImg,
       gallery: [ourGridImg], // TODO: add more OurGrid screenshots here
+      galleryLayout: "lightning", // struck by lightning on scroll, then scorched (fits the grid theme)
       // OurGrid brand palette — used to theme the expanded detail view.
       // grid-green primary, reward-amber accent, deep plum ink.
       theme: { accent: "#01AC51", accent2: "#F4B14A", deep: "#4F2E39" },

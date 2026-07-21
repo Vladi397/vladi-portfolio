@@ -7,6 +7,7 @@ import OurGridMotif from "./OurGridMotif";
 import VisiobalMotif from "./VisiobalMotif";
 import DevMatchMotif from "./DevMatchMotif";
 import FanGallery from "./FanGallery";
+import LightningGallery from "./LightningGallery";
 
 /*
   ProjectExpand
@@ -567,6 +568,10 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
         {project.galleryLayout === "fan" ? (
           <div style={rv(gBase)}>
             <FanGallery images={gallery} title={project.title} />
+          </div>
+        ) : project.galleryLayout === "lightning" ? (
+          <div style={rv(gBase)}>
+            <LightningGallery images={gallery} title={project.title} />
           </div>
         ) : (
           (() => {
