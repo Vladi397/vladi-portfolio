@@ -201,6 +201,7 @@ const Projects = () => {
       repoUrl: "https://github.com/Marto8090/visiobal",
     },
     {
+      hidden: true, // temporarily hidden — remove this line to show again
       title: t('projects.fitfusion.title'),
       desc: t('projects.fitfusion.desc'),
       role: t('projects.fitfusion.role'),
@@ -217,6 +218,7 @@ const Projects = () => {
       repoUrl: "https://git.fhict.nl/I546016/the-merge-conflicts",
     },
     {
+      hidden: true, // temporarily hidden — remove this line to show again
       title: t('projects.brewbuddy.title'),
       desc: t('projects.brewbuddy.desc'),
       role: t('projects.brewbuddy.role'),
@@ -233,6 +235,7 @@ const Projects = () => {
       repoUrl: "https://git.fhict.nl/I547861/brewbuddy",
     },
     {
+      hidden: true, // temporarily hidden — remove this line to show again
       title: t('projects.space.title'),
       desc: t('projects.space.desc'),
       role: t('projects.space.role'),
@@ -248,7 +251,7 @@ const Projects = () => {
       liveUrl: "#",
       repoUrl: "#",
     },
-  ];
+  ].filter((p) => !p.hidden);
 
   return (
     <section
