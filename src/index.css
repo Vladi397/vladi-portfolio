@@ -28,14 +28,17 @@
    a soft float shadow. Purposeful here — there is a live background to refract. */
 /* ------------------------------- */
 .glass {
-  background-image: linear-gradient(140deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.40));
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  /* Light mode: a translucent light-blue tint gives the pane real presence on
+     the near-white background (plain frosted white on white is invisible). The
+     white top bevel + brand-blue hairline + blue float shadow sell the glass. */
+  background-image: linear-gradient(140deg, rgba(14, 165, 233, 0.20), rgba(125, 211, 252, 0.08));
+  backdrop-filter: blur(18px) saturate(170%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
   box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
-    0 0 0 1px rgba(15, 23, 42, 0.05),
-    0 20px 46px -18px rgba(15, 23, 42, 0.30);
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.95),
+    0 0 0 1px rgba(14, 165, 233, 0.18),
+    0 22px 48px -18px rgba(2, 132, 199, 0.30);
 }
 html.dark .glass {
   background-image: linear-gradient(140deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02));
@@ -49,11 +52,11 @@ html.dark .glass {
 /* Recessed inner panel (the contact form) — pressed into the glass rather than
    a second card stacked on it. */
 .glass-inset {
-  background-color: rgba(255, 255, 255, 0.30);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow:
-    inset 0 2px 5px rgba(15, 23, 42, 0.06),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+    inset 0 2px 6px rgba(2, 132, 199, 0.10),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
 }
 html.dark .glass-inset {
   background-color: rgba(0, 0, 0, 0.18);
