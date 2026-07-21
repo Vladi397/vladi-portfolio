@@ -80,12 +80,13 @@ const Certificates = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {certs.map((cert, idx) => (
             <Reveal key={idx} delay={idx * 90}>
-              <div className="relative group h-full min-h-[320px]">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[22px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
+              <div className="relative group h-full min-h-[320px] rounded-[22px] shadow-xl shadow-slate-900/10 dark:shadow-black/40">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[22px] blur opacity-20 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
 
                 <GlareHover
                   className="h-full relative"
                   background="transparent"
+                  borderColor="transparent"
                   borderRadius="22px"
                   glareColor="#ffffff"
                   glareOpacity={0.3}
@@ -93,7 +94,7 @@ const Certificates = () => {
                   glareAngle={-1200}
                   transitionDuration={800}
                 >
-                  <div className="p-7 sm:p-8 flex flex-col h-full rounded-[22px] transition-colors duration-300 bg-white dark:bg-slate-800/60 dark:border dark:border-slate-700">
+                  <div className="p-7 sm:p-8 flex flex-col h-full rounded-[22px] transition-colors duration-300 backdrop-blur-2xl theme-heavy-blur bg-white/70 border border-slate-200/80 ring-1 ring-slate-900/[0.04] dark:bg-slate-800/50 dark:border-white/10 dark:ring-white/5">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-7">
                       <div className="flex items-center gap-3">
