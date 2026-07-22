@@ -8,6 +8,7 @@ import VisiobalMotif from "./VisiobalMotif";
 import DevMatchMotif from "./DevMatchMotif";
 import FanGallery from "./FanGallery";
 import LightningGallery from "./LightningGallery";
+import VisiobalGallery from "./VisiobalGallery";
 
 /*
   ProjectExpand
@@ -573,6 +574,8 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
           <div style={rv(gBase)}>
             <LightningGallery images={gallery} title={project.title} />
           </div>
+        ) : project.galleryLayout === "bounce" ? (
+          <VisiobalGallery images={gallery} title={project.title} aspect={project.galleryAspect} />
         ) : (
           (() => {
             const multi = gallery.length > 1;

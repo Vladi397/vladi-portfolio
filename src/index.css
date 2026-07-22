@@ -210,6 +210,36 @@ html[data-theme-switching="true"] * {
 }
 
 /* ------------------------------- */
+/* Visiobal gallery — two pink balls bounce in from both sides, converge, then
+   splash and hand off to the two images. Travel distances come from CSS vars
+   (--vb-ex / --vb-ey / --vb-apex) measured to the box; --vb-dir is -1 (left)
+   or +1 (right). Combines translate + squash/stretch scale for weight. */
+/* ------------------------------- */
+@keyframes vb-ball {
+  0%   { opacity: 0; transform: translate(calc(var(--vb-ex) * var(--vb-dir)), var(--vb-ey)) scale(0.7, 0.7); }
+  10%  { opacity: 1; }
+  38%  { transform: translate(calc(var(--vb-ex) * var(--vb-dir) * 0.46), 0) scale(1.22, 0.8); }        /* first floor hit — squash */
+  45%  { transform: translate(calc(var(--vb-ex) * var(--vb-dir) * 0.36), calc(var(--vb-apex) * 0.92)) scale(0.94, 1.1); } /* rebound — stretch */
+  70%  { transform: translate(calc(var(--vb-ex) * var(--vb-dir) * 0.16), var(--vb-apex)) scale(1, 1); } /* bounce apex, converging */
+  100% { opacity: 1; transform: translate(calc(var(--vb-dir) * 12px), calc(var(--vb-apex) * 0.5)) scale(1, 1); } /* mid-air at centre, before 2nd bounce */
+}
+@keyframes vb-splash-core {
+  0%   { opacity: 0.95; transform: translate(-50%, -50%) scale(0.25); }
+  60%  { opacity: 0.5; }
+  100% { opacity: 0;    transform: translate(-50%, -50%) scale(1.7); }
+}
+@keyframes vb-splash-ring {
+  0%   { opacity: 0.85; transform: translate(-50%, -50%) scale(0.3); }
+  100% { opacity: 0;    transform: translate(-50%, -50%) scale(2.2); }
+}
+/* Droplets fling outward from the impact (--vb-dx / --vb-dy set per droplet). */
+@keyframes vb-droplet {
+  0%   { opacity: 0;   transform: translate(-50%, -50%) scale(0.4); }
+  22%  { opacity: 1; }
+  100% { opacity: 0;   transform: translate(-50%, -50%) translate(var(--vb-dx), var(--vb-dy)) scale(0.55); }
+}
+
+/* ------------------------------- */
 /* Project detail — mobile sheet entrance / exit (no 3D flip on phones) */
 /* ------------------------------- */
 @keyframes pe-sheet-in {
