@@ -30,7 +30,11 @@ const Skills = () => {
     <section id="skills" className="py-12 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
       <SectionTitle title={t('skills.title')} num="02" kicker={t('skills.kicker')} />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+      {/* Two columns through tablet, three only from lg. TiltedCard and the
+          panel inside it each add their own padding, so at md three columns
+          left about 87px of text width and every heading broke onto three
+          lines. Desktop (lg and up) is unchanged. */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {skillCategories.map((cat, idx) => (
           <Reveal key={idx} delay={idx * 80}>
             <div className="relative group h-full">
