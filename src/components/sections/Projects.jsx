@@ -182,7 +182,7 @@ const Projects = () => {
       img: visiobalAppImg,
       customImgClass: "object-top",
       gallery: [visiobalAppImg, visiobalHardwareImg],
-      galleryLayout: "bounce", // two pink balls bounce in from both sides, splash, then the images arrive
+      galleryLayout: "model3d", // rotating 3D recreation of the printed ball (switch to "bounce" for the ball-drop animation)
 
       // Visiobal app palette — violet primary, pink accent, deep navy ink.
       theme: { accent: "#A855F7", accent2: "#F472B6", deep: "#080F1E" },

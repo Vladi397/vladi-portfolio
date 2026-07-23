@@ -9,6 +9,7 @@ import DevMatchMotif from "./DevMatchMotif";
 import FanGallery from "./FanGallery";
 import LightningGallery from "./LightningGallery";
 import VisiobalGallery from "./VisiobalGallery";
+import VisiobalModel3D from "./VisiobalModel3D";
 
 /*
   ProjectExpand
@@ -576,6 +577,8 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
           </div>
         ) : project.galleryLayout === "bounce" ? (
           <VisiobalGallery images={gallery} title={project.title} aspect={project.galleryAspect} />
+        ) : project.galleryLayout === "model3d" ? (
+          <VisiobalModel3D fallbackImage={gallery[gallery.length - 1]} title={project.title} />
         ) : (
           (() => {
             const multi = gallery.length > 1;
