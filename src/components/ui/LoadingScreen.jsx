@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const LoadingScreen = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
-  const [textIndex, setTextIndex] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
+  const doneRef = useRef(false);
 
   // INVITING WORDS SEQUENCE
   const phrases = [
@@ -13,12 +13,14 @@ const LoadingScreen = ({ onComplete }) => {
     "Online",
   ];
 
+  // One timer for the whole load. This effect used to depend on [progress], so
+  // every single tick tore the interval down and built a fresh one: each step
+  // then cost a full React render plus a new 30ms wait. On a busy machine the
+  // intro crawled instead of finishing in its nominal 3 seconds.
   useEffect(() => {
-    // 1. Progress Timer
     const duration = 3000; // 3 seconds total load time
     const intervalTime = 30;
-    const steps = duration / intervalTime;
-    const increment = 100 / steps;
+    const increment = 100 / (duration / intervalTime);
 
     const timer = setInterval(() => {
       setProgress((prev) => {
@@ -31,24 +33,23 @@ const LoadingScreen = ({ onComplete }) => {
       });
     }, intervalTime);
 
-    // 2. Phrase Changer Logic
-    if (progress < 33) setTextIndex(0);
-    else if (progress < 66) setTextIndex(1);
-    else if (progress < 90) setTextIndex(2);
-    else setTextIndex(3);
-
     return () => clearInterval(timer);
-  }, [progress]);
+  }, []);
 
+  // Completion. Guarded so a re-render at 100 cannot schedule the exit twice.
   useEffect(() => {
-    // 3. Completion Handler
-    if (progress >= 100) {
-      setTimeout(() => {
-        setIsExiting(true);
-        setTimeout(onComplete, 1000); // Wait for exit animation
-      }, 500); // Pause briefly at 100%
-    }
+    if (progress < 100 || doneRef.current) return;
+    doneRef.current = true;
+    const hold = setTimeout(() => {
+      setIsExiting(true);
+      setTimeout(onComplete, 1000); // Wait for exit animation
+    }, 500); // Pause briefly at 100%
+    return () => clearTimeout(hold);
   }, [progress, onComplete]);
+
+  // Derived from progress rather than a second piece of state, which also
+  // removes the set-state-inside-an-effect the linter was flagging.
+  const textIndex = progress < 33 ? 0 : progress < 66 ? 1 : progress < 90 ? 2 : 3;
 
   return (
     <div
@@ -101,12 +102,6 @@ const LoadingScreen = ({ onComplete }) => {
             System Ready
         </span>
       </div>
-
-      <style jsx>{`
-        .transition-height {
-          transition: height 0.1s linear;
-        }
-      `}</style>
     </div>
   );
 };
