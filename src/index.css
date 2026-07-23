@@ -127,6 +127,41 @@ html[data-theme-switching="true"] .glass {
   .lg-ember { animation: none !important; opacity: 0.6; }
 }
 
+/* ------------------------------- */
+/* Utilities the markup already referenced but nothing ever defined: there is
+   no tailwindcss-animate plugin and no keyframes in the Tailwind config, so
+   .animate-scan, .animate-spin-slow and the modals' entrance were silently
+   doing nothing. Written as plain CSS so the mixed v3/v4 setup cannot drop
+   them. The scan sweep is transform based and sits inside an overflow-hidden
+   dropdown, so it can never widen the page. */
+/* ------------------------------- */
+@keyframes nav-scan {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+.animate-scan {
+  animation: nav-scan 2.6s linear infinite;
+  will-change: transform;
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow { animation: spin-slow 5s linear infinite; }
+
+/* One-shot entrance for the resume / certificate modals. */
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.modal-in { animation: modal-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-scan,
+  .animate-spin-slow,
+  .modal-in { animation: none !important; }
+}
+
 /* --- CUSTOM CURSOR (desktop / precise pointer only) --- */
 @media (pointer: fine) {
   *, *::before, *::after {

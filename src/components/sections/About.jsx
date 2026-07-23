@@ -12,13 +12,21 @@ const About = () => {
   const { t } = useTranslation();
   const [showResume, setShowResume] = useState(false);
 
-  // Logic to prevent scrolling when modal is open
+  // While the resume modal is open: lock scroll and let Escape close it.
+  // The previous overflow is restored rather than forced to "unset", so an
+  // outer lock (mobile menu, project detail) is not released by accident.
   useEffect(() => {
-    if (showResume) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    if (!showResume) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => {
+      if (e.key === "Escape") setShowResume(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
   }, [showResume]);
 
   return (
@@ -100,7 +108,7 @@ const About = () => {
             onClick={() => setShowResume(false)}
           ></div>
 
-          <div className="relative w-full max-w-5xl h-[70vh] sm:h-[85vh] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-300">
+          <div className="relative w-full max-w-5xl h-[70vh] sm:h-[85vh] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl flex flex-col overflow-hidden modal-in">
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 z-10">
               <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">
                 {t('about.modal_title')}

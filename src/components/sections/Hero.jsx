@@ -200,7 +200,9 @@ const Hero = () => {
           <div className="relative isolate">
             <div
               className={[
-                "absolute -inset-x-6 -top-24 bottom-0 -z-20 rounded-[36px]",
+                // The bleed is trimmed on the narrowest phones: at 320px the
+                // full -inset-x-6 pushed the page 4px wider than the viewport.
+                "absolute -inset-x-2 sm:-inset-x-6 -top-24 bottom-0 -z-20 rounded-[36px]",
                 "bg-[radial-gradient(circle_at_50%_48%,rgba(14,165,233,0.14),transparent_60%)]",
                 "dark:bg-[radial-gradient(circle_at_50%_48%,rgba(14,165,233,0.18),transparent_55%)]",
               ].join(" ")}

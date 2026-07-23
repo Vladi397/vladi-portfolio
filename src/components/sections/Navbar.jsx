@@ -40,9 +40,20 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // While the mobile menu is open: lock scroll and let Escape close it. The
+  // previous overflow is restored rather than forced to "unset".
   useEffect(() => {
-    if (open) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "unset";
+    if (!open) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
   }, [open]);
 
   const handleNav = (id) => {
@@ -114,7 +125,13 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
           dark:bg-[#0B1120]/90 dark:border-sky-500/30 dark:shadow-[0_0_50px_-10px_rgba(14,165,233,0.25)]
         `}
       >
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-sky-400 to-transparent opacity-50 animate-scan pointer-events-none z-0" />
+        {/* Sweeps only while the menu is actually open, so nothing animates
+            behind an invisible panel. */}
+        <div
+          className={`absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-sky-400 to-transparent opacity-50 pointer-events-none z-0 ${
+            langMenuOpen ? "animate-scan" : ""
+          }`}
+        />
         <div className="absolute inset-0 bg-grid-slate-200 [mask-image:linear-gradient(0deg,rgba(255,255,255,0.5),transparent)] dark:bg-grid-slate-700/30 dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.2),transparent)] pointer-events-none z-0" />
 
         <div className="relative z-10 flex flex-col gap-2 p-1">

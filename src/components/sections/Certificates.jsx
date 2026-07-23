@@ -18,12 +18,20 @@ const Certificates = () => {
   const { t } = useTranslation(); // <--- Init hook
   const [selectedCert, setSelectedCert] = useState(null);
 
+  // While a certificate is open: lock scroll and let Escape close it. The
+  // previous overflow is restored rather than forced to "unset".
   useEffect(() => {
-    if (selectedCert) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    if (!selectedCert) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => {
+      if (e.key === "Escape") setSelectedCert(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
   }, [selectedCert]);
 
   // MOVED ARRAY INSIDE
@@ -162,7 +170,7 @@ const Certificates = () => {
             onClick={() => setSelectedCert(null)}
           ></div>
 
-          <div className="relative w-full max-w-5xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-300 border border-gray-100 dark:border-slate-800">
+          <div className="relative w-full max-w-5xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl flex flex-col overflow-hidden modal-in border border-gray-100 dark:border-slate-800">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 z-10">
               <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 truncate pr-4">
