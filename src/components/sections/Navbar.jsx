@@ -64,7 +64,8 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
   const ThemeToggle = ({ className = "" }) => (
     <button
       onClick={(e) => toggleTheme(e)}
-      className={`p-2 rounded-full transition-all duration-300 ${className}
+      aria-label={t("nav.toggle_theme", "Toggle theme")}
+      className={`inline-flex items-center justify-center min-w-11 min-h-11 p-2 rounded-full transition-all duration-300 ${className}
         hover:bg-gray-100 text-gray-600
         dark:hover:bg-white/10 dark:text-slate-300
         active:scale-95 transform
@@ -80,7 +81,7 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
     <div className={`relative ${className} z-50`}>
       <button
         onClick={() => setLangMenuOpen(!langMenuOpen)}
-        className={`group relative flex items-center gap-2 p-1 pl-3 pr-1 rounded-full border transition-all duration-500
+        className={`group relative flex items-center min-h-11 gap-2 p-1 pl-3 pr-1 rounded-full border transition-all duration-500
           ${langMenuOpen 
             ? "bg-sky-50 border-sky-400 shadow-[0_0_20px_rgba(56,189,248,0.5)] dark:bg-[#0B1120] dark:border-sky-500 dark:shadow-[0_0_25px_rgba(14,165,233,0.6)]" 
             : "bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-white/5"
@@ -192,7 +193,8 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
           <button
             onClick={() => scrollToId("home")}
             className="text-xl sm:text-2xl font-black tracking-tight theme-color-transition transition-colors
-              text-gray-900 dark:text-slate-50 relative z-50"
+              text-gray-900 dark:text-slate-50 relative z-50
+              py-2 -my-2"
           >
             Vladi Georgiev
           </button>
