@@ -1,5 +1,5 @@
 import React from "react";
-import { ExternalLink, Github, ChevronRight } from "lucide-react";
+import { ExternalLink, Github } from "lucide-react";
 
 /*
   ProjectCardInner
@@ -17,34 +17,6 @@ import { ExternalLink, Github, ChevronRight } from "lucide-react";
     interactive  – true in the grid (real links); false on the flip face (spans)
     onLinkClick  – (e, url) handler for the links when interactive
 */
-
-const TAG_COLORS = {
-  "React":          "bg-cyan-50   text-cyan-700   border-cyan-200   dark:bg-cyan-500/10   dark:text-cyan-400   dark:border-cyan-500/20",
-  "Tailwind":       "bg-sky-50    text-sky-700    border-sky-200    dark:bg-sky-500/10    dark:text-sky-400    dark:border-sky-500/20",
-  "JavaScript":     "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-400 dark:border-yellow-500/20",
-  "Figma":          "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20",
-  "Python Flask":   "bg-blue-50   text-blue-700   border-blue-200   dark:bg-blue-500/10   dark:text-blue-400   dark:border-blue-500/20",
-  "HTML/CSS":       "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20",
-  "HTML5":          "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20",
-  "C# Razor Pages": "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-500/10 dark:text-violet-400 dark:border-violet-500/20",
-  "C# .NET":        "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-500/10 dark:text-violet-400 dark:border-violet-500/20",
-  "Unity":          "bg-gray-100  text-gray-700   border-gray-200   dark:bg-white/5       dark:text-slate-300  dark:border-white/10",
-  "SQL":            "bg-amber-50  text-amber-700  border-amber-200  dark:bg-amber-500/10  dark:text-amber-400  dark:border-amber-500/20",
-  "Canvas API":     "bg-green-50  text-green-700  border-green-200  dark:bg-green-500/10  dark:text-green-400  dark:border-green-500/20",
-  "Game Dev":       "bg-red-50    text-red-700    border-red-200    dark:bg-red-500/10    dark:text-red-400    dark:border-red-500/20",
-  "Team Lead":      "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
-  "User Testing":   "bg-pink-50   text-pink-700   border-pink-200   dark:bg-pink-500/10   dark:text-pink-400   dark:border-pink-500/20",
-  "Swagger UI":     "bg-teal-50   text-teal-700   border-teal-200   dark:bg-teal-500/10   dark:text-teal-400   dark:border-teal-500/20",
-  "ESP32":          "bg-rose-50   text-rose-700   border-rose-200   dark:bg-rose-500/10   dark:text-rose-400   dark:border-rose-500/20",
-  "C++":            "bg-blue-50   text-blue-700   border-blue-200   dark:bg-blue-500/10   dark:text-blue-400   dark:border-blue-500/20",
-  "Bluetooth LE":   "bg-sky-50    text-sky-700    border-sky-200    dark:bg-sky-500/10    dark:text-sky-400    dark:border-sky-500/20",
-  "Mozzi Audio":    "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-500/10 dark:text-violet-400 dark:border-violet-500/20",
-  "Accessibility":  "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
-  "PlatformIO":     "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20",
-};
-
-const DEFAULT_TAG =
-  "bg-gray-50 text-gray-600 border-gray-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/10";
 
 const LIVE_BTN =
   "inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-white shadow-lg shadow-sky-500/20 transition-all hover:scale-105 hover:brightness-110 active:scale-95 w-full sm:w-auto";
@@ -120,23 +92,28 @@ export default function ProjectCardInner({ project, isFlipped, urlLabel, t, inte
 
           <ul className="space-y-2">
             {project.outcomes.map((o) => (
-              <li key={o} className="flex gap-2 items-start text-gray-700 dark:text-slate-400">
-                <ChevronRight size={16} className="text-[#0EA5E9] flex-shrink-0 mt-0.5" />
+              <li key={o} className="flex gap-3 items-start text-gray-700 dark:text-slate-400">
+                <span
+                  aria-hidden="true"
+                  className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#0EA5E9]"
+                />
                 <span className="font-medium text-sm sm:text-base">{o}</span>
               </li>
             ))}
           </ul>
 
-          <div className="flex flex-wrap gap-2 pt-1">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className={`px-3 py-1 rounded-lg text-xs font-bold border transition-colors ${TAG_COLORS[tag] || DEFAULT_TAG}`}
-              >
-                {tag}
-              </span>
+          {/* Tech, set as plain separated text in the site blue rather than
+              a row of coloured pills. */}
+          <ul className="flex flex-wrap items-center gap-x-3 gap-y-2 pt-1">
+            {project.tags.map((tag, i) => (
+              <li key={tag} className="flex items-center gap-3">
+                {i > 0 && (
+                  <span aria-hidden="true" className="h-3 w-px bg-gray-300 dark:bg-white/15" />
+                )}
+                <span className="text-sm font-bold tracking-tight text-[#0EA5E9]">{tag}</span>
+              </li>
             ))}
-          </div>
+          </ul>
 
           <div className="pt-3 flex flex-col sm:flex-row flex-wrap gap-3">
             {hasLive &&
