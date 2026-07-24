@@ -106,7 +106,10 @@ const Contact = () => {
               <h2 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-3 sm:mb-6 transition-colors text-gray-900 dark:text-white">
                 {t('contact.title')}
               </h2>
-              <p className="text-base sm:text-lg mb-8 sm:mb-10 max-w-md transition-colors text-[#0EA5E9] dark:text-sky-400">
+              {/* Neutral, not brand blue: coloured body copy here read as a
+                  link. Follows the heading's light/dark pair so it stays
+                  legible on the light glass card. */}
+              <p className="text-base sm:text-lg mb-8 sm:mb-10 max-w-md transition-colors text-gray-600 dark:text-white">
                 {t('contact.desc')}
               </p>
 
