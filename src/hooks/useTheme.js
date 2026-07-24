@@ -50,9 +50,27 @@ export default function useTheme() {
         return;
       }
 
-      // Get click coordinates for the circle animation
-      const x = e?.clientX ?? window.innerWidth / 2;
-      const y = e?.clientY ?? window.innerHeight / 2;
+      // Where the circular reveal starts. Prefer the pointer, but fall back to
+      // the toggle itself rather than the middle of the screen: a keyboard
+      // activation reports clientX/clientY of 0, and a synthetic call has no
+      // coordinates at all, so the wipe used to start from the wrong place.
+      // currentTarget is read synchronously here, before any await.
+      const rect = e?.currentTarget?.getBoundingClientRect?.();
+      const hasPointer =
+        typeof e?.clientX === "number" &&
+        typeof e?.clientY === "number" &&
+        (e.clientX !== 0 || e.clientY !== 0);
+
+      const x = hasPointer
+        ? e.clientX
+        : rect
+          ? rect.left + rect.width / 2
+          : window.innerWidth / 2;
+      const y = hasPointer
+        ? e.clientY
+        : rect
+          ? rect.top + rect.height / 2
+          : window.innerHeight / 2;
 
       const endRadius = Math.hypot(
         Math.max(x, window.innerWidth - x),
