@@ -106,7 +106,7 @@
     },
     "visiobal": {
       "title": "Visiobal (Client Visio)",
-      "role": "Embedded + App",
+      "role": "App Developer • Designer",
       "desc": "An interactive audio ball that lets visually impaired people find, connect to and play with it through sound. A 3D-printed sphere houses an ESP32 that synthesises music on-device and pairs with a companion app over Bluetooth LE: scan to connect, set the volume, and switch between tracks.",
       "story1_kicker": "The client",
       "story1_title": "Built for Visio",
@@ -128,8 +128,8 @@
       "fact3": "Pairs with the companion app over Bluetooth LE: 'Scan for Ball' to connect, a live volume slider and play / skip controls, with sleep-wake power handling on the ball itself.",
       "fact4": "Built for inclusive play; the whole point is that visually impaired users can locate and interact with the ball by sound.",
       "fact5": "Custom 3D-printed enclosure packs the speaker, battery pack and a volume potentiometer around the ESP32 board.",
-      "outcome1": "Real-time on-device audio synthesis on an ESP32 (Mozzi + I2S)",
-      "outcome2": "BLE companion app: scan-to-connect, volume and track controls",
+      "outcome1": "Built and designed the companion app for the ball",
+      "outcome2": "Made the ball fully controllable from the app over Bluetooth LE",
       "outcome3": "Accessible-by-design play for visually impaired users"
     },
     "mario": {
@@ -197,7 +197,7 @@
     "2025_work_title": "OpenRemote: OurGrid",
     "2025_work_desc": "September 2025 to February 2026. Front-end lead and UI/UX designer on OurGrid, a platform that makes grid congestion understandable. Designed the split-view interface for residents and municipalities and validated the UX with real users.",
     "2026_title": "Visio: Visiobal",
-    "2026_desc": "February to June 2026. Built Visiobal for Visio, an interactive audio ball that lets visually impaired people find it and play with it through sound. ESP32 firmware synthesising audio on the device, paired to a companion app over Bluetooth LE."
+    "2026_desc": "February to June 2026. App developer and designer on Visiobal for Visio, an interactive audio ball that visually impaired people find and play with through sound. Built and designed the companion app, and made the ball fully controllable from it over Bluetooth LE."
   },
   "contact": {
   "title": "Let’s work together.",

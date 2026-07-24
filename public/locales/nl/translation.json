@@ -106,7 +106,7 @@
     },
     "visiobal": {
       "title": "Visiobal (Visio)",
-      "role": "Embedded + App",
+      "role": "App Developer • Designer",
       "desc": "Een interactieve audiobal waarmee visueel beperkte mensen hem via geluid kunnen vinden, verbinden en ermee spelen. Een 3D-geprinte bol bevat een ESP32 die muziek on-device synthetiseert en via Bluetooth LE koppelt met een companion-app: scan om te verbinden, stel het volume in en wissel tussen tracks.",
       "story1_kicker": "De klant",
       "story1_title": "Gebouwd voor Visio",
@@ -128,8 +128,8 @@
       "fact3": "Koppelt met de companion-app via Bluetooth LE: 'Scan for Ball' om te verbinden, een live volumeschuif en afspeel-/skipknoppen, met slaap-waakbeheer op de bal zelf.",
       "fact4": "Gebouwd voor inclusief spelen; het hele punt is dat visueel beperkte gebruikers de bal via geluid kunnen vinden en ermee kunnen spelen.",
       "fact5": "De op maat 3D-geprinte behuizing bundelt de speaker, batterij en een volumepotmeter rond het ESP32-bord.",
-      "outcome1": "Realtime audiosynthese on-device op een ESP32 (Mozzi + I2S)",
-      "outcome2": "BLE-companion-app: scan-to-connect, volume- en trackbediening",
+      "outcome1": "De companion-app voor de bal gebouwd en ontworpen",
+      "outcome2": "De bal volledig bestuurbaar gemaakt vanuit de app via Bluetooth LE",
       "outcome3": "Toegankelijk spel by design voor visueel beperkte gebruikers"
     },
     "mario": {
@@ -197,7 +197,7 @@
     "2025_work_title": "OpenRemote: OurGrid",
     "2025_work_desc": "September 2025 tot februari 2026. Front-end lead en UI/UX-ontwerper voor OurGrid, een platform dat netcongestie begrijpelijk maakt. De split-view interface voor bewoners en gemeenten ontworpen en de UX gevalideerd met echte gebruikers.",
     "2026_title": "Visio: Visiobal",
-    "2026_desc": "Februari tot juni 2026. Visiobal gebouwd voor Visio, een interactieve geluidsbal waarmee slechtziende mensen hem via geluid kunnen vinden en ermee kunnen spelen. ESP32-firmware die audio op het apparaat genereert, gekoppeld aan een app via Bluetooth LE."
+    "2026_desc": "Februari tot juni 2026. App developer en ontwerper voor Visiobal bij Visio, een interactieve geluidsbal die slechtziende mensen via geluid vinden en waarmee ze kunnen spelen. De companion-app gebouwd en ontworpen, en de bal volledig bestuurbaar gemaakt vanuit de app via Bluetooth LE."
   },
   "contact": {
   "title": "Laten we samenwerken.",
