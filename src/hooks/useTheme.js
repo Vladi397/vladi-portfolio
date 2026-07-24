@@ -34,6 +34,19 @@ export default function useTheme() {
 
       root.dataset.themeSwitching = "true";
 
+      // The starfield canvas is what makes this expensive: the browser has to
+      // rasterise it into both view-transition snapshots while it keeps
+      // drawing. Parking it for the switch took the blocking frame from a
+      // ~340ms median to ~0ms, which matters because anything over the 320ms
+      // duration swallows the wipe entirely. Same events ProjectExpand uses.
+      window.dispatchEvent(new Event("universe:pause"));
+      const resumeUniverse = () => {
+        // Don't un-pause if a full-screen overlay is the reason it's parked.
+        if (!document.querySelector('[role="dialog"]')) {
+          window.dispatchEvent(new Event("universe:resume"));
+        }
+      };
+
       const DURATION = 320;
       const EASING = "linear";
 
@@ -45,6 +58,7 @@ export default function useTheme() {
 
         setTimeout(() => {
           delete root.dataset.themeSwitching;
+          resumeUniverse();
         }, DURATION + 50);
 
         return;
@@ -79,6 +93,16 @@ export default function useTheme() {
 
       const nextTheme = theme === "light" ? "dark" : "light";
 
+      // Dispatching the pause above is not enough on its own: React has to
+      // actually apply frameloop="never" to the canvas before the browser
+      // rasterises its snapshots, and that cannot happen in this same task.
+      // Yield two frames first. The coordinates above are already captured, so
+      // nothing here depends on the event any more, and ~32ms is imperceptible
+      // against the 320ms wipe.
+      await new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve))
+      );
+
       const transition = document.startViewTransition(() => {
         flushSync(() => {
           setTheme(nextTheme);
@@ -107,6 +131,11 @@ export default function useTheme() {
       setTimeout(() => {
         delete root.dataset.themeSwitching;
       }, DURATION + 50);
+
+      // Restart the background a beat later. Spinning the scene back up costs
+      // a frame or two of its own, and at DURATION + 50 that landed right on
+      // the tail of the wipe; pushing it out keeps the animation clean.
+      setTimeout(resumeUniverse, DURATION + 260);
     },
     [theme]
   );
