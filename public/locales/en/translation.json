@@ -105,7 +105,7 @@
       "outcome3": "Translated technical IoT data into accessible web components"
     },
     "visiobal": {
-      "title": "Visiobal",
+      "title": "Visiobal (Client Visio)",
       "role": "Embedded + App",
       "desc": "An interactive audio ball that lets visually impaired people find, connect to and play with it through sound. A 3D-printed sphere houses an ESP32 that synthesises music on-device and pairs with a companion app over Bluetooth LE: scan to connect, set the volume, and switch between tracks.",
       "story1_kicker": "The client",
@@ -193,7 +193,11 @@
     "2024_title": "Graduation & Meta Certifications",
     "2024_desc": "Solidified front-end expertise by mastering HTML, CSS, and JavaScript. Earned Meta certificates in React Basics and Advanced React.",
     "2025_title": "Fontys University (ICT)",
-    "2025_desc": "Expanding into full-stack development with C#, Razor, and Blazor. Focusing on UI/UX design and collaboration in agile teams."
+    "2025_desc": "Expanding into full-stack development with C#, Razor, and Blazor. Focusing on UI/UX design and collaboration in agile teams.",
+    "2025_work_title": "OpenRemote: OurGrid",
+    "2025_work_desc": "September 2025 to February 2026. Front-end lead and UI/UX designer on OurGrid, a platform that makes grid congestion understandable. Designed the split-view interface for residents and municipalities and validated the UX with real users.",
+    "2026_title": "Visio: Visiobal",
+    "2026_desc": "February to June 2026. Built Visiobal for Visio, an interactive audio ball that lets visually impaired people find it and play with it through sound. ESP32 firmware synthesising audio on the device, paired to a companion app over Bluetooth LE."
   },
   "contact": {
   "title": "Let’s work together.",

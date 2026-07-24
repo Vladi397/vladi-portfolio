@@ -105,7 +105,7 @@
       "outcome3": "Technische IoT-data vertaald naar toegankelijke webcomponenten"
     },
     "visiobal": {
-      "title": "Visiobal",
+      "title": "Visiobal (Visio)",
       "role": "Embedded + App",
       "desc": "Een interactieve audiobal waarmee visueel beperkte mensen hem via geluid kunnen vinden, verbinden en ermee spelen. Een 3D-geprinte bol bevat een ESP32 die muziek on-device synthetiseert en via Bluetooth LE koppelt met een companion-app: scan om te verbinden, stel het volume in en wissel tussen tracks.",
       "story1_kicker": "De klant",
@@ -193,7 +193,11 @@
     "2024_title": "Afstuderen & Meta Certificeringen",
     "2024_desc": "Front-end expertise verstevigd door HTML, CSS en JavaScript te beheersen. Meta-certificaten behaald in React Basics en Advanced React.",
     "2025_title": "Fontys Hogeschool (ICT)",
-    "2025_desc": "Uitbreiding naar full-stack development met C#, Razor en Blazor. Focus op UI/UX design en samenwerking in agile teams."
+    "2025_desc": "Uitbreiding naar full-stack development met C#, Razor en Blazor. Focus op UI/UX design en samenwerking in agile teams.",
+    "2025_work_title": "OpenRemote: OurGrid",
+    "2025_work_desc": "September 2025 tot februari 2026. Front-end lead en UI/UX-ontwerper voor OurGrid, een platform dat netcongestie begrijpelijk maakt. De split-view interface voor bewoners en gemeenten ontworpen en de UX gevalideerd met echte gebruikers.",
+    "2026_title": "Visio: Visiobal",
+    "2026_desc": "Februari tot juni 2026. Visiobal gebouwd voor Visio, een interactieve geluidsbal waarmee slechtziende mensen hem via geluid kunnen vinden en ermee kunnen spelen. ESP32-firmware die audio op het apparaat genereert, gekoppeld aan een app via Bluetooth LE."
   },
   "contact": {
   "title": "Laten we samenwerken.",

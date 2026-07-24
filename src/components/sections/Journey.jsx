@@ -101,6 +101,16 @@ const Journey = () => {
       title: t('journey.2025_title'),
       desc: t('journey.2025_desc'),
     },
+    {
+      year: "2025",
+      title: t('journey.2025_work_title'),
+      desc: t('journey.2025_work_desc'),
+    },
+    {
+      year: "2026",
+      title: t('journey.2026_title'),
+      desc: t('journey.2026_desc'),
+    },
   ];
 
   const [visible, setVisible] = useState(() => timeline.map(() => false));
