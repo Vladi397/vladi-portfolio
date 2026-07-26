@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useDeferredValue, Suspense, lazy } from "react";
+import React, { useMemo, useState, useEffect, Suspense, lazy } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Analytics } from "@vercel/analytics/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -52,12 +52,6 @@ import Contact from "./components/sections/Contact";
 export default function App() {
   const { theme, toggleTheme } = useTheme();
 
-  // The starfield is by far the most expensive thing that reads the theme, and
-  // the toggle flushes synchronously inside a view transition. Deferring only
-  // the background keeps that blocking frame cheap, so the wipe animation is
-  // not swallowed by a long task; the scene recolours a moment later.
-  const backgroundTheme = useDeferredValue(theme);
-
   const sectionIds = useMemo(
     () => ["about", "skills", "projects", "certificates", "journey", "contact"],
     []
@@ -94,7 +88,7 @@ export default function App() {
         <MouseSpotlight />
         <BackgroundBoundary>
           <Suspense fallback={null}>
-            <UniverseBackground theme={backgroundTheme} />
+            <UniverseBackground theme={theme} />
           </Suspense>
         </BackgroundBoundary>
         

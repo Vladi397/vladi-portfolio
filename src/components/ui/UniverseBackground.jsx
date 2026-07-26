@@ -321,7 +321,4 @@ const UniverseBackground = ({ theme }) => {
   );
 };
 
-// Memoised on purpose: toggling the theme calls flushSync inside a view
-// transition, and without this the whole three.js scene re-rendered
-// synchronously inside that blocking frame. See the deferred theme in App.
-export default React.memo(UniverseBackground);
+export default UniverseBackground;

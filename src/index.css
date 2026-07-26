@@ -204,9 +204,10 @@ html[data-theme-switching="true"] .theme-color-transition {
   transition: none !important;
 }
 
-/* Pausing every animation mid-switch used a universal selector, which forces a
-   style recalculation over the entire document twice per toggle (on and off).
-   The saving was never worth that, so it is gone. */
+/* Optional: pause normal CSS animations for a split second */
+html[data-theme-switching="true"] * {
+  animation-play-state: paused !important;
+}
 
 /* ------------------------------- */
 /* OurGrid card — flowing "electric current" side waves */
