@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { X, ExternalLink, Github, Sparkles, BookOpen } from "lucide-react";
+import { X, ExternalLink, Github } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ProjectCardInner from "./ProjectCardInner";
 import OurGridMotif from "./OurGridMotif";
@@ -10,6 +10,7 @@ import FanGallery from "./FanGallery";
 import LightningGallery from "./LightningGallery";
 import VisiobalGallery from "./VisiobalGallery";
 import VisiobalModel3D from "./VisiobalModel3D";
+import ProjectNotebook from "./notes/ProjectNotebook";
 
 /*
   ProjectExpand
@@ -21,7 +22,7 @@ import VisiobalModel3D from "./VisiobalModel3D";
   the clicked card's exact rect to full screen while flipping 180° on its X axis,
   lifting gently toward the camera (translateZ) and back. A brand glow pulses
   behind it and a light sheen sweeps the front face; once it lands upright the
-  detail content (header → gallery → facts) staggers in. Closing re-measures the
+  detail content (header → gallery → notebook) staggers in. Closing re-measures the
   card and reverses the arc cleanly back into its slot.
 
   Smoothness notes: the dim backdrop animates opacity only (no animated
@@ -102,14 +103,7 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
   const revealTimer = useRef(0);
   const geomRef = useRef({ dx: 0, dy: 0, sx: 1, sy: 1 });
 
-  // Scroll-driven story timeline ("journey" line that draws in on scroll).
   const scrollRef = useRef(null); // the scrollable detail container
-  const timelineRef = useRef(null); // the <ol>
-  const railRef = useRef(null); // faint full rail (node 1 → node 5)
-  const fillRef = useRef(null); // bright brand fill that grows with scroll
-  const firstNodeRef = useRef(null);
-  const lastNodeRef = useRef(null);
-  const chapterRefs = useRef([]); // each story <li>, for scroll-in reveal
 
   const [backdropOn, setBackdropOn] = useState(false);
   const [revealed, setRevealed] = useState(reduce); // detail content stagger
@@ -130,7 +124,6 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
       </div>
     ) : null;
   const [geom, setGeom] = useState(null); // drives the front-face counter-scale
-  const [revealedChapters, setRevealedChapters] = useState(() => new Set()); // story steps scrolled into view
 
   // Measure the *live* card rect → FLIP geometry (origin = panel centre).
   const measure = () => {
@@ -317,88 +310,6 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Draw the story timeline as the reader scrolls: a faint rail spans node 1 →
-  // node 5 (and stops there), while a brand-coloured fill grows to track how far
-  // down the journey they've read. Geometry is measured live so it survives the
-  // open flip, the entrance stagger, and resizes. reduced-motion → fully drawn.
-  useEffect(() => {
-    if (!story) return;
-    const rail = railRef.current;
-    const fill = fillRef.current;
-    const ol = timelineRef.current;
-    const first = firstNodeRef.current;
-    const last = lastNodeRef.current;
-    if (!rail || !fill || !ol || !first || !last) return;
-
-    const update = () => {
-      const olRect = ol.getBoundingClientRect();
-      const fr = first.getBoundingClientRect();
-      const lr = last.getBoundingClientRect();
-      const firstCenter = fr.top + fr.height / 2;
-      const lastCenter = lr.top + lr.height / 2;
-      const railTop = firstCenter - olRect.top; // relative to the <ol>
-      const railHeight = Math.max(lastCenter - firstCenter, 0);
-      rail.style.top = `${railTop}px`;
-      rail.style.height = `${railHeight}px`;
-      fill.style.top = `${railTop}px`;
-      if (reduce) {
-        fill.style.height = `${railHeight}px`;
-        return;
-      }
-      // Fill up to a trigger line ~72% down the viewport, so the last node lands
-      // "read" only once it has scrolled up into view.
-      const trigger = window.innerHeight * 0.72;
-      const filled = Math.min(Math.max(trigger - firstCenter, 0), railHeight);
-      fill.style.height = `${filled}px`;
-    };
-
-    const scroller = scrollRef.current || panelRef.current;
-    update();
-    const raf1 = requestAnimationFrame(update);
-    const raf2 = requestAnimationFrame(() => requestAnimationFrame(update));
-    const settle = window.setTimeout(update, DURATION + 40); // after the open flip
-    scroller && scroller.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      cancelAnimationFrame(raf1);
-      cancelAnimationFrame(raf2);
-      clearTimeout(settle);
-      scroller && scroller.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Reveal each story chapter (its node + text) as it scrolls into view, and
-  // hide it again when it scrolls back out — so the journey folds and unfolds
-  // with the reader both ways. The panel is a full-viewport fixed layer, so a
-  // null (viewport) root tracks the internal scroll correctly.
-  useEffect(() => {
-    if (!story) return;
-    if (reduce) {
-      setRevealedChapters(new Set(story.map((_, i) => i)));
-      return;
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const idx = Number(entry.target.dataset.idx);
-          setRevealedChapters((prev) => {
-            if (entry.isIntersecting === prev.has(idx)) return prev; // no change
-            const next = new Set(prev);
-            if (entry.isIntersecting) next.add(idx);
-            else next.delete(idx);
-            return next;
-          });
-        });
-      },
-      { root: null, rootMargin: "0px 0px -25% 0px", threshold: 0.01 }
-    );
-    chapterRefs.current.forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // While the settled panel fully covers the viewport, pause the WebGL universe
   // behind it — it would otherwise keep rendering frames nobody can see.
   // Resumes the moment closing starts (the backdrop turns translucent again).
@@ -437,27 +348,8 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
     };
   };
 
-  // Per-chapter reveal — driven by scroll position, not a timed stagger. Each
-  // step stays hidden until the observer marks it in view (see effect above).
-  const chapterStyle = (i) => {
-    if (reduce) return undefined;
-    const shown = revealedChapters.has(i) && !closing;
-    return {
-      opacity: shown ? 1 : 0,
-      transform: shown ? "translateY(0)" : "translateY(26px)",
-      transition: closing
-        ? "opacity 130ms ease, transform 130ms ease"
-        : `opacity 640ms ${SPRING}, transform 640ms ${SPRING}`,
-      willChange: "opacity, transform",
-    };
-  };
-
   const gallery = project.gallery && project.gallery.length ? project.gallery : [project.img];
-  const story = project.story && project.story.length ? project.story : null;
   const gBase = 150;
-  const storyBase = gBase + gallery.length * 110 + 60;
-  const storyCount = story ? story.length : 0;
-  const fBase = storyBase + storyCount * 90 + 190;
 
   // Reusable brand gradient (accent → accent2) for buttons, nodes, accents.
   const brandGradient = `linear-gradient(135deg, ${theme.accent}, ${theme.accent2})`;
@@ -524,21 +416,11 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
           <p className="mt-5 sm:mt-6 max-w-2xl text-base sm:text-xl leading-relaxed text-stone-600 dark:text-slate-300">
             {project.desc}
           </p>
-          <div className="mt-6 sm:mt-7 flex flex-wrap gap-2">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="px-3 py-1.5 rounded-lg text-xs font-bold border"
-                style={{
-                  color: theme.accent,
-                  background: hexA(theme.accent, 0.1),
-                  borderColor: hexA(theme.accent, 0.28),
-                }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+          {Boolean(project.notes?.stack || project.tags?.length) && (
+            <p className="notes-ink mt-5 sm:mt-6 font-mono text-[13px] sm:text-sm" style={{ "--acc": theme.accent }}>
+              {project.notes?.stack || project.tags.join(" · ")}
+            </p>
+          )}
           <div className="mt-6 sm:mt-7 flex flex-col sm:flex-row flex-wrap gap-3">
             {project.liveUrl && project.liveUrl !== "#" && (
               <a
@@ -607,125 +489,8 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
           })()
         )}
 
-        {/* The story — a chapter timeline, threaded with the brand gradient */}
-        {story && (
-          <section className="mt-12 sm:mt-24">
-            <h3
-              className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8 sm:mb-10"
-              style={rv(storyBase - 60)}
-            >
-              <span
-                className="inline-flex h-9 w-9 items-center justify-center rounded-xl"
-                style={{ color: theme.accent, background: hexA(theme.accent, 0.12) }}
-              >
-                <BookOpen size={18} />
-              </span>
-              {t("projects.detail_story", "The story")}
-            </h3>
-
-            <ol ref={timelineRef} className="relative">
-              {/* faint rail — measured to start at node 1 and stop at node 5 */}
-              <span
-                ref={railRef}
-                aria-hidden="true"
-                className="absolute left-[17px] sm:left-[21px] w-[2px] rounded-full"
-                style={{ top: 0, height: 0, background: hexA(theme.accent, 0.15) }}
-              />
-              {/* brand fill — draws downward as the reader scrolls the journey */}
-              <span
-                ref={fillRef}
-                aria-hidden="true"
-                className="absolute left-[17px] sm:left-[21px] w-[2px] rounded-full"
-                style={{
-                  top: 0,
-                  height: 0,
-                  background: `linear-gradient(to bottom, ${theme.accent}, ${theme.accent2})`,
-                  transition: "height 90ms linear",
-                  willChange: "height",
-                }}
-              />
-              {story.map((ch, i) => (
-                <li
-                  key={i}
-                  ref={(el) => (chapterRefs.current[i] = el)}
-                  data-idx={i}
-                  className="relative pl-11 sm:pl-16 pb-8 sm:pb-12 last:pb-0"
-                  style={chapterStyle(i)}
-                >
-                  <span
-                    ref={i === 0 ? firstNodeRef : i === story.length - 1 ? lastNodeRef : null}
-                    className="absolute left-0 top-0 inline-flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full text-sm font-black text-white"
-                    style={{ background: brandGradient, boxShadow: `0 8px 20px ${hexA(theme.accent, 0.35)}` }}
-                  >
-                    {i + 1}
-                  </span>
-                  {ch.kicker && (
-                    <p
-                      className="text-[11px] font-black uppercase tracking-[0.2em]"
-                      style={{ color: theme.accent }}
-                    >
-                      {ch.kicker}
-                    </p>
-                  )}
-                  <h4 className="mt-1.5 text-xl sm:text-2xl font-extrabold tracking-tight text-stone-900 dark:text-white">
-                    {ch.title}
-                  </h4>
-                  <p className="mt-2.5 max-w-2xl text-[15px] sm:text-base leading-relaxed text-stone-600 dark:text-slate-300">
-                    {ch.body}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </section>
-        )}
-
-        {/* Interesting facts — numbered cards */}
-        {project.facts && project.facts.length > 0 && (
-          <section className="mt-12 sm:mt-24">
-            <h3
-              className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8"
-              style={rv(fBase - 90)}
-            >
-              <span
-                className="inline-flex h-9 w-9 items-center justify-center rounded-xl"
-                style={{ color: theme.accent, background: hexA(theme.accent, 0.12) }}
-              >
-                <Sparkles size={18} />
-              </span>
-              {t("projects.detail_facts", "Interesting facts")}
-            </h3>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {project.facts.map((fact, i) => {
-                const isTodo = /^todo/i.test(String(fact).trim());
-                return (
-                  <div
-                    key={i}
-                    style={rv(fBase + i * 70)}
-                    className={`rounded-2xl p-5 sm:p-6 border ${
-                      isTodo
-                        ? "border-dashed border-amber-300/70 bg-amber-50/60 text-amber-700 italic dark:border-amber-400/30 dark:bg-amber-400/5 dark:text-amber-300/90"
-                        : "border-stone-200 bg-stone-50/80 text-stone-700 dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-300"
-                    }`}
-                  >
-                    <div className="flex items-start gap-3.5">
-                      <span
-                        className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black"
-                        style={
-                          isTodo
-                            ? undefined
-                            : { color: theme.accent, background: hexA(theme.accent, 0.12) }
-                        }
-                      >
-                        {i + 1}
-                      </span>
-                      <p className="text-[15px] sm:text-base leading-relaxed">{fact}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        )}
+        {/* Notebook: log, project figure, snags and build sheet */}
+        <ProjectNotebook notes={project.notes} figure={project.figure} theme={theme} t={t} reduce={reduce} />
       </article>
     </div>
   );

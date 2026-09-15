@@ -6,9 +6,11 @@ import SecondaryButton from "../ui/SecondaryButton";
 import { scrollToId } from "../../utils/scrollHelpers";
 import Vladi1 from "../../assets/vladi-profile1.png";
 import VladiSkeleton from "../../assets/vladi-xray-cut.png";
+// Light mode uses a teal recolour to match the light theme accent (#0A7A85).
+import VladiSkeletonTeal from "../../assets/vladi-xray-cut-teal.png";
 import { useTranslation } from 'react-i18next'; // <--- Import hook
 
-const Hero = () => {
+const Hero = ({ theme = "dark" }) => {
   const { t } = useTranslation(); // <--- Init hook
 
   // X-ray lens: a circular hole is punched in the photo at the cursor, revealing the
@@ -226,7 +228,7 @@ const Hero = () => {
             >
               {/* Skeleton — base layer underneath, shown wherever the photo is holed */}
               <img
-                src={VladiSkeleton}
+                src={theme === "dark" ? VladiSkeleton : VladiSkeletonTeal}
                 alt=""
                 aria-hidden="true"
                 draggable="false"

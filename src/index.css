@@ -343,3 +343,22 @@ html[data-theme-switching="true"] * {
 @media (prefers-reduced-motion: reduce) {
   .dm-bar { animation: none !important; }
 }
+
+/* ------------------------------- */
+/* Project notebook (detail view)   */
+/* ------------------------------- */
+/* Marker/label ink in the project's colour. Bright accents (DevMatch cyan,
+   OurGrid green) are too light for small text on white, so light mode mixes
+   the accent halfway toward near-black; dark mode uses the accent itself. */
+.notes-ink {
+  color: color-mix(in oklab, var(--acc, #0a7a85) 52%, #1c1917);
+}
+html.dark .notes-ink {
+  color: var(--acc, #0ea5e9);
+}
+
+/* Jukebox playhead: a tinted overlay sweeping across the piano roll. */
+@keyframes jukebox-progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}

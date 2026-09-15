@@ -135,18 +135,15 @@ const Projects = () => {
       theme: { accent: "#00D4FF", accent2: "#FF2D8A", deep: "#0D0F1E" },
       // Renders the breathing "match score" bars on the expanded detail view.
       motif: "match",
-      story: [1, 2, 3, 4, 5].map((n) => ({
-        kicker: t(`projects.devmatch.story${n}_kicker`),
-        title: t(`projects.devmatch.story${n}_title`),
-        body: t(`projects.devmatch.story${n}_body`),
-      })),
-      facts: [1, 2, 3, 4, 5].map((n) => t(`projects.devmatch.fact${n}`)),
+      // Engineer's-notebook content (log, figure, snags, build sheet) from i18n.
+      notes: t("projects.devmatch.notes", { returnObjects: true }),
+      figure: "jobtrace",
       outcomes: [
         t('projects.devmatch.outcome1'),
         t('projects.devmatch.outcome2'),
         t('projects.devmatch.outcome3'),
       ],
-      tags: ["React Native", "Expo", "Node.js", "PostgreSQL", "AI / ATS"],
+      tags: ["Expo 54", "Express 5", "Prisma + PostgreSQL", "Gemini 2.5 Flash-Lite", "Adzuna + Remotive"],
       liveUrl: "#",
       repoUrl: "https://github.com/Vladi397/devmatch",
     },
@@ -162,15 +159,10 @@ const Projects = () => {
       theme: { accent: "#01AC51", accent2: "#F4B14A", deep: "#4F2E39" },
       // Renders the flowing "electric current" side waves on this card only.
       motif: "grid",
-      // A narrative walkthrough shown as a chapter timeline in the expanded view.
-      story: [1, 2, 3, 4, 5].map((n) => ({
-        kicker: t(`projects.ourgrid.story${n}_kicker`),
-        title: t(`projects.ourgrid.story${n}_title`),
-        body: t(`projects.ourgrid.story${n}_body`),
-      })),
-      facts: [1, 2, 3, 4].map((n) => t(`projects.ourgrid.fact${n}`)),
+      notes: t("projects.ourgrid.notes", { returnObjects: true }),
+      figure: "peakshift",
       outcomes: [t('projects.ourgrid.outcome1'), t('projects.ourgrid.outcome2'), t('projects.ourgrid.outcome3')],
-      tags: ["React", "Tailwind", "User Testing", "Figma"],
+      tags: ["React + Vite", "Leaflet", "Recharts", "Figma", "User testing"],
       liveUrl: "https://ourgrid.vercel.app/",
       repoUrl: "https://github.com/Marto8090/OurGrid_Website",
     },
@@ -188,18 +180,14 @@ const Projects = () => {
       theme: { accent: "#A855F7", accent2: "#F472B6", deep: "#080F1E" },
       // Renders the expanding "sonar" pulse rings (echoes the app's radar scan).
       motif: "sonar",
-      story: [1, 2, 3, 4, 5].map((n) => ({
-        kicker: t(`projects.visiobal.story${n}_kicker`),
-        title: t(`projects.visiobal.story${n}_title`),
-        body: t(`projects.visiobal.story${n}_body`),
-      })),
-      facts: [1, 2, 3, 4, 5].map((n) => t(`projects.visiobal.fact${n}`)),
+      notes: t("projects.visiobal.notes", { returnObjects: true }),
+      figure: "signalchain",
       outcomes: [
         t('projects.visiobal.outcome1'),
         t('projects.visiobal.outcome2'),
         t('projects.visiobal.outcome3'),
       ],
-      tags: ["ESP32", "C++", "Bluetooth LE", "Mozzi Audio", "Accessibility"],
+      tags: ["Expo + BLE", "three.js", "ESP32", "Mozzi synth", "FreeRTOS"],
       liveUrl: "#",
       repoUrl: "https://github.com/Marto8090/visiobal",
     },

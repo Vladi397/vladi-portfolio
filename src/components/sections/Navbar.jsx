@@ -65,6 +65,7 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
     <button
       onClick={(e) => toggleTheme(e)}
       aria-label={t("nav.toggle_theme", "Toggle theme")}
+      data-theme-toggle
       className={`inline-flex items-center justify-center min-w-11 min-h-11 p-2 rounded-full transition-all duration-300 ${className}
         hover:bg-stone-100 text-stone-600
         dark:hover:bg-white/10 dark:text-slate-300

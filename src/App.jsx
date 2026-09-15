@@ -97,7 +97,7 @@ export default function App() {
         )}
 
         <main className="relative z-10">
-          <Hero />
+          <Hero theme={theme} />
           <About />
           <Skills />
           <Projects />
