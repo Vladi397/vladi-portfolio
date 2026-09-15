@@ -11,17 +11,17 @@ const Skills = () => {
   const skillCategories = [
     {
       title: t('skills.cat_frontend'), // "Frontend & Mobile"
-      icon: <Layout className="w-7 h-7 text-[#0EA5E9]" />,
+      icon: <Layout className="w-7 h-7 text-accent" />,
       skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Expo / React Native", "HTML5 & CSS3"],
     },
     {
       title: t('skills.cat_backend'), // "Backend & Data"
-      icon: <Database className="w-7 h-7 text-[#0EA5E9]" />,
+      icon: <Database className="w-7 h-7 text-accent" />,
       skills: ["C#", "Node.js", "Python", "REST & External APIs", "PostgreSQL", "Microsoft SQL"],
     },
     {
       title: t('skills.cat_tools'), // "Tools, AI & Design"
-      icon: <Code2 className="w-7 h-7 text-[#0EA5E9]" />,
+      icon: <Code2 className="w-7 h-7 text-accent" />,
       skills: ["Figma (UI/UX)", "MCP + AI Agents", "C++ (hardware)", "Git & GitHub", "VS Code", "Agile"],
     },
   ];
@@ -38,28 +38,28 @@ const Skills = () => {
         {skillCategories.map((cat, idx) => (
           <Reveal key={idx} delay={idx * 80}>
             <div className="relative group h-full">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-[22px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-brand-600 to-brand2-600 rounded-[22px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
               
               <TiltedCard className="h-full relative">
                 <div className="h-full p-6 sm:p-8 rounded-[22px] transition-colors duration-300
                   bg-white dark:bg-slate-800/90 border border-transparent dark:border-slate-700/50"
                 >
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-colors
-                    bg-sky-50 dark:bg-slate-700"
+                    bg-lagoon-50 dark:bg-slate-700"
                   >
                     {cat.icon}
                   </div>
                   <h3 className="text-2xl font-black mb-6 transition-colors
-                    text-gray-900 dark:text-white"
+                    text-stone-900 dark:text-white"
                   >
                     {cat.title}
                   </h3>
                   <ul className="space-y-3">
                     {cat.skills.map((skill) => (
                       <li key={skill} className="flex items-center gap-3 font-semibold transition-colors
-                        text-gray-600 dark:text-slate-300"
+                        text-stone-600 dark:text-slate-300"
                       >
-                        <span className="w-2 h-2 rounded-full bg-[#0EA5E9]"></span>
+                        <span className="w-2 h-2 rounded-full bg-accent"></span>
                         {skill}
                       </li>
                     ))}

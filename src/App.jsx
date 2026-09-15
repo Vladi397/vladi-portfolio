@@ -80,11 +80,11 @@ export default function App() {
 
       <div
         className={`min-h-screen font-sans theme-color-transition transition-colors duration-300
-        selection:bg-[#0EA5E9] selection:text-white
-        text-gray-900 dark:text-slate-100
+        selection:bg-accent selection:text-white
+        text-stone-900 dark:text-slate-100
         opacity-100`} 
       >
-        <div className="fixed inset-0 -z-50 bg-slate-50 dark:bg-[#050505] transition-colors duration-300" />
+        <div className="fixed inset-0 -z-50 bg-paper dark:bg-[#050505] transition-colors duration-300" />
         <MouseSpotlight />
         <BackgroundBoundary>
           <Suspense fallback={null}>
@@ -106,7 +106,7 @@ export default function App() {
           <Contact />
         </main>
 
-        <footer className="text-center py-12 text-sm font-semibold theme-color-transition transition-colors duration-500 text-gray-400 dark:text-slate-600 relative z-10">
+        <footer className="text-center py-12 text-sm font-semibold theme-color-transition transition-colors duration-500 text-stone-400 dark:text-slate-600 relative z-10">
           © 2025 Vladi Georgiev.
         </footer>
 
@@ -121,7 +121,7 @@ export default function App() {
               <button
                 onClick={() => scrollToId("home")}
                 className="w-12 h-12 flex items-center justify-center theme-color-transition transition-colors duration-300
-                  text-gray-700 hover:text-black
+                  text-stone-700 hover:text-black
                   dark:text-slate-200 dark:hover:text-white"
                 aria-label="Back to top"
               >

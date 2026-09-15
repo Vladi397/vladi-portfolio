@@ -76,7 +76,7 @@ export default function LightningGallery({ images, title }) {
   return (
     <figure
       ref={ref}
-      className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-white/10 bg-slate-950 shadow-xl shadow-slate-900/10 dark:shadow-black/40"
+      className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-stone-200 dark:border-white/10 bg-slate-950 shadow-xl shadow-stone-900/10 dark:shadow-black/40"
       style={playing ? { animation: "lg-shake 650ms cubic-bezier(0.36,0.07,0.19,0.97)" } : undefined}
     >
       <img

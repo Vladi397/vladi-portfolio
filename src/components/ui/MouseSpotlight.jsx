@@ -54,7 +54,7 @@ const MouseSpotlight = () => {
         opacity: 0,
         transform: `translate3d(-${SIZE}px, -${SIZE}px, 0)`,
         background:
-          "radial-gradient(200px circle at center, rgba(14, 165, 233, 0.25), transparent 60%)",
+          "radial-gradient(200px circle at center, rgb(var(--accent) / 0.25), transparent 60%)",
       }}
     />
   );

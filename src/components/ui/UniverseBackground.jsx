@@ -37,6 +37,24 @@ const pickStarCount = () =>
       ? 3000
       : 5000;
 
+// Scene colours per theme. Dark is the original sky/indigo space; light is the
+// warm off-white page with teal stars, lines and haze to match the light UI.
+// Haze tints line up with the HAZE entries below.
+const SPACE = {
+  dark: {
+    ground: "#050505",
+    accent: "#0EA5E9",
+    haze: ["#0EA5E9", "#6366f1", "#38bdf8", "#4f46e5"],
+  },
+  light: {
+    ground: "#FAF9F6",
+    accent: "#0A7A85",
+    // Soft, desaturated teals plus one warm sand cloud that ties the haze to
+    // the off-white page. Saturated cyan here flooded the glass panels.
+    haze: ["#7CC2C6", "#E3D6BC", "#9FD0CF", "#5FA8AE"],
+  },
+};
+
 // --- 1. THE STARS (With Mouse Repulsion) ---
 const StarField = ({ count = 5000, theme }) => {
   const ref = useRef();
@@ -116,7 +134,7 @@ const StarField = ({ count = 5000, theme }) => {
     if (active) ref.current.geometry.attributes.position.needsUpdate = true;
   });
 
-  const color = "#0EA5E9";
+  const color = theme === "dark" ? SPACE.dark.accent : SPACE.light.accent;
 
   return (
     <group>
@@ -151,11 +169,12 @@ const NetworkLines = ({ theme }) => {
                 <meshBasicMaterial
                     wireframe
                     // Light mode: the slate-grey lines were invisible on the near-white
-                    // bg — use the site's light blue, a touch stronger so they read but
+                    // bg — use the site's accent, a touch stronger so they read but
                     // stay in the background. Dark mode unchanged.
-                    color="#0EA5E9"
+                    color={theme === "dark" ? SPACE.dark.accent : SPACE.light.accent}
                     transparent
-                    opacity={theme === "dark" ? 0.03 : 0.5}
+                    // Teal is darker than the old sky blue, so light mode needs less.
+                    opacity={theme === "dark" ? 0.03 : 0.28}
                 />
             </mesh>
         </group>
@@ -183,10 +202,10 @@ const GLOW_TEX = typeof document !== "undefined" ? makeGlowTexture() : null;
 // Clustered toward the upper-left so the glow is a contained accent, not a
 // full-screen wash. Hand-placed for a calm, intentional composition.
 const HAZE = [
-  { x: -4.5, y: 4,   z: -7,  s: 20, tint: "#0EA5E9", spd: 0.8 },
-  { x: -1,   y: 5.5, z: -10, s: 26, tint: "#6366f1", spd: -0.6 },
-  { x: -3,   y: 2.5, z: -6,  s: 15, tint: "#38bdf8", spd: 0.5 },
-  { x: 1.5,  y: 5,   z: -9,  s: 18, tint: "#4f46e5", spd: -0.45 },
+  { x: -4.5, y: 4,   z: -7,  s: 20, spd: 0.8 },
+  { x: -1,   y: 5.5, z: -10, s: 26, spd: -0.6 },
+  { x: -3,   y: 2.5, z: -6,  s: 15, spd: 0.5 },
+  { x: 1.5,  y: 5,   z: -9,  s: 18, spd: -0.45 },
 ];
 
 const NebulaHaze = ({ theme, reduced = false }) => {
@@ -219,7 +238,7 @@ const NebulaHaze = ({ theme, reduced = false }) => {
         >
           <spriteMaterial
             map={GLOW_TEX}
-            color={h.tint}
+            color={(theme === "dark" ? SPACE.dark : SPACE.light).haze[i]}
             transparent
             opacity={baseOp}
             depthWrite={false}
@@ -298,7 +317,7 @@ const UniverseBackground = ({ theme }) => {
             nebula opt out (fog={false}) so only the wireframe is affected. */}
         <fog
           attach="fog"
-          args={[theme === "dark" ? "#050505" : "#f8fafc", 16, 50]}
+          args={[theme === "dark" ? SPACE.dark.ground : SPACE.light.ground, 16, 50]}
         />
 
         {/* Re-keyed on count so the star buffer is rebuilt at the right size */}

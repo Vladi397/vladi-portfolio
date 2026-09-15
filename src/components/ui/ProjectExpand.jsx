@@ -463,11 +463,11 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
   const brandGradient = `linear-gradient(135deg, ${theme.accent}, ${theme.accent2})`;
 
   const detail = (
-    <div className="min-h-full text-gray-900 dark:text-white">
+    <div className="min-h-full text-stone-900 dark:text-white">
       {/* Sticky top bar */}
       <div
         className="sticky top-0 z-30 flex items-center justify-between gap-4 px-5 sm:px-8 py-3.5
-          bg-white/75 dark:bg-[#0B1120]/75 backdrop-blur-xl border-b border-gray-200/70 dark:border-white/10"
+          bg-white/75 dark:bg-[#0B1120]/75 backdrop-blur-xl border-b border-stone-200/70 dark:border-white/10"
       >
         <div className="min-w-0 flex items-center gap-3">
           <span
@@ -483,7 +483,7 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
           onClick={requestClose}
           aria-label={t("projects.close", "Close")}
           className="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full transition-colors
-            bg-gray-100 hover:bg-gray-200 text-gray-700
+            bg-stone-100 hover:bg-stone-200 text-stone-700
             dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-200
             focus:outline-none focus-visible:ring-2"
           style={{ "--tw-ring-color": theme.accent }}
@@ -513,7 +513,7 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
           >
             {project.role}
           </p>
-          <h2 className="font-black tracking-tight leading-[1.05] sm:leading-[1.03] text-3xl sm:text-6xl mt-3 sm:mt-4 text-gray-900 dark:text-white">
+          <h2 className="font-black tracking-tight leading-[1.05] sm:leading-[1.03] text-3xl sm:text-6xl mt-3 sm:mt-4 text-stone-900 dark:text-white">
             {project.title}
           </h2>
           {/* Brand underline */}
@@ -521,7 +521,7 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
             className="mt-4 sm:mt-5 h-1.5 w-20 sm:w-24 rounded-full"
             style={{ background: brandGradient }}
           />
-          <p className="mt-5 sm:mt-6 max-w-2xl text-base sm:text-xl leading-relaxed text-gray-600 dark:text-slate-300">
+          <p className="mt-5 sm:mt-6 max-w-2xl text-base sm:text-xl leading-relaxed text-stone-600 dark:text-slate-300">
             {project.desc}
           </p>
           <div className="mt-6 sm:mt-7 flex flex-wrap gap-2">
@@ -545,8 +545,8 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
                 href={project.liveUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-white transition-all hover:scale-105 hover:brightness-110 active:scale-95 shadow-lg shadow-sky-500/30"
-                style={{ backgroundColor: "#0EA5E9" }}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-white transition-all hover:scale-105 hover:brightness-110 active:scale-95 shadow-lg shadow-brand-500/30"
+                style={{ backgroundColor: "rgb(var(--accent))" }}
               >
                 {t("projects.btn_live", "Live Demo")} <ExternalLink size={18} />
               </a>
@@ -556,7 +556,7 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
                 href={project.repoUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border font-bold transition-transform hover:scale-105 active:scale-95 bg-white border-gray-200 text-gray-700 hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border font-bold transition-transform hover:scale-105 active:scale-95 bg-white border-stone-200 text-stone-700 hover:bg-stone-50 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700"
               >
                 {t("projects.btn_code", "View Code")} <Github size={18} />
               </a>
@@ -589,8 +589,8 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
                   <figure
                     key={i}
                     style={rv(gBase + i * 110)}
-                    className="overflow-hidden rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-white/10
-                      bg-gray-50 dark:bg-white/[0.03] shadow-xl shadow-slate-900/5 dark:shadow-black/40"
+                    className="overflow-hidden rounded-2xl sm:rounded-3xl border border-stone-200 dark:border-white/10
+                      bg-stone-50 dark:bg-white/[0.03] shadow-xl shadow-stone-900/5 dark:shadow-black/40"
                   >
                     <img
                       src={src}
@@ -667,10 +667,10 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
                       {ch.kicker}
                     </p>
                   )}
-                  <h4 className="mt-1.5 text-xl sm:text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                  <h4 className="mt-1.5 text-xl sm:text-2xl font-extrabold tracking-tight text-stone-900 dark:text-white">
                     {ch.title}
                   </h4>
-                  <p className="mt-2.5 max-w-2xl text-[15px] sm:text-base leading-relaxed text-gray-600 dark:text-slate-300">
+                  <p className="mt-2.5 max-w-2xl text-[15px] sm:text-base leading-relaxed text-stone-600 dark:text-slate-300">
                     {ch.body}
                   </p>
                 </li>
@@ -704,7 +704,7 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
                     className={`rounded-2xl p-5 sm:p-6 border ${
                       isTodo
                         ? "border-dashed border-amber-300/70 bg-amber-50/60 text-amber-700 italic dark:border-amber-400/30 dark:bg-amber-400/5 dark:text-amber-300/90"
-                        : "border-gray-200 bg-gray-50/80 text-gray-700 dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-300"
+                        : "border-stone-200 bg-stone-50/80 text-stone-700 dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-300"
                     }`}
                   >
                     <div className="flex items-start gap-3.5">
@@ -838,7 +838,7 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
             >
               <div
                 className="relative w-full h-full overflow-hidden rounded-[32px] p-6 sm:p-8 md:p-10
-                  bg-white shadow-xl border border-sky-100
+                  bg-white shadow-xl border border-lagoon-100
                   dark:bg-[#0B1120] dark:shadow-none dark:border-sky-900/40"
               >
                 <ProjectCardInner

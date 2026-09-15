@@ -256,7 +256,7 @@ export default function VisiobalModel3D({ fallbackImage, title }) {
       </div>
 
       {canDrag && (
-        <figcaption className="pointer-events-none absolute bottom-1 left-0 right-0 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400/80 dark:text-white/35">
+        <figcaption className="pointer-events-none absolute bottom-1 left-0 right-0 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400/80 dark:text-white/35">
           {t("projects.detail_drag", "Drag to spin")}
         </figcaption>
       )}

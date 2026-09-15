@@ -116,8 +116,8 @@ export default function VisiobalGallery({ images, title, aspect = "4 / 3" }) {
         return (
           <figure
             key={i}
-            className="overflow-hidden rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-white/10
-              bg-gray-50 dark:bg-white/[0.03] shadow-xl shadow-slate-900/5 dark:shadow-black/40"
+            className="overflow-hidden rounded-2xl sm:rounded-3xl border border-stone-200 dark:border-white/10
+              bg-stone-50 dark:bg-white/[0.03] shadow-xl shadow-stone-900/5 dark:shadow-black/40"
             style={{
               opacity: revealed ? 1 : 0,
               transform: revealed

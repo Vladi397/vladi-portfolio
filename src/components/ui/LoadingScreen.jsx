@@ -64,14 +64,16 @@ const LoadingScreen = ({ onComplete }) => {
       <div className="relative z-10 font-black tracking-tighter uppercase text-center cursor-default">
         
         {/* The Text Container */}
-        <div className="relative text-6xl md:text-9xl leading-none">
+        {/* Phones get a smaller size: Unbounded is wide, and "INITIALIZING" at
+            text-6xl is ~460px, wider than a 390px screen. */}
+        <div className="relative text-[2.625rem] sm:text-6xl md:text-9xl leading-none">
           
           {/* Layer 1: The "Hollow" Text (Always visible background) */}
           <span 
             className="block text-transparent bg-clip-text opacity-30"
             style={{ 
                 WebkitTextStroke: "2px white",
-                fontFamily: "'Inter', sans-serif" 
+                fontFamily: "'Unbounded Variable', sans-serif" 
             }}
           >
             {phrases[textIndex]}
@@ -84,7 +86,7 @@ const LoadingScreen = ({ onComplete }) => {
           >
             <span 
                 className="block text-white"
-                style={{ fontFamily: "'Inter', sans-serif" }}
+                style={{ fontFamily: "'Unbounded Variable', sans-serif" }}
             >
               {phrases[textIndex]}
             </span>

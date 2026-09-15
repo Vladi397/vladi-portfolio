@@ -9,8 +9,8 @@ function getInitialTheme() {
     if (saved === "dark" || saved === "light") return saved;
   }
 
-  // 2. If no saved preference, DEFAULT TO DARK
-  return "dark";
+  // 2. First visit (no saved preference): start in light mode
+  return "light";
 }
 
 function applyTheme(nextTheme) {

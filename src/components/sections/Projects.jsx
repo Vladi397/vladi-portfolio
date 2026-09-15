@@ -304,7 +304,7 @@ const Projects = () => {
                 style={{ visibility: activeIndex === index ? "hidden" : undefined }}
               >
                 {/* Outer glow */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-indigo-600 rounded-[40px] blur-xl opacity-20 dark:opacity-30 group-hover:opacity-50 dark:group-hover:opacity-60 transition-all duration-700 pointer-events-none" />
+                <div className="absolute -inset-1 bg-gradient-to-r from-brand-500 to-brand2-600 rounded-[40px] blur-xl opacity-20 dark:opacity-30 group-hover:opacity-50 dark:group-hover:opacity-60 transition-all duration-700 pointer-events-none" />
 
                 <div
                   ref={(el) => (cardRefs.current[index] = el)}
@@ -316,16 +316,16 @@ const Projects = () => {
                   style={{ minHeight: !isMobile && cardMinH ? `${cardMinH}px` : undefined }}
                   className="relative rounded-[32px] p-6 sm:p-8 md:p-10 overflow-hidden cursor-pointer transition-colors duration-300
                   md:flex md:flex-col md:justify-center
-                  bg-white shadow-xl border border-sky-100
+                  bg-white shadow-xl border border-lagoon-100
                   dark:bg-[#0B1120] dark:shadow-none dark:border-sky-900/40
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#0B1120]"
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-lagoon-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#0B1120]"
                 >
                   {/* Expand affordance (always visible on touch, on hover for pointer) */}
                   <span className="absolute top-4 right-4 z-20 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold pointer-events-none transition-opacity duration-300
-                    bg-white/80 text-gray-600 border border-gray-200 backdrop-blur-sm
+                    bg-white/80 text-stone-600 border border-stone-200 backdrop-blur-sm
                     dark:bg-white/5 dark:text-slate-300 dark:border-white/10
                     opacity-100 md:opacity-0 md:group-hover:opacity-100">
-                    <Maximize2 size={14} className="text-[#0EA5E9]" />
+                    <Maximize2 size={14} className="text-accent" />
                     {t('projects.expand_hint', 'Click to expand')}
                   </span>
 

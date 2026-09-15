@@ -92,7 +92,7 @@ const CustomCursor = () => {
           className={`rounded-full transition-all duration-150 ${
             isHovering
               ? "w-2.5 h-2.5 bg-violet-400 shadow-[0_0_8px_rgba(167,139,250,0.8)]"
-              : "w-2 h-2 bg-sky-400 shadow-[0_0_6px_rgba(56,189,248,0.8)]"
+              : "w-2 h-2 bg-brand-400 shadow-[0_0_6px_rgb(var(--brand-400)/0.8)]"
           } ${isVisible ? "opacity-100" : "opacity-0"}`}
         />
       </div>
@@ -111,7 +111,7 @@ const CustomCursor = () => {
           className={`rounded-full border transition-all duration-300 ${
             isHovering
               ? "w-10 h-10 border-violet-400/60 shadow-[0_0_12px_rgba(167,139,250,0.3)]"
-              : "w-8 h-8 border-sky-400/50"
+              : "w-8 h-8 border-brand-400/50"
           } ${isVisible ? "opacity-100" : "opacity-0"}`}
         />
       </div>

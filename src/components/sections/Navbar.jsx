@@ -66,13 +66,13 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
       onClick={(e) => toggleTheme(e)}
       aria-label={t("nav.toggle_theme", "Toggle theme")}
       className={`inline-flex items-center justify-center min-w-11 min-h-11 p-2 rounded-full transition-all duration-300 ${className}
-        hover:bg-gray-100 text-gray-600
+        hover:bg-stone-100 text-stone-600
         dark:hover:bg-white/10 dark:text-slate-300
         active:scale-95 transform
       `}
     >
       <div className="transition-transform duration-500 rotate-0 dark:rotate-[360deg]">
-        {theme === "dark" ? <Sun size={20} className="text-amber-300" /> : <Moon size={20} className="text-sky-400" />}
+        {theme === "dark" ? <Sun size={20} className="text-amber-300" /> : <Moon size={20} className="text-brand-400" />}
       </div>
     </button>
   );
@@ -83,30 +83,30 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
         onClick={() => setLangMenuOpen(!langMenuOpen)}
         className={`group relative flex items-center min-h-11 gap-2 p-1 pl-3 pr-1 rounded-full border transition-all duration-500
           ${langMenuOpen 
-            ? "bg-sky-50 border-sky-400 shadow-[0_0_20px_rgba(56,189,248,0.5)] dark:bg-[#0B1120] dark:border-sky-500 dark:shadow-[0_0_25px_rgba(14,165,233,0.6)]" 
-            : "bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-white/5"
+            ? "bg-lagoon-50 border-lagoon-400 shadow-[0_0_20px_rgba(10,122,133,0.35)] dark:bg-[#0B1120] dark:border-sky-500 dark:shadow-[0_0_25px_rgba(14,165,233,0.6)]" 
+            : "bg-transparent border-transparent hover:bg-stone-100 dark:hover:bg-white/5"
           }
         `}
       >
         <span className={`text-xs font-black tracking-widest transition-colors duration-300
-          ${langMenuOpen ? "text-sky-600 dark:text-sky-400" : "text-gray-600 dark:text-slate-400"}
+          ${langMenuOpen ? "text-lagoon-600 dark:text-sky-400" : "text-stone-600 dark:text-slate-400"}
         `}>
           {currentLang.short}
         </span>
         <div className="relative w-8 h-8 flex items-center justify-center">
           <div className={`absolute inset-0 rounded-full border-2 border-dashed transition-all duration-700 ease-in-out
             ${langMenuOpen 
-              ? "border-sky-500 rotate-[180deg] scale-100 opacity-100" 
-              : "border-gray-300 dark:border-slate-600 rotate-0 scale-75 opacity-50 group-hover:border-sky-400 group-hover:opacity-100"
+              ? "border-lagoon-500 rotate-[180deg] scale-100 opacity-100" 
+              : "border-stone-300 dark:border-slate-600 rotate-0 scale-75 opacity-50 group-hover:border-brand-400 group-hover:opacity-100"
             }
           `} />
           <div className={`relative z-10 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-500
             ${langMenuOpen 
-              ? "bg-sky-500 shadow-lg shadow-sky-500/50 scale-100" 
-              : "bg-gray-200 dark:bg-slate-700 scale-90 group-hover:bg-sky-100 dark:group-hover:bg-sky-900"
+              ? "bg-lagoon-500 shadow-lg shadow-brand-500/50 scale-100" 
+              : "bg-stone-200 dark:bg-slate-700 scale-90 group-hover:bg-lagoon-100 dark:group-hover:bg-sky-900"
             }
           `}>
-             <Globe size={14} className={`transition-colors duration-300 ${langMenuOpen ? "text-white animate-spin-slow" : "text-gray-500 dark:text-slate-400 group-hover:text-sky-600 dark:group-hover:text-sky-300"}`} />
+             <Globe size={14} className={`transition-colors duration-300 ${langMenuOpen ? "text-white animate-spin-slow" : "text-stone-500 dark:text-slate-400 group-hover:text-lagoon-600 dark:group-hover:text-sky-300"}`} />
           </div>
         </div>
       </button>
@@ -129,7 +129,7 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
         {/* Sweeps only while the menu is actually open, so nothing animates
             behind an invisible panel. */}
         <div
-          className={`absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-sky-400 to-transparent opacity-50 pointer-events-none z-0 ${
+          className={`absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-brand-400 to-transparent opacity-50 pointer-events-none z-0 ${
             langMenuOpen ? "animate-scan" : ""
           }`}
         />
@@ -146,20 +146,20 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
                 className={`group relative flex items-center justify-between w-full px-4 py-3 rounded-xl overflow-hidden transition-all duration-500
                   ${langMenuOpen ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0"}
                   ${isActive 
-                    ? "bg-sky-50/80 border border-sky-200 dark:bg-sky-500/10 dark:border-sky-500/30" 
-                    : "hover:bg-gray-50/80 border border-transparent dark:hover:bg-white/5"
+                    ? "bg-lagoon-50/80 border border-lagoon-200 dark:bg-sky-500/10 dark:border-sky-500/30" 
+                    : "hover:bg-stone-50/80 border border-transparent dark:hover:bg-white/5"
                   }
                 `}
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-1.5 h-1.5 rounded-full shadow-[0_0_8px_currentColor] transition-all duration-300
                     ${isActive 
-                      ? "bg-sky-500 scale-125 shadow-sky-500" 
-                      : "bg-gray-300 dark:bg-slate-600 group-hover:bg-sky-400"
+                      ? "bg-lagoon-500 scale-125 shadow-brand-500" 
+                      : "bg-stone-300 dark:bg-slate-600 group-hover:bg-brand-400"
                     }
                   `} />
                   <span className={`text-sm font-bold tracking-wide transition-colors
-                    ${isActive ? "text-sky-700 dark:text-sky-300" : "text-gray-600 dark:text-slate-300 group-hover:text-black dark:group-hover:text-white"}
+                    ${isActive ? "text-lagoon-700 dark:text-sky-300" : "text-stone-600 dark:text-slate-300 group-hover:text-black dark:group-hover:text-white"}
                   `}>
                     {lang.label}
                   </span>
@@ -167,7 +167,7 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
                 <ChevronRight 
                   size={16} 
                   className={`transition-all duration-300 
-                    ${isActive ? "text-sky-500 opacity-100 translate-x-0" : "text-gray-400 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"}
+                    ${isActive ? "text-brand-500 opacity-100 translate-x-0" : "text-ngray-400 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"}
                   `} 
                 />
                 <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/40 to-transparent dark:via-sky-400/10 pointer-events-none" />
@@ -184,7 +184,7 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
       <nav
         className={`fixed w-full z-50 top-0 left-0 transition-all duration-300 border-b
           ${scrolled 
-            ? "bg-white/85 dark:bg-[#050505]/85 backdrop-blur-md border-gray-200/50 dark:border-slate-800/50 py-3 md:py-4" 
+            ? "bg-white/85 dark:bg-[#050505]/85 backdrop-blur-md border-stone-200/50 dark:border-slate-800/50 py-3 md:py-4" 
             : "bg-transparent border-transparent py-4 md:py-6"
           }
         `}
@@ -193,7 +193,7 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
           <button
             onClick={() => scrollToId("home")}
             className="text-xl sm:text-2xl font-black tracking-tight theme-color-transition transition-colors
-              text-gray-900 dark:text-slate-50 relative z-50
+              text-stone-900 dark:text-slate-50 relative z-50
               py-2 -my-2"
           >
             Vladi Georgiev
@@ -213,8 +213,8 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
                   // 3. Added invisible padding to keep cursor active area large
                   className={`group relative text-xs lg:text-sm font-semibold tracking-widest uppercase theme-color-transition transition-colors duration-200
                     ${isActive
-                      ? "text-sky-600 dark:text-sky-400"
-                      : "text-gray-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400"
+                      ? "text-lagoon-600 dark:text-sky-400"
+                      : "text-stone-600 dark:text-slate-400 hover:text-lagoon-600 dark:hover:text-sky-400"
                     }
                   `}
                 >
@@ -227,7 +227,7 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
               );
             })}
             
-            <div className="flex items-center gap-4 pl-4 border-l border-gray-200 dark:border-slate-800">
+            <div className="flex items-center gap-4 pl-4 border-l border-stone-200 dark:border-slate-800">
                <ThemeToggle />
                <LangSwitcher />
             </div>
@@ -243,7 +243,7 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
             <ThemeToggle />
             <button
               onClick={() => setOpen((s) => !s)}
-              className="p-2 rounded-lg text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-lg text-stone-900 dark:text-white hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors"
             >
               {open ? <X size={28} /> : <Menu size={28} />}
             </button>
@@ -267,7 +267,7 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
                 style={{ transitionDelay: `${idx * 50}ms` }}
                 className={`text-3xl font-black tracking-tight uppercase transition-all duration-500 transform
                   ${open ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}
-                  ${isActive ? "text-[#0EA5E9]" : "text-gray-900 dark:text-white"}
+                  ${isActive ? "text-lagoon-500" : "text-stone-900 dark:text-white"}
                 `}
               >
                 {l.label}

@@ -5,10 +5,10 @@ const PrimaryButton = ({ children, onClick, className = "", type = "button" }) =
     type={type}
     onClick={onClick}
     className={[
-      "bg-[#0EA5E9] text-white px-7 sm:px-8 py-3 rounded-full font-bold text-base md:text-lg",
-      "shadow-lg hover:bg-sky-500 hover:-translate-y-1 active:translate-y-0",
+      "bg-accent text-white px-7 sm:px-8 py-3 rounded-full font-bold text-base md:text-lg",
+      "shadow-lg hover:bg-brand-500 hover:-translate-y-1 active:translate-y-0",
       "transition-all duration-300 motion-reduce:transition-none",
-      "focus:outline-none focus:ring-2 focus:ring-sky-300",
+      "focus:outline-none focus:ring-2 focus:ring-brand-300",
       className,
     ].join(" ")}
   >

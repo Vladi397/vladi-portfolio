@@ -113,7 +113,7 @@ const Hero = () => {
         <Reveal>
           <h3
             className="font-bold tracking-[0.25em] text-[11px] sm:text-xs uppercase mb-4 transition-colors
-            text-[#0EA5E9] dark:text-sky-400"
+            text-lagoon-500 dark:text-sky-400"
           >
             {t('hero.role')}
           </h3>
@@ -122,7 +122,7 @@ const Hero = () => {
         <Reveal delay={80}>
           <h1
             className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.08] transition-colors
-            text-gray-900 dark:text-white"
+            text-stone-900 dark:text-white"
           >
             {t('hero.title')}
           </h1>
@@ -131,7 +131,7 @@ const Hero = () => {
         <Reveal delay={140}>
           <p
             className="text-base sm:text-lg max-w-xl leading-relaxed pt-5 mx-auto md:mx-0 transition-colors
-            text-gray-500 dark:text-slate-400"
+            text-stone-500 dark:text-slate-400"
           >
             {t('hero.subtitle')}
           </p>
@@ -147,8 +147,8 @@ const Hero = () => {
               onClick={() => scrollToId("contact")}
               className={[
                 "justify-center w-full sm:w-auto",
-                "bg-white/90 border border-gray-200 text-gray-900 shadow-sm",
-                "hover:bg-white hover:border-gray-300 hover:shadow-md",
+                "bg-white/90 border border-stone-200 text-stone-900 shadow-sm",
+                "hover:bg-white hover:border-stone-300 hover:shadow-md",
                 "dark:bg-slate-800/40 dark:border-slate-700 dark:text-slate-200",
                 "dark:hover:bg-slate-800/55 dark:hover:border-slate-600",
               ].join(" ")}
@@ -162,31 +162,31 @@ const Hero = () => {
           <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm justify-center md:justify-start">
             <span
               className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-full transition-colors border
-              bg-white/85 border-gray-200 text-gray-900 shadow-sm
-              hover:bg-white hover:border-gray-300
+              bg-white/85 border-stone-200 text-stone-900 shadow-sm
+              hover:bg-white hover:border-ngray-300
               dark:bg-slate-800/60 dark:border-slate-700 dark:text-slate-300"
             >
-              <CheckCircle className="text-sky-600 dark:text-sky-400" size={16} />
+              <CheckCircle className="text-lagoon-600 dark:text-sky-400" size={16} />
               {t('hero.meta_certs')}
             </span>
 
             <span
               className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-full transition-colors border
-              bg-white/85 border-gray-200 text-gray-900 shadow-sm
-              hover:bg-white hover:border-gray-300
+              bg-white/85 border-stone-200 text-stone-900 shadow-sm
+              hover:bg-white hover:border-ngray-300
               dark:bg-slate-800/60 dark:border-slate-700 dark:text-slate-300"
             >
-              <MapPin className="text-sky-600 dark:text-sky-400" size={16} />
+              <MapPin className="text-lagoon-600 dark:text-sky-400" size={16} />
               {t('hero.location')}
             </span>
           </div>
         </Reveal>
 
         <Reveal delay={320}>
-          <div className="mt-8 sm:mt-10 border-l-4 border-[#0EA5E9] pl-4 sm:pl-5 py-2 text-left max-w-xl mx-auto md:mx-0">
+          <div className="mt-8 sm:mt-10 border-l-4 border-accent pl-4 sm:pl-5 py-2 text-left max-w-xl mx-auto md:mx-0">
             <p
               className="text-sm sm:text-base md:text-lg font-semibold leading-relaxed transition-colors
-              text-gray-800 dark:text-slate-200"
+              text-stone-800 dark:text-slate-200"
             >
               {t('hero.quote')}
             </p>
@@ -203,14 +203,14 @@ const Hero = () => {
                 // The bleed is trimmed on the narrowest phones: at 320px the
                 // full -inset-x-6 pushed the page 4px wider than the viewport.
                 "absolute -inset-x-2 sm:-inset-x-6 -top-24 bottom-0 -z-20 rounded-[36px]",
-                "bg-[radial-gradient(circle_at_50%_48%,rgba(14,165,233,0.14),transparent_60%)]",
+                "bg-[radial-gradient(circle_at_50%_48%,rgba(10,122,133,0.12),transparent_60%)]",
                 "dark:bg-[radial-gradient(circle_at_50%_48%,rgba(14,165,233,0.18),transparent_55%)]",
               ].join(" ")}
             />
 
             <div
               className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-[72%] h-8 -z-10 rounded-full blur-2xl
-              bg-slate-900/15 dark:bg-black/45"
+              bg-stone-900/15 dark:bg-black/45"
             />
 
             <div
@@ -259,24 +259,24 @@ const Hero = () => {
                   "absolute bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-none",
                   "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full",
                   "text-[11px] font-medium tracking-wide whitespace-nowrap",
-                  "bg-slate-900/70 text-sky-200 ring-1 ring-sky-400/30 backdrop-blur-sm shadow-lg",
+                  "bg-nslate-900/70 text-brand-200 ring-1 ring-brand-400/30 backdrop-blur-sm shadow-lg",
                   "transition-opacity duration-500",
                   locked ? "opacity-0" : "opacity-90",
                 ].join(" ")}
               >
-                <ScanLine size={13} className="text-sky-400" />
+                <ScanLine size={13} className="text-brand-400" />
                 {t("hero.xray_hint", "Hover to scan · click to hold")}
               </span>
             </div>
 
             <div
               className="absolute top-16 left-10 w-[78%] h-[78%] rounded-full blur-[80px] -z-10 transition-colors
-              opacity-35 bg-sky-100
+              opacity-35 bg-lagoon-100
               dark:opacity-30 dark:bg-sky-600/70"
             />
             <div
               className="absolute -top-6 -right-4 w-24 h-24 rounded-full blur-2xl -z-10 transition-colors
-              opacity-30 bg-sky-100
+              opacity-30 bg-lagoon-100
               dark:opacity-25 dark:bg-sky-800/40"
             />
           </div>
