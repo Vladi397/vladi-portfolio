@@ -5,7 +5,7 @@
     "projects": "Projects",
     "certificates": "Certificates",
     "journey": "Journey",
-    "contact": "Let's Talk"
+    "contact": "Let’s Talk"
   },
   "hero": {
     "role": "Front-End Developer • UI/UX",
@@ -86,7 +86,7 @@
         ],
         "figure": {
           "title": "One job, from search to interview",
-          "caption": "The path a single listing takes through DevMatch. Timings from the project's own measurements.",
+          "caption": "The path a single listing takes through DevMatch. Timings from the project’s own measurements.",
           "card_role": "Frontend Developer",
           "card_company": "OfferZen · Utrecht",
           "card_estimate": "estimate",
@@ -211,7 +211,7 @@
     },
     "ourgrid": {
       "title": "OurGrid (Client OpenRemote)",
-      "desc": "A platform demystifying 'grid congestion' for the company OpenRemote. I designed the UI and validated the UX with real users (students & coaches) to translate complex data into a clean React interface.",
+      "desc": "A platform demystifying “grid congestion” for the company OpenRemote. I designed the UI and validated the UX with real users (students & coaches) to translate complex data into a clean React interface.",
       "role": "Frontend Lead • UI/UX Designer • Research",
       "outcome1": "Validated UX via testing with real users",
       "outcome2": "Architected a split-view UI for Residents vs. Municipalities",
@@ -542,7 +542,9 @@
     "notes_sheet_tool": "Tool",
     "notes_sheet_role": "What it did",
     "notes_example": "Example",
-    "expand_hint_touch": "Tap to open"
+    "expand_hint_touch": "Tap to explore",
+    "detail_swipe": "Swipe to spin",
+    "detail_drag": "Drag to spin"
   },
   "certificates": {
     "title": "Certificates",
@@ -552,6 +554,7 @@
     "btn_verify": "Verify",
     "meta_coursera": "Meta / Coursera",
     "verified": "Verified",
+    "swipe_hint": "Swipe through all {{n}}",
     "modal_mobile_msg": "Tap below to open the official PDF in your browser.",
     "btn_open_pdf": "Open PDF",
     "btn_ext_verify": "External Verify",
@@ -580,7 +583,7 @@
   },
   "contact": {
     "title": "Let’s work together.",
-    "desc": "Have a project in mind? I'm available for freelance work and new opportunities.",
+    "desc": "Have a project in mind? I’m available for freelance work and new opportunities.",
     "status": "Available for new projects",
     "copy_fail": "Copy failed. Please copy manually.",
     "success": "Message sent successfully!",

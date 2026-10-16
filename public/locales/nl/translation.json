@@ -10,25 +10,25 @@
   "hero": {
     "role": "Front-End Developer • UI/UX",
     "title": "Digitale ervaringen bouwen.",
-    "subtitle": "Ik bouw schone, responsieve React-interfaces met sterke UX en focus op prestaties.",
+    "subtitle": "Ik bouw strakke, responsieve React-interfaces met sterke UX en focus op prestaties.",
     "cta_primary": "Bekijk mijn werk",
     "cta_secondary": "Neem contact op",
-    "meta_certs": "7 Meta Certificaten",
+    "meta_certs": "7 Meta-certificaten",
     "location": "Eindhoven",
     "status": "Beschikbaar",
-    "quote": "“Moderne oplossingen gebouwd met technische precisie en schoon ontwerp.”",
+    "quote": "“Moderne oplossingen gebouwd met technische precisie en strak ontwerp.”",
     "xray_hint_touch": "Tik voor röntgen"
   },
   "about": {
     "title": "Over mij",
     "kicker": "Wie ik ben",
-    "p1": "Ik ben Vladi Georgiev, een ontwikkelaar uit Bulgarije die in Eindhoven woont. Na een opleiding elektronica op de middelbare school behaalde ik zeven professionele front-end certificaten van Meta, en sindsdien ben ik blijven groeien: het afgelopen jaar ben ik van eenvoudige front-ends naar volwaardige full-stack, cross-platform apps gegaan.",
+    "p1": "Ik ben Vladi Georgiev, een ontwikkelaar uit Bulgarije die in Eindhoven woont. Na een opleiding elektronica op de middelbare school behaalde ik zeven professionele front-endcertificaten van Meta, en sindsdien ben ik blijven groeien: het afgelopen jaar ben ik van eenvoudige front-ends naar volwaardige full-stack, cross-platform apps gegaan.",
     "p2": "Tegenwoordig werk ik met React, Next.js en TypeScript op het web, Expo en React Native op mobiel, en C# en Node met PostgreSQL en Microsoft SQL aan de back-end. Ik ontwerp alles in Figma, experimenteer met C++ voor hardware, en in DevMatch koppelde ik de app aan externe API’s en MCP-gestuurde AI-agents.",
     "skill_csharp": "C# Basis",
     "btn_resume": "Bekijk CV",
-    "modal_title": "CV Voorbeeld",
+    "modal_title": "CV-voorbeeld",
     "download": "Downloaden",
-    "mobile_msg": "Voor de beste ervaring op mobiel, open het bestand direct.",
+    "mobile_msg": "Open het bestand direct voor de beste ervaring op mobiel.",
     "btn_open": "Open CV"
   },
   "skills": {
@@ -51,10 +51,10 @@
     "devmatch": {
       "title": "DevMatch",
       "role": "Full-Stack • Mobiel • AI",
-      "desc": "Een full-stack, AI-gedreven vacature-assistent voor developers. Een Expo React Native-app met een Node- en Express-API vindt vacatures, scoort je cv met ATS-analyse tegen elke vacature en helpt je solliciteren met motivatiebrieven op maat.",
-      "outcome1": "Cross-platform Expo-app + getypeerde Node/Prisma-backend",
-      "outcome2": "AI ATS-flow die cv's scoort en herschrijft per vacature",
-      "outcome3": "JWT-auth, matching, cv-upload en sollicitatietracking",
+      "desc": "Een full-stack, AI-gedreven vacature-assistent voor developers. Een Expo React Native-app met een Node- en Express-API vindt vacatures, scoort je cv per vacature met ATS-analyse en helpt je solliciteren met motivatiebrieven op maat.",
+      "outcome1": "Cross-platform Expo-app + type-veilige Node/Prisma-backend",
+      "outcome2": "ATS-flow met AI die per vacature cv’s scoort en herschrijft",
+      "outcome3": "JWT-auth, vacaturematching, cv-upload en sollicitatietracking",
       "notes": {
         "stack": "Expo · Express · Prisma · Gemini",
         "log": [
@@ -76,7 +76,7 @@
           {
             "marker": "gemini-2.5-flash-lite",
             "title": "Klein model, strikte JSON",
-            "body": "Flash-Lite antwoordt in 2 tot 4 seconden en was gratis tijdens het prototypen. Elke prompt vraagt om kale JSON en toont het schema. Toch zet het model antwoorden soms tussen codeblokken, dus de backend haalt die weg voordat hij parst."
+            "body": "Flash-Lite antwoordt in 2 tot 4 seconden en was gratis tijdens het prototypen. Elke prompt vraagt om kale JSON en toont het schema. Toch zet het model antwoorden soms tussen codeblokken, dus de backend haalt die weg voordat hij ze parseert."
           },
           {
             "marker": "STAR",
@@ -135,7 +135,7 @@
           },
           {
             "problem": "Inloggen met Google en LinkedIn weigerde de exp:// redirect van Expo Go.",
-            "fix": "E-mail en wachtwoord met JWT uitgebracht, en social login bewaard voor een echte development build."
+            "fix": "E-mail en wachtwoord met JWT opgeleverd, en social login bewaard voor een echte development build."
           },
           {
             "problem": "Expo Router geeft alleen tekst door tussen schermen.",
@@ -211,10 +211,10 @@
     },
     "ourgrid": {
       "title": "OurGrid (OpenRemote)",
-      "desc": "Een platform dat 'netcongestie' demystificeert voor OpenRemote. Ik ontwierp de UI en valideerde de UX met echte gebruikers om complexe data te vertalen naar een schone React-interface.",
+      "desc": "Een platform dat “netcongestie” begrijpelijk maakt voor OpenRemote. Ik ontwierp de UI en valideerde de UX met echte gebruikers (studenten en coaches) om complexe data te vertalen naar een strakke React-interface.",
       "role": "Frontend Lead • UI/UX Designer • Onderzoek",
       "outcome1": "UX gevalideerd via testen met echte gebruikers",
-      "outcome2": "UI ontworpen voor Bewoners vs. Gemeenten",
+      "outcome2": "Split-view-UI ontworpen voor bewoners en gemeenten",
       "outcome3": "Technische IoT-data vertaald naar toegankelijke webcomponenten",
       "notes": {
         "stack": "React · Leaflet · Recharts · Express",
@@ -276,7 +276,7 @@
             "fix": "Knelpunten worden per wijk getekend en in de kaart zelf staat “illustratief, geen echte data”."
           },
           {
-            "problem": "Bewoners en ambtenaren hebben andere woorden nodig voor dezelfde cijfers.",
+            "problem": "Bewoners en ambtenaren hebben verschillende woorden nodig voor dezelfde cijfers.",
             "fix": "Eén keuze aan het begin wisselt de routes en teksten, terwijl de data hetzelfde blijft."
           }
         ],
@@ -338,10 +338,10 @@
     "visiobal": {
       "title": "Visiobal (Visio)",
       "role": "App Developer • Designer",
-      "desc": "Een interactieve audiobal waarmee visueel beperkte mensen hem via geluid kunnen vinden, verbinden en ermee spelen. Een 3D-geprinte bol bevat een ESP32 die muziek on-device synthetiseert en via Bluetooth LE koppelt met een companion-app: scan om te verbinden, stel het volume in en wissel tussen tracks.",
+      "desc": "Een interactieve audiobal voor mensen met een visuele beperking: ze vinden hem op het geluid, maken er verbinding mee en spelen ermee. Een 3D-geprinte bol bevat een ESP32 die de muziek op het apparaat zelf synthetiseert en via Bluetooth LE koppelt met een companion-app: scan om te verbinden, stel het volume in en wissel tussen tracks.",
       "outcome1": "De companion-app voor de bal gebouwd en ontworpen",
       "outcome2": "De bal volledig bestuurbaar gemaakt vanuit de app via Bluetooth LE",
-      "outcome3": "Toegankelijk spel by design voor visueel beperkte gebruikers",
+      "outcome3": "Spel dat vanaf het ontwerp toegankelijk is voor mensen met een visuele beperking",
       "notes": {
         "stack": "Expo · BLE · three.js · ESP32 · Mozzi",
         "log": [
@@ -368,7 +368,7 @@
           {
             "marker": "5 talen",
             "title": "De app die ik bouwde",
-            "body": "Expo en TypeScript: een 3D-model van de bal dat je kunt draaien, een speler met volume en een frequentieschuif, een licht en donker thema, en Engels, Nederlands, Frans, Duits en Bulgaars."
+            "body": "Expo en TypeScript: een 3D-model van de bal dat je kunt draaien, een speler met volume en een schuifregelaar voor de frequentie, een licht en een donker thema, en Engels, Nederlands, Frans, Duits en Bulgaars."
           }
         ],
         "figure": {
@@ -425,7 +425,7 @@
         "snags": [
           {
             "problem": "Direct in slaap vallen vanuit de Bluetooth-schrijfcallback.",
-            "fix": "De callback geeft alleen een semafoor vrij. Een FreeRTOS-taak stuurt SLEEPING, wacht 500 ms tot dat verstuurd is en gaat dan in light sleep; elk Bluetooth-pakket maakt de bal wakker."
+            "fix": "De callback geeft alleen een semafoor vrij. Een FreeRTOS-taak stuurt SLEEPING, wacht 500 ms totdat het verzonden is en gaat dan in light sleep; elk Bluetooth-pakket maakt de bal wakker."
           },
           {
             "problem": "GCC 14.2 linkte een bijna lege libstdc++-stub en C++-symbolen ontbraken.",
@@ -436,7 +436,7 @@
             "fix": "Alles wat met de bal praat, draait in een development build via expo run:android."
           },
           {
-            "problem": "Ruwe knopwaarden lieten volume en toonhoogte trillen.",
+            "problem": "Ruwe waarden van de draaiknoppen lieten volume en toonhoogte trillen.",
             "fix": "Beide gaan door een smoothingfilter (0,95 voor volume, 0,85 voor toonhoogte) voordat ze de oscillators bereiken."
           }
         ],
@@ -542,19 +542,22 @@
     "notes_sheet_tool": "Tool",
     "notes_sheet_role": "Wat het deed",
     "notes_example": "Voorbeeld",
-    "expand_hint_touch": "Tik om te openen"
+    "expand_hint_touch": "Tik om te verkennen",
+    "detail_swipe": "Veeg om te draaien",
+    "detail_drag": "Sleep om te draaien"
   },
   "certificates": {
     "title": "Certificaten",
-    "kicker": "Geverifieerde Skills",
+    "kicker": "Geverifieerde skills",
     "completed_on": "Behaald op",
     "btn_view": "BEKIJK",
     "btn_verify": "Verifieer",
     "meta_coursera": "Meta / Coursera",
     "verified": "Geverifieerd",
+    "swipe_hint": "Veeg door alle {{n}} certificaten",
     "modal_mobile_msg": "Tik hieronder om de officiële PDF in je browser te openen.",
     "btn_open_pdf": "Open PDF",
-    "btn_ext_verify": "Externe Verificatie",
+    "btn_ext_verify": "Externe verificatie",
     "c1_title": "Introduction to Front-End Development",
     "c2_title": "Programming with JavaScript",
     "c3_title": "Version Control",
@@ -563,24 +566,24 @@
     "c6_title": "Advanced React"
   },
   "journey": {
-    "title": "Tijdlijn",
-    "kicker": "Ervaring",
-    "2019_title": "Specialisatie: Elektronische Handel",
-    "2019_desc": "Gestart met een multidisciplinair programma dat Economie, Business en Web Development combineerde. Afgestudeerd als Organisator van Internet Applicaties.",
-    "2023_title": "Internationale Tentoonstelling & Basis",
-    "2023_desc": "Deelgenomen aan TF-FEST Internationale Tentoonstelling. Basiscertificaten behaald in Versiebeheer en Introductie tot Front-End.",
-    "2024_title": "Afstuderen & Meta Certificeringen",
-    "2024_desc": "Front-end expertise verstevigd door HTML, CSS en JavaScript te beheersen. Meta-certificaten behaald in React Basics en Advanced React.",
+    "title": "Ervaring",
+    "kicker": "Tijdlijn",
+    "2019_title": "Specialisatie: elektronische handel",
+    "2019_desc": "Gestart met een multidisciplinair programma dat Economie, Business en Web Development combineerde. Afgestudeerd met een diploma als Organisator van Internetapplicaties.",
+    "2023_title": "Internationale tentoonstelling & basis",
+    "2023_desc": "Deelgenomen aan de internationale TF-FEST-tentoonstelling. Basiscertificaten behaald in Versiebeheer en Introductie tot Front-End.",
+    "2024_title": "Afstuderen & Meta-certificeringen",
+    "2024_desc": "Expertise in front-end verstevigd door HTML, CSS en JavaScript te beheersen. Meta-certificaten behaald in React Basics en Advanced React.",
     "2025_title": "Fontys Hogeschool (ICT)",
     "2025_desc": "Uitbreiding naar full-stack development met C#, Razor en Blazor. Focus op UI/UX design en samenwerking in agile teams.",
     "2025_work_title": "OpenRemote: OurGrid",
-    "2025_work_desc": "September 2025 tot februari 2026. Front-end lead en UI/UX-ontwerper voor OurGrid, een platform dat netcongestie begrijpelijk maakt. De split-view interface voor bewoners en gemeenten ontworpen en de UX gevalideerd met echte gebruikers.",
+    "2025_work_desc": "September 2025 tot februari 2026. Front-end lead en UI/UX-ontwerper voor OurGrid, een platform dat netcongestie begrijpelijk maakt. De split-view-interface voor bewoners en gemeenten ontworpen en de UX gevalideerd met echte gebruikers.",
     "2026_title": "Visio: Visiobal",
-    "2026_desc": "Februari tot juni 2026. App developer en ontwerper voor Visiobal bij Visio, een interactieve geluidsbal die slechtziende mensen via geluid vinden en waarmee ze kunnen spelen. De companion-app gebouwd en ontworpen, en de bal volledig bestuurbaar gemaakt vanuit de app via Bluetooth LE."
+    "2026_desc": "Februari tot juni 2026. App developer en ontwerper voor Visiobal bij Visio, een interactieve geluidsbal die mensen met een visuele beperking op het geluid vinden en waarmee ze kunnen spelen. De companion-app gebouwd en ontworpen, en de bal volledig bestuurbaar gemaakt vanuit de app via Bluetooth LE."
   },
   "contact": {
     "title": "Laten we samenwerken.",
-    "desc": "Heb je een project in gedachten? Ik ben beschikbaar voor freelance werk en nieuwe kansen.",
+    "desc": "Heb je een project in gedachten? Ik ben beschikbaar voor freelancewerk en nieuwe kansen.",
     "status": "Beschikbaar voor nieuwe projecten",
     "copy_fail": "Kopiëren mislukt. Kopieer handmatig.",
     "success": "Bericht succesvol verzonden!",
@@ -591,10 +594,10 @@
     "ph_name": "Jan Jansen",
     "ph_email": "jan@voorbeeld.nl",
     "ph_message": "Vertel me over je project...",
-    "btn_send": "Verstuur Bericht",
-    "error_name_short": "Vul alstublieft uw volledige naam in.",
-    "error_name_invalid": "Gebruik alstublieft alleen letters voor uw naam.",
-    "error_email_invalid": "Ik heb een geldig e-mailadres nodig om te antwoorden.",
-    "error_message_short": "Vertel me iets meer over uw project (minimaal 10 tekens)."
+    "btn_send": "Verstuur bericht",
+    "error_name_short": "Vul je volledige naam in.",
+    "error_name_invalid": "Gebruik alleen letters voor je naam.",
+    "error_email_invalid": "Ik heb een geldig e-mailadres nodig om je te kunnen antwoorden.",
+    "error_message_short": "Vertel me iets meer over je project (minimaal 10 tekens)."
   }
 }
