@@ -1,5 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
 
+/*
+  The intro is a first-impression flourish, so it is paced for the place it
+  makes that impression. On a desktop it takes its 3 seconds. On a phone —
+  where this is almost always a tap straight out of a link, on a connection and
+  a CPU that are already slower — the whole thing is under a second, because
+  past that it stops reading as an intro and starts reading as a site that
+  won't load. App.jsx also plays it only on a visitor's first visit.
+*/
+const FAST = (() => {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return false;
+  return window.matchMedia(
+    "(max-width: 820px), (pointer: coarse), (prefers-reduced-motion: reduce)"
+  ).matches;
+})();
+
+// duration = the progress fill, hold = the beat at 100%, exit = the slide off.
+const TIMING = FAST
+  ? { duration: 560, hold: 90, exit: 240 } // ~0.9s all in
+  : { duration: 3000, hold: 500, exit: 1000 };
+
 const LoadingScreen = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
@@ -16,11 +36,10 @@ const LoadingScreen = ({ onComplete }) => {
   // One timer for the whole load. This effect used to depend on [progress], so
   // every single tick tore the interval down and built a fresh one: each step
   // then cost a full React render plus a new 30ms wait. On a busy machine the
-  // intro crawled instead of finishing in its nominal 3 seconds.
+  // intro crawled instead of finishing in its nominal time.
   useEffect(() => {
-    const duration = 3000; // 3 seconds total load time
     const intervalTime = 30;
-    const increment = 100 / (duration / intervalTime);
+    const increment = 100 / (TIMING.duration / intervalTime);
 
     const timer = setInterval(() => {
       setProgress((prev) => {
@@ -42,8 +61,8 @@ const LoadingScreen = ({ onComplete }) => {
     doneRef.current = true;
     const hold = setTimeout(() => {
       setIsExiting(true);
-      setTimeout(onComplete, 1000); // Wait for exit animation
-    }, 500); // Pause briefly at 100%
+      setTimeout(onComplete, TIMING.exit); // Wait for exit animation
+    }, TIMING.hold); // Pause briefly at 100%
     return () => clearTimeout(hold);
   }, [progress, onComplete]);
 
@@ -53,12 +72,18 @@ const LoadingScreen = ({ onComplete }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-black text-white overflow-hidden transition-all duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+      // The intro is the very first thing anyone sees, so it wears the same
+      // theme as the page behind it: warm paper by default, black only for a
+      // visitor who has saved dark. A black intro in front of a light site read
+      // as the page failing to load rather than as an opening.
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden transition-all ease-[cubic-bezier(0.76,0,0.24,1)]
+        bg-paper text-stone-900 dark:bg-black dark:text-white ${
         isExiting ? "translate-y-[-100%]" : "translate-y-0"
       }`}
+      style={{ transitionDuration: `${TIMING.exit}ms` }}
     >
       {/* Background Gradient Spot */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-900/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] blur-[120px] rounded-full pointer-events-none bg-lagoon-300/40 dark:bg-blue-900/20" />
 
       {/* Main Container */}
       <div className="relative z-10 font-black tracking-tighter uppercase text-center cursor-default">
@@ -70,11 +95,8 @@ const LoadingScreen = ({ onComplete }) => {
           
           {/* Layer 1: The "Hollow" Text (Always visible background) */}
           <span 
-            className="block text-transparent bg-clip-text opacity-30"
-            style={{ 
-                WebkitTextStroke: "2px white",
-                fontFamily: "'Unbounded Variable', sans-serif" 
-            }}
+            className="intro-stroke block text-transparent bg-clip-text opacity-30"
+            style={{ fontFamily: "'Unbounded Variable', sans-serif" }}
           >
             {phrases[textIndex]}
           </span>
@@ -85,7 +107,7 @@ const LoadingScreen = ({ onComplete }) => {
             style={{ height: `${progress}%` }} 
           >
             <span 
-                className="block text-white"
+                className="block text-stone-900 dark:text-white"
                 style={{ fontFamily: "'Unbounded Variable', sans-serif" }}
             >
               {phrases[textIndex]}
@@ -97,10 +119,10 @@ const LoadingScreen = ({ onComplete }) => {
 
       {/* Percentage Counter */}
       <div className="absolute bottom-10 right-10 flex flex-col items-end">
-        <span className="text-6xl font-mono font-bold text-white/20">
+        <span className="text-6xl font-mono font-bold text-stone-900/20 dark:text-white/20">
             {Math.round(progress)}
         </span>
-        <span className="text-xs text-white/40 font-mono tracking-widest uppercase mt-2">
+        <span className="text-xs font-mono tracking-widest uppercase mt-2 text-stone-500 dark:text-white/40">
             System Ready
         </span>
       </div>

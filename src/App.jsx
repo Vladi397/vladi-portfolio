@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, Suspense, lazy } from "react";
+import React, { useCallback, useMemo, useState, useEffect, Suspense, lazy } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Analytics } from "@vercel/analytics/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -32,6 +32,23 @@ class BackgroundBoundary extends React.Component {
   }
 }
 
+/*
+  The intro plays once per visitor, not once per visit. It is a first
+  impression, and someone arriving from a link a second time should land on the
+  page itself rather than sit through the reveal again. Storage being blocked
+  (private windows, locked-down browsers) just means it plays — the flourish is
+  the safe fallback, never a black screen we cannot clear.
+*/
+const INTRO_KEY = "vg-intro-seen";
+
+const introAlreadySeen = () => {
+  try {
+    return window.localStorage.getItem(INTRO_KEY) === "1";
+  } catch {
+    return false;
+  }
+};
+
 // Code-split: the 3D background pulls in the entire three.js stack, and the 404
 // page is only ever shown on a non-"/" route. Both load on demand so they stay
 // out of the initial bundle. Behaviour is unchanged — the background is a fixed,
@@ -58,8 +75,17 @@ export default function App() {
   );
   const activeId = useActiveSection(sectionIds);
 
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(introAlreadySeen);
   const [showTop, setShowTop] = useState(false);
+
+  const finishIntro = useCallback(() => {
+    setIsLoaded(true);
+    try {
+      window.localStorage.setItem(INTRO_KEY, "1");
+    } catch {
+      // Nothing to remember it with — the intro simply plays again next time.
+    }
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 800);
@@ -76,7 +102,7 @@ export default function App() {
         <Route path="/" element={<>
       <Analytics />
 
-      {!isLoaded && <LoadingScreen onComplete={() => setIsLoaded(true)} />}
+      {!isLoaded && <LoadingScreen onComplete={finishIntro} />}
 
       <div
         className={`min-h-screen font-sans theme-color-transition transition-colors duration-300

@@ -19,6 +19,22 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Vladi Georgiev | Front-End Developer" />
     <meta name="twitter:description" content="Building digital experiences with React, Tailwind, and Motion." />
+    <script>
+      // Resolve the theme before the first paint. React applies this class from
+      // an effect, which runs *after* the browser has painted, so a returning
+      // dark-mode visitor would otherwise get one light frame first. Mirrors
+      // getInitialTheme() in src/hooks/useTheme.js — light is the default, and
+      // only an explicitly saved "dark" opts out.
+      (function () {
+        try {
+          if (localStorage.getItem("theme") === "dark") {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {
+          // Storage blocked — the light default is already correct.
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
