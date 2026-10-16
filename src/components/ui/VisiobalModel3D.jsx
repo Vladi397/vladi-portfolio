@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -20,6 +20,12 @@ import { useTranslation } from "react-i18next";
   Perf follows UniverseBackground: LOW_END trims the pixel ratio, the frameloop
   stops whenever the canvas is off-screen, reduced-motion holds it still, and no
   WebGL falls back to the photo.
+
+  Spinning it by hand works on both: a mouse drags it through OrbitControls, and
+  a finger flicks it horizontally. The touch version is hand-rolled rather than
+  OrbitControls' own because OrbitControls swallows every gesture on the canvas,
+  including the vertical ones that are the visitor trying to scroll the page —
+  which is why touch dragging was switched off here in the first place.
 */
 
 // Colours sampled from the actual print.
@@ -117,8 +123,9 @@ function makeLayerBump() {
   return t;
 }
 
-function Ball({ reduced }) {
+function Ball({ reduced, takeFlick }) {
   const group = useRef();
+  const vel = useRef(0); // rad/s of hand-applied spin, on top of the idle turn
   const alphaMap = useMemo(() => makeShellAlpha(), []);
   const bump = useMemo(() => makeLayerBump(), []);
 
@@ -131,9 +138,22 @@ function Ball({ reduced }) {
     [alphaMap, bump]
   );
 
+  // Idle spin, plus whatever the last flick added. The flick decays
+  // exponentially so a hard swipe coasts for about half a second and then hands
+  // the ball back to its steady turn.
   useFrame((_, delta) => {
-    if (reduced || !group.current) return;
-    group.current.rotation.y += delta * 0.34;
+    if (!group.current) return;
+    if (takeFlick) vel.current += takeFlick(); // whatever the finger just added
+    const flick = vel.current;
+    if (reduced) {
+      // Reduced motion: no idle turn, but a deliberate swipe is still obeyed.
+      if (flick) group.current.rotation.y += flick * delta;
+    } else {
+      group.current.rotation.y += (0.34 + flick) * delta;
+    }
+    if (flick) {
+      vel.current = Math.abs(flick) < 0.01 ? 0 : flick * Math.exp(-delta * 2.6);
+    }
   });
 
   // Three struts bridging the core to the shell, 120° apart.
@@ -177,7 +197,17 @@ function Ball({ reduced }) {
 export default function VisiobalModel3D({ fallbackImage, title, ready = true }) {
   const { t } = useTranslation();
   const wrapRef = useRef(null);
+  const stageRef = useRef(null); // the box the canvas fills — the swipe target
+  const flick = useRef(0); // spin the finger has added but the ball hasn't taken
   const [paused, setPaused] = useState(true); // starts parked until scrolled to
+
+  // The swipe handler banks an impulse here and the ball claims it on its next
+  // frame; it owns the decay from then on.
+  const takeFlick = useCallback(() => {
+    const v = flick.current;
+    flick.current = 0;
+    return v;
+  }, []);
   const [webgl] = useState(supportsWebGL);
   const [lost, setLost] = useState(false);
   const [reduced] = useState(
@@ -186,8 +216,9 @@ export default function VisiobalModel3D({ fallbackImage, title, ready = true }) 
       typeof window.matchMedia === "function" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
-  // Dragging to spin is a nice touch with a mouse, but on touch it would eat
-  // the page scroll — so it is pointer:fine only.
+  // OrbitControls is mouse-only: it claims every gesture on the canvas, so on a
+  // phone it would trap the page scroll. Touch gets the hand-rolled swipe below
+  // instead, which only claims the horizontal ones.
   const [canDrag] = useState(
     () =>
       typeof window !== "undefined" &&
@@ -207,6 +238,62 @@ export default function VisiobalModel3D({ fallbackImage, title, ready = true }) 
     return () => io.disconnect();
   }, []);
 
+  /*
+    Swipe to spin, on touch only.
+
+    The whole trick is deciding, once per gesture, whether the finger is turning
+    the ball or scrolling the page. The first few pixels pick an axis: mostly
+    sideways means this gesture is ours and we preventDefault it; mostly
+    up/down means it is a scroll and we never touch it again, so the page moves
+    exactly as if the ball weren't there. Hence the non-passive listener — we
+    have to keep the option of cancelling, but we only ever use it on the
+    horizontal gestures.
+  */
+  useEffect(() => {
+    if (canDrag) return undefined; // the mouse has OrbitControls
+    const el = stageRef.current;
+    if (!el) return undefined;
+
+    const SLOP = 8; // px of travel before committing to an axis
+    let startX = 0;
+    let startY = 0;
+    let lastX = 0;
+    let axis = null;
+
+    const onStart = (e) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      startX = lastX = touch.clientX;
+      startY = touch.clientY;
+      axis = null;
+      flick.current = 0; // grab it: kill the coast from the previous flick
+    };
+
+    const onMove = (e) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      if (!axis) {
+        const dx = Math.abs(touch.clientX - startX);
+        const dy = Math.abs(touch.clientY - startY);
+        if (dx < SLOP && dy < SLOP) return; // too early to tell
+        axis = dx > dy ? "x" : "y";
+      }
+      if (axis !== "x") return; // a scroll — leave it completely alone
+      e.preventDefault();
+      const step = touch.clientX - lastX;
+      lastX = touch.clientX;
+      // px of drag → rad/s, clamped so a frantic swipe can't blur the ball.
+      flick.current = Math.max(-14, Math.min(14, flick.current + step * 0.07));
+    };
+
+    el.addEventListener("touchstart", onStart, { passive: true });
+    el.addEventListener("touchmove", onMove, { passive: false });
+    return () => {
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchmove", onMove);
+    };
+  }, [canDrag]);
+
   // No WebGL (or the GPU dropped the context): show the photo instead.
   if (!webgl || lost) {
     return (
@@ -223,7 +310,13 @@ export default function VisiobalModel3D({ fallbackImage, title, ready = true }) 
           while the detail panel is still scaling up from the card gives it the
           card-sized viewport and the ball renders small until something forces
           a re-measure. Wait for the flip to land. */}
-      <div className="h-[340px] sm:h-[460px] lg:h-[520px]">
+      <div
+        ref={stageRef}
+        className="h-[340px] sm:h-[460px] lg:h-[520px]"
+        // Let the browser keep vertical panning (the page scroll) while the
+        // horizontal axis is left to the swipe handler.
+        style={canDrag ? undefined : { touchAction: "pan-y" }}
+      >
         {!ready ? null : (
         <Canvas
           camera={{ position: [0, 0, 5.6], fov: 40 }}
@@ -246,7 +339,7 @@ export default function VisiobalModel3D({ fallbackImage, title, ready = true }) 
           {/* Warm glow from inside, spilling through the perforations. */}
           <pointLight position={[0, 0, 0]} intensity={1.4} distance={3.4} color="#ff8fb0" />
 
-          <Ball reduced={reduced} />
+          <Ball reduced={reduced} takeFlick={canDrag ? undefined : takeFlick} />
 
           {canDrag && (
             <OrbitControls
@@ -261,11 +354,11 @@ export default function VisiobalModel3D({ fallbackImage, title, ready = true }) 
         )}
       </div>
 
-      {canDrag && (
-        <figcaption className="pointer-events-none absolute bottom-1 left-0 right-0 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400/80 dark:text-white/35">
-          {t("projects.detail_drag", "Drag to spin")}
-        </figcaption>
-      )}
+      <figcaption className="pointer-events-none absolute bottom-1 left-0 right-0 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400/80 dark:text-white/35">
+        {canDrag
+          ? t("projects.detail_drag", "Drag to spin")
+          : t("projects.detail_swipe", "Swipe to spin")}
+      </figcaption>
     </figure>
   );
 }

@@ -319,3 +319,45 @@ html.dark .notes-ink {
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }
 }
+
+/* ------------------------------- */
+/* Touch stand-ins for :hover      */
+/* ------------------------------- */
+/* A mouse gets a zoom on a project cover when it hovers it. A phone has no
+   hover, so the cover of whichever card is in the middle of the screen drifts
+   slowly instead — enough motion to read as a live screenshot rather than a
+   flat block of text. Transform only, one card at a time (useScrollSpotlight
+   activates a single card), and nothing at all under reduced motion. */
+@keyframes card-drift {
+  from { transform: scale(1.02) translate3d(0, 0, 0); }
+  to   { transform: scale(1.09) translate3d(0, -1.5%, 0); }
+}
+.card-drift {
+  animation: card-drift 9s ease-in-out infinite alternate;
+}
+
+/* Hide the scrollbar on the phone-only swipe rows (certificates). The row is
+   still a plain scroll container — keyboard, trackpad and a11y all unchanged. */
+.swipe-row {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.swipe-row::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-drift {
+    animation: none;
+  }
+}
+
+/* Intro screen: the hollow outline of the headline word. The stroke lives here
+   rather than in an inline style because it needs a dark-mode counterpart —
+   near-black on the warm paper default, white on black for saved dark. */
+.intro-stroke {
+  -webkit-text-stroke: 2px #1c1917; /* stone-900 */
+}
+html.dark .intro-stroke {
+  -webkit-text-stroke: 2px #ffffff;
+}

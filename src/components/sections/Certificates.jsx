@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { CheckCircle, X, ExternalLink, FileText } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
@@ -17,6 +17,24 @@ import AdvReactPdf from "../../assets/advanced-react.pdf";
 const Certificates = () => {
   const { t } = useTranslation(); // <--- Init hook
   const [selectedCert, setSelectedCert] = useState(null);
+
+  // Phone-only swipe row: which card it has landed on, for the dots.
+  const trackRef = useRef(null);
+  const scrollRaf = useRef(0);
+  const [page, setPage] = useState(0);
+  // In the grid the cards reveal in a staircase, which reads nicely because you
+  // see all of them at once. In the swipe row you don't: a card is off to the
+  // right until you swipe to it, and a 90ms-per-card delay on top of the fade
+  // means the last one takes over a second to appear *after* you've swiped to
+  // it. So the row reveals each card the instant it arrives.
+  const [isPhone] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(max-width: 639px)").matches
+  );
+
+  useEffect(() => () => cancelAnimationFrame(scrollRaf.current), []);
 
   // While a certificate is open: lock scroll and let Escape close it. The
   // previous overflow is restored rather than forced to "unset".
@@ -80,14 +98,42 @@ const Certificates = () => {
     },
   ];
 
+  // One read per frame. From sm up the row is a grid that doesn't overflow, so
+  // on a desktop this never fires at all.
+  const onTrackScroll = () => {
+    if (scrollRaf.current) return;
+    scrollRaf.current = requestAnimationFrame(() => {
+      scrollRaf.current = 0;
+      const el = trackRef.current;
+      if (!el) return;
+      const span = el.scrollWidth - el.clientWidth;
+      const ratio = span > 0 ? el.scrollLeft / span : 0;
+      setPage(Math.round(ratio * (certs.length - 1)));
+    });
+  };
+
   return (
     <>
       <section id="certificates" className="py-12 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-24 md:scroll-mt-32">
         <SectionTitle title={t('certificates.title')} num="04" kicker={t('certificates.kicker')} />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {/* Phones get one swipeable row rather than six stacked cards: as a
+            column these ran to nearly three phone screens wedged between the
+            projects and the journey, which is a lot of scrolling to get past
+            for supporting evidence. As a snap row they cost one screen and
+            stay just as readable. From sm up it is the same grid as before. */}
+        <div
+          ref={trackRef}
+          onScroll={onTrackScroll}
+          className="swipe-row -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2
+            sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 md:gap-8 lg:grid-cols-3"
+        >
           {certs.map((cert, idx) => (
-            <Reveal key={idx} delay={idx * 90}>
+            <Reveal
+              key={idx}
+              delay={isPhone ? 0 : idx * 90}
+              className="w-[78vw] max-w-[320px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink"
+            >
               <div className="glass relative group h-full sm:min-h-[320px] rounded-[18px] sm:rounded-[22px]">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-brand-600 to-brand2-600 rounded-[22px] blur opacity-0 dark:opacity-25 transition duration-1000 group-hover:opacity-50 -z-10"></div>
 
@@ -160,6 +206,21 @@ const Certificates = () => {
             </Reveal>
           ))}
         </div>
+
+        {/* Swipe affordance + position. Phones only — the grid needs neither. */}
+        <div className="mt-4 flex items-center justify-center gap-2 sm:hidden" aria-hidden="true">
+          {certs.map((cert, i) => (
+            <span
+              key={i}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === page ? "w-5 bg-accent" : "w-1.5 bg-stone-300 dark:bg-slate-700"
+              }`}
+            />
+          ))}
+        </div>
+        <p className="mt-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-slate-500 sm:hidden">
+          {t("certificates.swipe_hint", { n: certs.length, defaultValue: "Swipe through all {{n}}" })}
+        </p>
       </section>
 
       {/* --- CERTIFICATE MODAL --- */}

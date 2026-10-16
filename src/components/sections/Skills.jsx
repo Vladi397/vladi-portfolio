@@ -40,7 +40,9 @@ const Skills = () => {
             <div className="relative group h-full">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-brand-600 to-brand2-600 rounded-[22px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
               
-              <TiltedCard className="h-full relative">
+              {/* tiltIndex alternates which way the card leans on touch, so
+                  the stack doesn't tip as one slab while you scroll past. */}
+              <TiltedCard className="h-full relative" tiltIndex={idx}>
                 <div className="h-full p-6 sm:p-8 rounded-[22px] transition-colors duration-300
                   bg-white dark:bg-slate-800/90 border border-transparent dark:border-slate-700/50"
                 >

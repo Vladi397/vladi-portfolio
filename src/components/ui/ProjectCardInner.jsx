@@ -16,6 +16,15 @@ import { ExternalLink, Github } from "lucide-react";
     t            – i18next translate fn
     interactive  – true in the grid (real links); false on the flip face (spans)
     onLinkClick  – (e, url) handler for the links when interactive
+    drift        – this is a touch device, so the cover shot carries the slow
+                   drift animation that stands in for the hover zoom a phone
+                   can never trigger. Left off on a mouse, where the animation
+                   would override the hover scale.
+    live         – the card is the one under the touch "spotlight" (in the
+                   middle of the screen), so its drift runs; otherwise the
+                   animation is *paused* rather than removed, which holds the
+                   cover where it is instead of snapping it back. Transform
+                   only, one card at a time, and off under reduced motion.
 */
 
 const LIVE_BTN =
@@ -25,7 +34,7 @@ const LIVE_BG = { backgroundColor: "rgb(var(--accent))" };
 const CODE_BTN =
   "inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border font-bold transition-all w-full sm:w-auto hover:scale-105 active:scale-95 bg-white border-stone-200 text-stone-700 hover:bg-stone-50 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700";
 
-export default function ProjectCardInner({ project, isFlipped, urlLabel, t, interactive = false, onLinkClick }) {
+export default function ProjectCardInner({ project, isFlipped, urlLabel, t, interactive = false, onLinkClick, drift = false, live = false }) {
   const hasLive = project.liveUrl && project.liveUrl !== "#";
   return (
     <>
@@ -71,7 +80,10 @@ export default function ProjectCardInner({ project, isFlipped, urlLabel, t, inte
                 alt={project.title}
                 loading="lazy"
                 decoding="async"
-                className={`w-full h-full object-cover transition-transform duration-700 group-hover/image:scale-[1.04] ${project.customImgClass || ""}`}
+                className={`w-full h-full object-cover transition-transform duration-700 group-hover/image:scale-[1.04] ${
+                  drift ? "card-drift" : ""
+                } ${project.customImgClass || ""}`}
+                style={drift ? { animationPlayState: live ? "running" : "paused" } : undefined}
               />
             </div>
           </div>

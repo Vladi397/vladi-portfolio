@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { Maximize2 } from "lucide-react";
 import SectionTitle from "../ui/SectionTitle";
 import ProjectCardInner from "../ui/ProjectCardInner";
+import useScrollSpotlight from "../../hooks/useScrollSpotlight";
 import { useTranslation } from 'react-i18next';
 
 import ourGridImg     from "../../assets/OurGrid.webp";
@@ -26,6 +27,100 @@ import devMatchLogin  from "../../assets/devmatch-login.webp";
 */
 const loadProjectExpand = () => import("../ui/ProjectExpand");
 const ProjectExpand = lazy(loadProjectExpand);
+
+/*
+  ProjectCard
+  -----------
+  One card in the list. It is its own component so each card can own a
+  scroll-spotlight observer — on a phone nothing hovers, so the glow, the cover
+  drift and the tap pill all come on while the card sits in the middle of the
+  screen, and fade as it scrolls away. On a mouse this is inert and the hover
+  styles do their usual job.
+*/
+function ProjectCard({
+  project,
+  isFlipped,
+  urlLabel,
+  t,
+  canHover,
+  cardRef,
+  minHeight,
+  hidden,
+  onOpen,
+  onKeyDown,
+  onLinkClick,
+}) {
+  const { ref: spotRef, active, touch } = useScrollSpotlight({ band: 0.3 });
+
+  return (
+    <div
+      ref={spotRef}
+      className="relative group"
+      // Hide the real card (glow included) for the whole time its
+      // detail overlay is open/animating, so the flip looks like THIS
+      // card lifting off — not a duplicate spawning on top of it.
+      // visibility:hidden keeps the layout box, so ProjectExpand can
+      // still measure it for the flip origin. Reappears in the same
+      // commit the overlay unmounts (activeIndex → null), so the
+      // hand-off is seamless.
+      style={{ visibility: hidden ? "hidden" : undefined }}
+    >
+      {/* Outer glow */}
+      <div
+        className={`absolute -inset-1 bg-gradient-to-r from-brand-500 to-brand2-600 rounded-[40px] blur-xl transition-all duration-700 pointer-events-none ${
+          active
+            ? "opacity-50 dark:opacity-60"
+            : "opacity-20 dark:opacity-30 group-hover:opacity-50 dark:group-hover:opacity-60"
+        }`}
+      />
+
+      <div
+        ref={cardRef}
+        onClick={onOpen}
+        onKeyDown={onKeyDown}
+        onPointerEnter={loadProjectExpand}
+        onFocus={loadProjectExpand}
+        role="button"
+        tabIndex={0}
+        aria-label={`${project.title} — ${t('projects.open_details', 'open details')}`}
+        style={{ minHeight: minHeight || undefined }}
+        className="relative rounded-[24px] sm:rounded-[32px] p-4 sm:p-8 md:p-10 overflow-hidden cursor-pointer transition-colors duration-300
+        md:flex md:flex-col md:justify-center
+        bg-white shadow-xl border border-lagoon-100
+        dark:bg-[#0B1120] dark:shadow-none dark:border-sky-900/40
+        focus:outline-none focus-visible:ring-2 focus-visible:ring-lagoon-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#0B1120]"
+      >
+        {/* Expand affordance. On a mouse it is a quiet hint that fades in on
+            hover. On touch it is the only cue there is anything behind the
+            card, so it is a filled accent pill that reads as a button. */}
+        <span
+          className={`absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-20 inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold pointer-events-none transition-all duration-300 ${
+            canHover
+              ? "bg-white/80 text-stone-600 border border-stone-200 backdrop-blur-sm dark:bg-white/5 dark:text-slate-300 dark:border-white/10 opacity-100 md:opacity-0 md:group-hover:opacity-100"
+              : `bg-accent text-white border border-transparent shadow-lg shadow-accent/30 ${active ? "opacity-100 scale-105" : "opacity-90"}`
+          }`}
+        >
+          <Maximize2 size={12} className={canHover ? "text-accent sm:hidden" : "sm:hidden"} />
+          <Maximize2 size={14} className={canHover ? "text-accent hidden sm:block" : "hidden sm:block"} />
+          {canHover
+            ? t("projects.expand_hint", "Click to expand")
+            : t("projects.expand_hint_touch", "Tap to explore")}
+        </span>
+
+        <ProjectCardInner
+          project={project}
+          isFlipped={isFlipped}
+          urlLabel={urlLabel}
+          t={t}
+          interactive
+          onLinkClick={onLinkClick}
+          drift={touch}
+          live={active}
+        />
+      </div>
+    </div>
+  );
+}
 
 const Projects = () => {
   const { t } = useTranslation();
@@ -298,58 +393,19 @@ const Projects = () => {
                   : "40vh",
               }}
             >
-              <div
-                className="relative group"
-                // Hide the real card (glow included) for the whole time its
-                // detail overlay is open/animating, so the flip looks like THIS
-                // card lifting off — not a duplicate spawning on top of it.
-                // visibility:hidden keeps the layout box, so ProjectExpand can
-                // still measure it for the flip origin. Reappears in the same
-                // commit the overlay unmounts (activeIndex → null), so the
-                // hand-off is seamless.
-                style={{ visibility: activeIndex === index ? "hidden" : undefined }}
-              >
-                {/* Outer glow */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-brand-500 to-brand2-600 rounded-[40px] blur-xl opacity-20 dark:opacity-30 group-hover:opacity-50 dark:group-hover:opacity-60 transition-all duration-700 pointer-events-none" />
-
-                <div
-                  ref={(el) => (cardRefs.current[index] = el)}
-                  onClick={() => openProject(index)}
-                  onKeyDown={(e) => onCardKeyDown(e, index)}
-                  onPointerEnter={loadProjectExpand}
-                  onFocus={loadProjectExpand}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`${p.title} — ${t('projects.open_details', 'open details')}`}
-                  style={{ minHeight: !isMobile && cardMinH ? `${cardMinH}px` : undefined }}
-                  className="relative rounded-[24px] sm:rounded-[32px] p-4 sm:p-8 md:p-10 overflow-hidden cursor-pointer transition-colors duration-300
-                  md:flex md:flex-col md:justify-center
-                  bg-white shadow-xl border border-lagoon-100
-                  dark:bg-[#0B1120] dark:shadow-none dark:border-sky-900/40
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-lagoon-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#0B1120]"
-                >
-                  {/* Expand affordance (always visible on touch, on hover for pointer) */}
-                  <span className="absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-20 inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold pointer-events-none transition-opacity duration-300
-                    bg-white/80 text-stone-600 border border-stone-200 backdrop-blur-sm
-                    dark:bg-white/5 dark:text-slate-300 dark:border-white/10
-                    opacity-100 md:opacity-0 md:group-hover:opacity-100">
-                    <Maximize2 size={12} className="text-accent sm:hidden" />
-                    <Maximize2 size={14} className="text-accent hidden sm:block" />
-                    {canHover
-                      ? t("projects.expand_hint", "Click to expand")
-                      : t("projects.expand_hint_touch", "Tap to open")}
-                  </span>
-
-                  <ProjectCardInner
-                    project={p}
-                    isFlipped={isFlipped}
-                    urlLabel={urlLabel}
-                    t={t}
-                    interactive
-                    onLinkClick={handleLinkClick}
-                  />
-                </div>
-              </div>
+              <ProjectCard
+                project={p}
+                isFlipped={isFlipped}
+                urlLabel={urlLabel}
+                t={t}
+                canHover={canHover}
+                cardRef={(el) => (cardRefs.current[index] = el)}
+                minHeight={!isMobile && cardMinH ? `${cardMinH}px` : undefined}
+                hidden={activeIndex === index}
+                onOpen={() => openProject(index)}
+                onKeyDown={(e) => onCardKeyDown(e, index)}
+                onLinkClick={handleLinkClick}
+              />
             </div>
           );
         })}

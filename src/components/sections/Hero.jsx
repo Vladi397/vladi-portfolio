@@ -4,6 +4,7 @@ import Reveal from "../ui/Reveal";
 import PrimaryButton from "../ui/PrimaryButton";
 import SecondaryButton from "../ui/SecondaryButton";
 import { scrollToId } from "../../utils/scrollHelpers";
+import { prefersReducedMotion } from "../../hooks/usePointerKind";
 import Vladi1 from "../../assets/vladi-profile1.webp";
 import VladiSkeleton from "../../assets/vladi-xray-cut.webp";
 // Light mode uses a teal recolour to match the light theme accent (#0A7A85).
@@ -21,6 +22,7 @@ const Hero = ({ theme = "dark" }) => {
   // re-renders React — that keeps it smooth.
   const HOVER_R = 60; // lens radius in px (~120px circle)
   const photoRef = useRef(null);
+  const stageRef = useRef(null); // the photo stack — observed for the touch scan
   const lockedRef = useRef(false);
   const hoverRef = useRef(false);
   const posRef = useRef({ x: 0, y: 0 });
@@ -32,6 +34,7 @@ const Hero = ({ theme = "dark" }) => {
   const [canHover] = useState(
     () => typeof window === "undefined" || !window.matchMedia || window.matchMedia("(any-hover: hover)").matches
   );
+  const [reduced] = useState(prefersReducedMotion);
 
   const applyMask = () => {
     const el = photoRef.current;
@@ -104,6 +107,68 @@ const Hero = ({ theme = "dark" }) => {
     cancelAnimationFrame(moveRaf.current);
     cancelAnimationFrame(animRaf.current);
   }, []);
+
+  /*
+    The touch version of the hover lens. With no cursor to follow, nobody would
+    ever discover that there is a skeleton under the photo — the hint pill says
+    "tap to x-ray", but the effect has to show itself first. So on touch the
+    scan runs once, by itself, when the portrait scrolls into view: the lens
+    glides down the photo, reveals the skeleton as it passes, and fades out,
+    leaving the tap-to-hold behaviour exactly as it was.
+
+    One-shot: it disconnects after firing, and bails the moment a tap takes the
+    lens over so the two never fight for the mask.
+  */
+  useEffect(() => {
+    if (canHover || reduced) return undefined;
+    const el = stageRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return undefined;
+
+    let raf = 0;
+    let delay = 0;
+
+    const sweep = () => {
+      const box = el.getBoundingClientRect();
+      if (!box.height) return;
+      const DUR = 2100;
+      const start = performance.now();
+      const step = (now) => {
+        if (lockedRef.current) return; // a tap won — it owns the mask now
+        const t = Math.min(1, (now - start) / DUR);
+        const e = easeInOutCubic(t);
+        posRef.current = {
+          // A slight S-curve across the width so it reads as a scan, not a wipe.
+          x: box.width * (0.5 + 0.12 * Math.sin(e * Math.PI * 2)),
+          y: box.height * (0.08 + e * 0.82),
+          w: box.width,
+          h: box.height,
+        };
+        // Grow in over the first tenth, hold, shrink away over the last tenth.
+        const fade = Math.min(1, t / 0.1, (1 - t) / 0.1);
+        rRef.current = HOVER_R * 1.15 * Math.max(0, fade);
+        applyMask();
+        if (t < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        // Wait out the intro and the Reveal fade — a scan nobody sees is wasted.
+        delay = window.setTimeout(sweep, 1200);
+      },
+      { threshold: 0.4 }
+    );
+    io.observe(el);
+
+    return () => {
+      io.disconnect();
+      clearTimeout(delay);
+      cancelAnimationFrame(raf);
+    };
+  }, [canHover, reduced]);
 
   return (
     <section
@@ -220,6 +285,7 @@ const Hero = ({ theme = "dark" }) => {
             />
 
             <div
+              ref={stageRef}
               className="relative z-10 cursor-crosshair select-none"
               onMouseEnter={onEnter}
               onMouseMove={onMove}

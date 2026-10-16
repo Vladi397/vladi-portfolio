@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
+import useScrollSpotlight from "../../hooks/useScrollSpotlight";
 
 const GlareHover = ({
   children,
@@ -14,6 +15,11 @@ const GlareHover = ({
   transitionDuration = 700, // Fast duration = sharper, more metallic feel
 }) => {
   const ref = useRef(null);
+  // On touch there is no mouseenter to catch, so the sweep fires once as the
+  // element scrolls into the middle of the screen — same reflection, triggered
+  // by the scroll instead of the pointer. `once` keeps it from re-firing every
+  // time you scroll back past. Pointer devices never arm the observer.
+  const { ref: spotRef, active, touch } = useScrollSpotlight({ band: 0.25, once: true });
 
   const trigger = () => {
     if (!ref.current) return;
@@ -22,10 +28,22 @@ const GlareHover = ({
     ref.current.classList.add("shine");
   };
 
+  // Keep both refs pointing at the one node.
+  const attach = (node) => {
+    ref.current = node;
+    spotRef.current = node;
+  };
+
+  useEffect(() => {
+    if (active) trigger();
+  }, [active]);
+
   return (
     <div
-      ref={ref}
+      ref={attach}
       onMouseEnter={trigger}
+      // A tap should glint too, so the surface feels like a surface.
+      onPointerDown={touch ? trigger : undefined}
       className={`relative isolate overflow-hidden border transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${className}`}
       style={{
         background,
