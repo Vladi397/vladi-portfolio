@@ -98,18 +98,18 @@ const Contact = () => {
         <div className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-brand-600 to-brand2-600 rounded-[40px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
           
-          <div className="glass relative rounded-[24px] sm:rounded-[32px] p-6 sm:p-12 md:p-16 flex flex-col lg:flex-row gap-8 sm:gap-10 lg:gap-20 items-start overflow-hidden">
+          <div className="glass relative rounded-[20px] sm:rounded-[32px] p-5 sm:p-12 md:p-16 flex flex-col lg:flex-row gap-6 sm:gap-10 lg:gap-20 items-start overflow-hidden">
             <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))] pointer-events-none" />
 
             {/* LEFT SIDE */}
             <div className="flex-1 w-full relative z-10">
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-3 sm:mb-6 transition-colors text-stone-900 dark:text-white">
+              <h2 className="text-2xl sm:text-5xl md:text-6xl font-black tracking-tight mb-2 sm:mb-6 transition-colors text-stone-900 dark:text-white">
                 {t('contact.title')}
               </h2>
               {/* Neutral, not brand blue: coloured body copy here read as a
                   link. Follows the heading's light/dark pair so it stays
                   legible on the light glass card. */}
-              <p className="text-base sm:text-lg mb-8 sm:mb-10 max-w-md transition-colors text-stone-600 dark:text-white">
+              <p className="text-[15px] sm:text-lg mb-5 sm:mb-10 max-w-md transition-colors text-stone-600 dark:text-white">
                 {t('contact.desc')}
               </p>
 
@@ -121,10 +121,10 @@ const Contact = () => {
                     dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10 dark:hover:border-white/20"
                 >
                   <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                    <div className="p-2 sm:p-2.5 rounded-xl bg-lagoon-100 text-lagoon-600 dark:bg-sky-500/20 dark:text-sky-400 shrink-0">
-                      <Mail size={20} />
+                    <div className="p-1.5 sm:p-2.5 rounded-xl bg-lagoon-100 text-lagoon-600 dark:bg-sky-500/20 dark:text-sky-400 shrink-0">
+                      <Mail size={18} />
                     </div>
-                    <span className="font-semibold text-stone-700 dark:text-slate-200 break-all text-left text-sm sm:text-base">
+                    <span className="font-semibold text-stone-700 dark:text-slate-200 break-all text-left text-[13px] sm:text-base">
                       {email}
                     </span>
                   </div>
@@ -140,9 +140,9 @@ const Contact = () => {
                     href="https://www.linkedin.com/in/vladi-georgiev-b68761295" 
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 p-4 rounded-2xl border font-bold transition-all bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100 dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
+                    className="flex-1 flex items-center justify-center gap-2 p-3 sm:p-4 rounded-xl sm:rounded-2xl border font-bold text-sm sm:text-base transition-all bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100 dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
                   >
-                    LinkedIn <ExternalLink size={18} />
+                    LinkedIn <ExternalLink size={16} />
                   </a>
                   <a 
                     href="https://github.com/Vladi397/vladi-portfolio" 
@@ -198,7 +198,7 @@ const Contact = () => {
                 <textarea
                   name="message"
                   placeholder={t('contact.ph_message')}
-                  rows="4"
+                  rows="3"
                   className={`w-full p-3.5 sm:p-4 rounded-xl outline-none resize-none font-medium transition-all text-base
                     ${errors.message ? "border-red-500 focus:ring-red-500/20 bg-red-50 dark:bg-red-900/10" : "bg-white border-stone-200 dark:bg-[#0B1120] dark:border-white/10 focus:border-brand-500 focus:ring-brand-500/10"}
                     text-stone-900 placeholder:text-stone-300 border focus:ring-4

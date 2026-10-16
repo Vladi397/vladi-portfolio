@@ -7,7 +7,6 @@ import OurGridMotif from "./OurGridMotif";
 import VisiobalMotif from "./VisiobalMotif";
 import DevMatchMotif from "./DevMatchMotif";
 import FanGallery from "./FanGallery";
-import LightningGallery from "./LightningGallery";
 import VisiobalGallery from "./VisiobalGallery";
 import VisiobalModel3D from "./VisiobalModel3D";
 import ProjectNotebook from "./notes/ProjectNotebook";
@@ -453,14 +452,14 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
           <div style={rv(gBase)}>
             <FanGallery images={gallery} title={project.title} />
           </div>
-        ) : project.galleryLayout === "lightning" ? (
-          <div style={rv(gBase)}>
-            <LightningGallery images={gallery} title={project.title} />
-          </div>
         ) : project.galleryLayout === "bounce" ? (
           <VisiobalGallery images={gallery} title={project.title} aspect={project.galleryAspect} />
         ) : project.galleryLayout === "model3d" ? (
-          <VisiobalModel3D fallbackImage={gallery[gallery.length - 1]} title={project.title} />
+          <VisiobalModel3D
+            fallbackImage={gallery[gallery.length - 1]}
+            title={project.title}
+            ready={settled && !closing}
+          />
         ) : (
           (() => {
             const multi = gallery.length > 1;

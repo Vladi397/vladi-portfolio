@@ -88,7 +88,7 @@ const Certificates = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {certs.map((cert, idx) => (
             <Reveal key={idx} delay={idx * 90}>
-              <div className="glass relative group h-full min-h-[320px] rounded-[22px]">
+              <div className="glass relative group h-full sm:min-h-[320px] rounded-[18px] sm:rounded-[22px]">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-brand-600 to-brand2-600 rounded-[22px] blur opacity-0 dark:opacity-25 transition duration-1000 group-hover:opacity-50 -z-10"></div>
 
                 <GlareHover
@@ -102,11 +102,11 @@ const Certificates = () => {
                   glareAngle={-1200}
                   transitionDuration={800}
                 >
-                  <div className="p-7 sm:p-8 flex flex-col h-full rounded-[22px]">
+                  <div className="p-5 sm:p-8 flex flex-col h-full rounded-[18px] sm:rounded-[22px]">
                     {/* Header */}
-                    <div className="flex items-center justify-between mb-7">
+                    <div className="flex items-center justify-between mb-4 sm:mb-7">
                       <div className="flex items-center gap-3">
-                        <img src={MetaLogo} alt="Meta" loading="lazy" decoding="async" className="w-12 h-12 object-contain" />
+                        <img src={MetaLogo} alt="Meta" loading="lazy" decoding="async" className="w-9 h-9 sm:w-12 sm:h-12 object-contain" />
                         <div className="leading-tight">
                           <div className="text-sm font-black text-stone-900 dark:text-white">Meta</div>
                           <div className="text-xs text-ngray-400 font-semibold">Coursera</div>
@@ -119,17 +119,17 @@ const Certificates = () => {
 
                     {/* Title */}
                     <div className="mb-4">
-                      <h4 className="font-black text-xl leading-snug transition-colors text-stone-900 dark:text-slate-100">
+                      <h4 className="font-black text-base sm:text-xl leading-snug transition-colors text-stone-900 dark:text-slate-100">
                         {cert.title}
                       </h4>
-                      <p className="text-sm font-medium mt-2 leading-relaxed transition-colors text-stone-500 dark:text-slate-400">
+                      <p className="text-[13px] sm:text-sm font-medium mt-1.5 sm:mt-2 leading-relaxed transition-colors text-stone-500 dark:text-slate-400">
                         {t('certificates.completed_on')} {cert.date}
                       </p>
                     </div>
 
                     {/* Footer */}
                     <div className="mt-auto">
-                      <div className="flex flex-wrap gap-2 pb-6">
+                      <div className="flex flex-wrap gap-2 pb-4 sm:pb-6">
                         {cert.tags.map((t) => (
                           <span key={t} className="px-3 py-1 rounded-full text-xs font-black border transition-colors bg-white text-stone-800 border-stone-200 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600">
                             {t}
@@ -140,7 +140,7 @@ const Certificates = () => {
                       <div className="flex gap-3">
                         <button
                           onClick={() => setSelectedCert(cert)}
-                          className="flex-1 bg-accent text-white py-3 rounded-xl text-sm font-black shadow-sm hover:brightness-95 transition"
+                          className="flex-1 bg-accent text-white py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-black shadow-sm hover:brightness-95 transition"
                         >
                           {t('certificates.btn_view')}
                         </button>
@@ -148,7 +148,7 @@ const Certificates = () => {
                           href={cert.verifyLink}
                           target="_blank"
                           rel="noreferrer"
-                          className="flex-1 border py-3 rounded-xl text-sm font-black transition-colors bg-transparent border-stone-200 text-stone-800 hover:bg-stone-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center justify-center gap-2"
+                          className="flex-1 border py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-black transition-colors bg-transparent border-stone-200 text-stone-800 hover:bg-stone-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center justify-center gap-2"
                         >
                           {t('certificates.btn_verify')} <ExternalLink size={14} />
                         </a>

@@ -50,7 +50,7 @@ export default function ProjectCardInner({ project, isFlipped, urlLabel, t, inte
       <div className="absolute bottom-0 right-0 w-72 h-72 bg-lagoon-500/5 dark:bg-indigo-500/8 rounded-full blur-3xl pointer-events-none translate-x-1/2 translate-y-1/2" />
 
       {/* Content row — alternates direction on desktop */}
-      <div className={`relative z-10 flex flex-col gap-6 md:gap-10 w-full ${isFlipped ? "md:flex-row-reverse" : "md:flex-row"}`}>
+      <div className={`relative z-10 flex flex-col gap-4 sm:gap-6 md:gap-10 w-full ${isFlipped ? "md:flex-row-reverse" : "md:flex-row"}`}>
         {/* ── Image with browser chrome ── */}
         <div className="w-full md:w-1/2">
           <div className="rounded-2xl overflow-hidden border shadow-md border-stone-200 dark:border-slate-700/60">
@@ -78,19 +78,24 @@ export default function ProjectCardInner({ project, isFlipped, urlLabel, t, inte
         </div>
 
         {/* ── Text content ── */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center space-y-4">
+        <div className="w-full md:w-1/2 flex flex-col justify-center space-y-2.5 sm:space-y-4">
           <div className="flex flex-col items-start">
-            <span className="text-accent font-black tracking-widest uppercase text-xs mb-2 bg-lagoon-50 dark:bg-sky-900/20 px-3 py-1 rounded-full">
+            <span className="text-accent font-black tracking-widest uppercase text-[11px] sm:text-xs mb-2 bg-lagoon-50 dark:bg-sky-900/20 px-2.5 sm:px-3 py-1 rounded-full">
               {project.role}
             </span>
-            <h3 className="text-2xl md:text-3xl font-black leading-tight text-stone-900 dark:text-white">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-black leading-tight text-stone-900 dark:text-white">
               {project.title}
             </h3>
           </div>
 
-          <p className="leading-relaxed text-base sm:text-lg text-stone-600 dark:text-slate-300">{project.desc}</p>
+          {/* Phones show the shot, the title and the role only. Everything
+              below is a tap away in the detail view, and a full card made the
+              list endless to scroll. */}
+          <p className="hidden sm:block leading-relaxed text-base sm:text-lg text-stone-600 dark:text-slate-300">
+            {project.desc}
+          </p>
 
-          <ul className="space-y-2">
+          <ul className="hidden sm:block space-y-2">
             {project.outcomes.map((o) => (
               <li key={o} className="flex gap-3 items-start text-stone-700 dark:text-slate-400">
                 <span
@@ -104,7 +109,7 @@ export default function ProjectCardInner({ project, isFlipped, urlLabel, t, inte
 
           {/* Tech, set as plain separated text in the site blue rather than
               a row of coloured pills. */}
-          <ul className="flex flex-wrap items-center gap-x-3 gap-y-2 pt-1">
+          <ul className="hidden sm:flex flex-wrap items-center gap-x-3 gap-y-2 pt-1">
             {project.tags.map((tag, i) => (
               <li key={tag} className="flex items-center gap-3">
                 {i > 0 && (
@@ -115,7 +120,7 @@ export default function ProjectCardInner({ project, isFlipped, urlLabel, t, inte
             ))}
           </ul>
 
-          <div className="pt-3 flex flex-col sm:flex-row flex-wrap gap-3">
+          <div className="hidden pt-3 sm:flex flex-col sm:flex-row flex-wrap gap-3">
             {hasLive &&
               (interactive ? (
                 <a

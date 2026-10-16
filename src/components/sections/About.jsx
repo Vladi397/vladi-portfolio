@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { X, Download, Eye, FileText } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
-import Vladi2 from "../../assets/vladi-profile2.JPG"; 
+import Vladi2 from "../../assets/vladi-profile2.webp"; 
 import { useTranslation } from 'react-i18next';
 
 // --- UPDATED IMPORT: New CV File ---

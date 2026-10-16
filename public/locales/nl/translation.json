@@ -16,7 +16,8 @@
     "meta_certs": "7 Meta Certificaten",
     "location": "Eindhoven",
     "status": "Beschikbaar",
-    "quote": "“Moderne oplossingen gebouwd met technische precisie en schoon ontwerp.”"
+    "quote": "“Moderne oplossingen gebouwd met technische precisie en schoon ontwerp.”",
+    "xray_hint_touch": "Tik voor röntgen"
   },
   "about": {
     "title": "Over mij",
@@ -540,7 +541,8 @@
     "notes_sheet": "Bouwlijst",
     "notes_sheet_tool": "Tool",
     "notes_sheet_role": "Wat het deed",
-    "notes_example": "Voorbeeld"
+    "notes_example": "Voorbeeld",
+    "expand_hint_touch": "Tik om te openen"
   },
   "certificates": {
     "title": "Certificaten",

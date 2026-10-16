@@ -174,7 +174,7 @@ function Ball({ reduced }) {
   );
 }
 
-export default function VisiobalModel3D({ fallbackImage, title }) {
+export default function VisiobalModel3D({ fallbackImage, title, ready = true }) {
   const { t } = useTranslation();
   const wrapRef = useRef(null);
   const [paused, setPaused] = useState(true); // starts parked until scrolled to
@@ -219,7 +219,12 @@ export default function VisiobalModel3D({ fallbackImage, title }) {
   return (
     // No frame, no fill: the ball floats on the page.
     <figure ref={wrapRef} className="relative">
+      {/* The canvas measures itself with getBoundingClientRect, so mounting it
+          while the detail panel is still scaling up from the card gives it the
+          card-sized viewport and the ball renders small until something forces
+          a re-measure. Wait for the flip to land. */}
       <div className="h-[340px] sm:h-[460px] lg:h-[520px]">
+        {!ready ? null : (
         <Canvas
           camera={{ position: [0, 0, 5.6], fov: 40 }}
           dpr={LOW_END ? 1 : [1, 1.75]}
@@ -253,6 +258,7 @@ export default function VisiobalModel3D({ fallbackImage, title }) {
             />
           )}
         </Canvas>
+        )}
       </div>
 
       {canDrag && (

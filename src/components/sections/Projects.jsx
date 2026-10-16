@@ -1,27 +1,46 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { Maximize2 } from "lucide-react";
 import SectionTitle from "../ui/SectionTitle";
-import ProjectExpand from "../ui/ProjectExpand";
 import ProjectCardInner from "../ui/ProjectCardInner";
 import { useTranslation } from 'react-i18next';
 
-import ourGridImg     from "../../assets/OurGrid.png";
-import fitFusionImg   from "../../assets/FirFusion.png";
-import spaceInvasionImg from "../../assets/spaceinvasion.png";
-import brewBuddyImg   from "../../assets/brewbuddy.png";
+import ourGridImg     from "../../assets/OurGrid.webp";
+import fitFusionImg   from "../../assets/FirFusion.webp";
+import spaceInvasionImg from "../../assets/spaceinvasion.webp";
+import brewBuddyImg   from "../../assets/brewbuddy.webp";
 // Visiobal — replace these two placeholder files with your real images (keep the names)
-import visiobalAppImg      from "../../assets/visiobal-app.png";
-import visiobalHardwareImg from "../../assets/visiobal-hardware.jpg";
+import visiobalAppImg      from "../../assets/visiobal-app.webp";
+import visiobalHardwareImg from "../../assets/visiobal-hardware.webp";
 // DevMatch — real app screenshots.
-import devMatchHome   from "../../assets/devmatch-home.jpg";
-import devMatchJobs   from "../../assets/devmatch-jobs.jpg";
-import devMatchApply  from "../../assets/devmatch-apply.jpg";
-import devMatchResume from "../../assets/devmatch-resume.jpg";
-import devMatchLogin  from "../../assets/devmatch-login.jpg";
+import devMatchHome   from "../../assets/devmatch-home.webp";
+import devMatchJobs   from "../../assets/devmatch-jobs.webp";
+import devMatchApply  from "../../assets/devmatch-apply.webp";
+import devMatchResume from "../../assets/devmatch-resume.webp";
+import devMatchLogin  from "../../assets/devmatch-login.webp";
+
+/*
+  The expanded detail view pulls in three.js (the Visiobal 3D ball) and every
+  gallery and motif, so it is code-split out of the initial bundle. It is
+  fetched as soon as the browser is idle and again on hover/focus of a card, so
+  by the time anyone clicks, the chunk is there and the flip starts instantly.
+*/
+const loadProjectExpand = () => import("../ui/ProjectExpand");
+const ProjectExpand = lazy(loadProjectExpand);
 
 const Projects = () => {
   const { t } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
+  // Touch screens cannot hover, so the card hint names the tap instead.
+  const [canHover] = useState(
+    () => typeof window === "undefined" || !window.matchMedia || window.matchMedia("(any-hover: hover)").matches
+  );
+
+  useEffect(() => {
+    const idle = window.requestIdleCallback || ((fn) => window.setTimeout(fn, 1200));
+    const cancel = window.cancelIdleCallback || window.clearTimeout;
+    const handle = idle(() => loadProjectExpand());
+    return () => cancel(handle);
+  }, []);
 
   useEffect(() => {
     // Short viewports (landscape phones, tiny windows) also get the simple
@@ -153,7 +172,6 @@ const Projects = () => {
       role: t('projects.ourgrid.role'),
       img: ourGridImg,
       gallery: [ourGridImg], // TODO: add more OurGrid screenshots here
-      galleryLayout: "lightning", // struck by lightning on scroll, then scorched (fits the grid theme)
       // OurGrid brand palette — used to theme the expanded detail view.
       // grid-green primary, reward-amber accent, deep plum ink.
       theme: { accent: "#01AC51", accent2: "#F4B14A", deep: "#4F2E39" },
@@ -298,23 +316,28 @@ const Projects = () => {
                   ref={(el) => (cardRefs.current[index] = el)}
                   onClick={() => openProject(index)}
                   onKeyDown={(e) => onCardKeyDown(e, index)}
+                  onPointerEnter={loadProjectExpand}
+                  onFocus={loadProjectExpand}
                   role="button"
                   tabIndex={0}
                   aria-label={`${p.title} — ${t('projects.open_details', 'open details')}`}
                   style={{ minHeight: !isMobile && cardMinH ? `${cardMinH}px` : undefined }}
-                  className="relative rounded-[32px] p-6 sm:p-8 md:p-10 overflow-hidden cursor-pointer transition-colors duration-300
+                  className="relative rounded-[24px] sm:rounded-[32px] p-4 sm:p-8 md:p-10 overflow-hidden cursor-pointer transition-colors duration-300
                   md:flex md:flex-col md:justify-center
                   bg-white shadow-xl border border-lagoon-100
                   dark:bg-[#0B1120] dark:shadow-none dark:border-sky-900/40
                   focus:outline-none focus-visible:ring-2 focus-visible:ring-lagoon-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#0B1120]"
                 >
                   {/* Expand affordance (always visible on touch, on hover for pointer) */}
-                  <span className="absolute top-4 right-4 z-20 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold pointer-events-none transition-opacity duration-300
+                  <span className="absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-20 inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold pointer-events-none transition-opacity duration-300
                     bg-white/80 text-stone-600 border border-stone-200 backdrop-blur-sm
                     dark:bg-white/5 dark:text-slate-300 dark:border-white/10
                     opacity-100 md:opacity-0 md:group-hover:opacity-100">
-                    <Maximize2 size={14} className="text-accent" />
-                    {t('projects.expand_hint', 'Click to expand')}
+                    <Maximize2 size={12} className="text-accent sm:hidden" />
+                    <Maximize2 size={14} className="text-accent hidden sm:block" />
+                    {canHover
+                      ? t("projects.expand_hint", "Click to expand")
+                      : t("projects.expand_hint_touch", "Tap to open")}
                   </span>
 
                   <ProjectCardInner
@@ -333,12 +356,14 @@ const Projects = () => {
       </div>
 
       {activeIndex !== null && (
-        <ProjectExpand
-          project={projects[activeIndex]}
-          cardEl={activeCard}
-          isFlipped={activeIndex % 2 === 1}
-          onClose={closeProject}
-        />
+        <Suspense fallback={null}>
+          <ProjectExpand
+            project={projects[activeIndex]}
+            cardEl={activeCard}
+            isFlipped={activeIndex % 2 === 1}
+            onClose={closeProject}
+          />
+        </Suspense>
       )}
     </section>
   );

@@ -258,6 +258,7 @@ const UniverseBackground = ({ theme }) => {
   // already created, so mobile silently kept the full 5000).
   const [starCount, setStarCount] = useState(pickStarCount);
   const [paused, setPaused] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [supported] = useState(supportsWebGL);
   const [contextLost, setContextLost] = useState(false);
   const [reduced] = useState(
@@ -287,6 +288,14 @@ const UniverseBackground = ({ theme }) => {
     };
   }, []);
 
+  // A background tab renders frames nobody can see and keeps a laptop fan
+  // spinning. Nothing changes on screen: the scene resumes on return.
+  useEffect(() => {
+    const onVisibility = () => setHidden(document.hidden);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
+
   // No WebGL, or the GPU dropped the context (driver reset, too many tabs):
   // fall back to the static glow instead of a blank/black background.
   if (!supported || contextLost) return <StaticBackdrop />;
@@ -301,7 +310,8 @@ const UniverseBackground = ({ theme }) => {
         // MSAA never survives the post-processing chain, so the default
         // antialias buffer was pure cost.
         gl={{ antialias: false, powerPreference: "high-performance", stencil: false }}
-        frameloop={paused ? "never" : "always"}
+        // Paused (detail overlay covering the screen) or hidden tab: no frames.
+        frameloop={paused || hidden ? "never" : "always"}
         onCreated={({ gl }) =>
           gl.domElement.addEventListener(
             "webglcontextlost",

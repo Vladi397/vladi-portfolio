@@ -4,10 +4,10 @@ import Reveal from "../ui/Reveal";
 import PrimaryButton from "../ui/PrimaryButton";
 import SecondaryButton from "../ui/SecondaryButton";
 import { scrollToId } from "../../utils/scrollHelpers";
-import Vladi1 from "../../assets/vladi-profile1.png";
-import VladiSkeleton from "../../assets/vladi-xray-cut.png";
+import Vladi1 from "../../assets/vladi-profile1.webp";
+import VladiSkeleton from "../../assets/vladi-xray-cut.webp";
 // Light mode uses a teal recolour to match the light theme accent (#0A7A85).
-import VladiSkeletonTeal from "../../assets/vladi-xray-cut-teal.png";
+import VladiSkeletonTeal from "../../assets/vladi-xray-cut-teal.webp";
 import { useTranslation } from 'react-i18next'; // <--- Import hook
 
 const Hero = ({ theme = "dark" }) => {
@@ -28,6 +28,10 @@ const Hero = ({ theme = "dark" }) => {
   const moveRaf = useRef(0);
   const animRaf = useRef(0);
   const [locked, setLocked] = useState(false); // drives the hint pill only
+  // Touch screens have no hover, so the hint names the tap instead.
+  const [canHover] = useState(
+    () => typeof window === "undefined" || !window.matchMedia || window.matchMedia("(any-hover: hover)").matches
+  );
 
   const applyMask = () => {
     const el = photoRef.current;
@@ -267,7 +271,9 @@ const Hero = ({ theme = "dark" }) => {
                 ].join(" ")}
               >
                 <ScanLine size={13} className="text-brand-400" />
-                {t("hero.xray_hint", "Hover to scan · click to hold")}
+                {canHover
+                  ? t("hero.xray_hint", "Hover to scan · click to hold")
+                  : t("hero.xray_hint_touch", "Tap to x-ray")}
               </span>
             </div>
 
