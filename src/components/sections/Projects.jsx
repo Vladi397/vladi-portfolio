@@ -8,13 +8,13 @@ import { useTranslation } from 'react-i18next';
 import ourGridImg     from "../../assets/OurGrid.webp";
 // OurGrid case-study shots, captured from the live deployment.
 import ogFrontDoor    from "../../assets/ourgrid-front-door.webp";
-import ogResident     from "../../assets/ourgrid-resident.webp";
-import ogMunicipality from "../../assets/ourgrid-municipality.webp";
+import ogSplit        from "../../assets/ourgrid-split.webp";
 import ogLoadCurve    from "../../assets/ourgrid-loadcurve.webp";
 import ogPeakHours    from "../../assets/ourgrid-peakhours.webp";
 import ogEnergy       from "../../assets/ourgrid-energy.webp";
 import ogHotspots     from "../../assets/ourgrid-hotspots.webp";
 import ogExplainer    from "../../assets/ourgrid-explainer.webp";
+import ogSolution     from "../../assets/ourgrid-solution.webp";
 import ogHowItWorks   from "../../assets/ourgrid-howitworks.webp";
 import fitFusionImg   from "../../assets/FirFusion.webp";
 import spaceInvasionImg from "../../assets/spaceinvasion.webp";
@@ -38,10 +38,17 @@ import devMatchLogin  from "../../assets/devmatch-login.webp";
 /*
   OurGrid case-study shots, in the order the argument is made. The captions
   live in i18n (projects.ourgrid.shots) and are zipped onto these at render.
+
+  The resident and municipality landing pages used to be two separate frames.
+  They are the same photograph and the same layout with one line of copy
+  changed — which is exactly the point being made, and exactly why they read
+  as the same picture twice in a carousel. They are now one labelled frame
+  (ourgrid-split) where the two headlines sit above each other and the
+  difference is the only thing left to look at.
 */
 const OURGRID_SHOTS = [
-  ogFrontDoor, ogResident, ogMunicipality, ogLoadCurve, ogPeakHours,
-  ogEnergy, ogHotspots, ogExplainer, ogHowItWorks,
+  ogFrontDoor, ogSplit, ogLoadCurve, ogPeakHours, ogEnergy,
+  ogHotspots, ogExplainer, ogSolution, ogHowItWorks,
 ];
 
 const loadProjectExpand = () => import("../ui/ProjectExpand");

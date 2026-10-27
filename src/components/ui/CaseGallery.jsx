@@ -1,154 +1,285 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 import { hexA } from "./notes/utils";
 
 /*
   CaseGallery
   -----------
-  A sideways rail of captioned screenshots, for projects that have a story to
+  A coverflow carousel of captioned screenshots, for projects with a story to
   walk through rather than a few shots to show off. Used by ProjectExpand when
   a project sets galleryLayout: "rail".
 
-  Why a rail and not a grid: the captions carry the argument, and a rail forces
-  them to be read one at a time and in order. A grid lets the eye skip, which
-  is fine for a portfolio of images and wrong for a sequence of findings.
+  The frame you are reading sits centre and full size; the one before and the
+  one after flank it, smaller and faded, so there is always visible evidence
+  that the set continues in both directions. It advances itself every 5s,
+  because the captions carry an argument and the argument should start making
+  itself without anyone having to find a control first.
 
-  It is a plain scroll container, so swipe, trackpad, shift-wheel and the
-  arrow keys all work without any of it being reimplemented. The buttons are a
-  pointer convenience on top, hidden where there is no pointer to use them.
+  Autoplay is the part worth being careful about. It stops while a pointer is
+  over it, while anything inside it has focus, while the tab is in the
+  background, whenever the reader takes manual control, and entirely under
+  prefers-reduced-motion — plus there is an explicit pause button, because
+  "hover to pause" is not a mechanism a keyboard or touch reader can use.
+
+  Everything animates with transform and opacity only, one transition per
+  slide, which is what keeps it cheap on the weak phones this site targets.
 */
 
-export default function CaseGallery({ items, title, accent, accent2, t }) {
-  const railRef = useRef(null);
-  const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
+const INTERVAL = 5000;
+const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+
+// Signed distance from the centre, taking the shorter way around the loop, so
+// the first and last frames are neighbours rather than a long scroll apart.
+const offsetOf = (i, index, n) => {
+  let off = i - index;
+  if (off > n / 2) off -= n;
+  if (off < -n / 2) off += n;
+  return off;
+};
+
+const poseOf = (off) => {
+  const d = Math.abs(off);
+  if (d === 0) return { scale: 1, opacity: 1 };
+  if (d === 1) return { scale: 0.78, opacity: 0.4 };
+  return { scale: 0.64, opacity: 0.14 };
+};
+
+export default function CaseGallery({ items, title, accent, accent2, t, reduce = false }) {
+  const n = items ? items.length : 0;
   const [index, setIndex] = useState(0);
-  const raf = useRef(0);
+  const [userPaused, setUserPaused] = useState(false);
+  const [held, setHeld] = useState(false); // pointer over, or focus inside
+  const [tabVisible, setTabVisible] = useState(true);
+  const stageRef = useRef(null);
 
-  const measure = useCallback(() => {
-    const el = railRef.current;
-    if (!el) return;
-    const max = el.scrollWidth - el.clientWidth;
-    setAtStart(el.scrollLeft <= 8);
-    setAtEnd(el.scrollLeft >= max - 8);
-    // Which card is nearest the left edge of the viewport box.
-    const first = el.firstElementChild;
-    const step = first ? first.getBoundingClientRect().width + 20 : 1;
-    setIndex(Math.min(items.length - 1, Math.max(0, Math.round(el.scrollLeft / step))));
-  }, [items.length]);
+  const go = useCallback((dir) => setIndex((i) => (i + dir + n) % n), [n]);
 
-  const onScroll = () => {
-    if (raf.current) return;
-    raf.current = requestAnimationFrame(() => {
-      raf.current = 0;
-      measure();
-    });
-  };
-
+  // Pause while the tab is in the background — an unseen carousel advancing is
+  // pure waste, and the reader would come back to a frame they never chose.
   useEffect(() => {
-    measure();
-    window.addEventListener("resize", measure);
-    return () => {
-      window.removeEventListener("resize", measure);
-      if (raf.current) cancelAnimationFrame(raf.current);
-    };
-  }, [measure]);
+    const onVis = () => setTabVisible(!document.hidden);
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
 
-  const nudge = (dir) => {
-    const el = railRef.current;
-    if (!el) return;
-    const first = el.firstElementChild;
-    const step = first ? first.getBoundingClientRect().width + 20 : el.clientWidth * 0.8;
-    el.scrollBy({ left: dir * step, behavior: "smooth" });
+  const playing = !reduce && !userPaused && !held && tabVisible && n > 1;
+
+  // Keyed on index as well as playing, so manual navigation restarts the
+  // countdown instead of advancing again a moment later.
+  useEffect(() => {
+    if (!playing) return undefined;
+    const id = setTimeout(() => setIndex((i) => (i + 1) % n), INTERVAL);
+    return () => clearTimeout(id);
+  }, [index, playing, n]);
+
+  // Swipe. The first few pixels decide whether this gesture is ours or the
+  // page's: sideways turns the carousel, up/down is a scroll we never touch.
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return undefined;
+    const SLOP = 10;
+    let x0 = 0, y0 = 0, axis = null, used = false;
+
+    const onStart = (e) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      x0 = touch.clientX; y0 = touch.clientY; axis = null; used = false;
+    };
+    const onMove = (e) => {
+      const touch = e.touches[0];
+      if (!touch || used) return;
+      const dx = touch.clientX - x0;
+      const dy = touch.clientY - y0;
+      if (!axis) {
+        if (Math.abs(dx) < SLOP && Math.abs(dy) < SLOP) return;
+        axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+      }
+      if (axis !== "x") return;
+      e.preventDefault();
+      if (Math.abs(dx) > 45) {
+        go(dx < 0 ? 1 : -1);
+        setUserPaused(true); // they are driving now
+        used = true;
+      }
+    };
+    el.addEventListener("touchstart", onStart, { passive: true });
+    el.addEventListener("touchmove", onMove, { passive: false });
+    return () => {
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchmove", onMove);
+    };
+  }, [go]);
+
+  const onKeyDown = (e) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    e.preventDefault();
+    go(e.key === "ArrowRight" ? 1 : -1);
+    setUserPaused(true);
   };
 
-  if (!items || !items.length) return null;
+  const manual = (dir) => {
+    go(dir);
+    setUserPaused(true);
+  };
+
+  if (!n) return null;
 
   const btn =
-    "inline-flex h-10 w-10 items-center justify-center rounded-full border transition-all " +
-    "border-stone-200 bg-white text-stone-700 hover:bg-stone-50 hover:scale-105 active:scale-95 " +
-    "dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 " +
-    "disabled:opacity-30 disabled:hover:scale-100 disabled:cursor-default";
+    "inline-flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-sm transition-all " +
+    "border-stone-200 bg-white/90 text-stone-700 hover:bg-white hover:scale-105 active:scale-95 shadow-lg " +
+    "dark:border-white/15 dark:bg-[#0B1120]/85 dark:text-slate-200 dark:hover:bg-[#0B1120] " +
+    "focus:outline-none focus-visible:ring-2";
 
   return (
-    <section aria-label={title} className="mt-2">
-      {/* Rail controls: a counter, and arrows for people using a mouse. */}
-      <div className="mb-4 flex items-center justify-between gap-4">
+    <section
+      aria-roledescription="carousel"
+      aria-label={title}
+      className="mt-2"
+      onPointerEnter={() => setHeld(true)}
+      onPointerLeave={() => setHeld(false)}
+      onFocusCapture={() => setHeld(true)}
+      onBlurCapture={() => setHeld(false)}
+    >
+      {/* Counter, and an explicit pause that does not depend on having a pointer. */}
+      <div className="mb-4 flex items-center gap-3">
         <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500 dark:text-slate-400">
           <span style={{ color: accent }}>{String(index + 1).padStart(2, "0")}</span>
           <span className="mx-1.5 opacity-40">/</span>
-          {String(items.length).padStart(2, "0")}
+          {String(n).padStart(2, "0")}
         </p>
-        <div className="hidden sm:flex items-center gap-2">
-          <button type="button" className={btn} onClick={() => nudge(-1)} disabled={atStart}
-            aria-label={t("projects.gallery_prev", "Previous image")}>
-            <ArrowLeft size={17} />
-          </button>
-          <button type="button" className={btn} onClick={() => nudge(1)} disabled={atEnd}
-            aria-label={t("projects.gallery_next", "Next image")}>
-            <ArrowRight size={17} />
-          </button>
-        </div>
-      </div>
-
-      {/* The rail itself. Negative margins let the cards bleed to the panel
-          edge while the padding keeps the first and last one inset. */}
-      <div
-        ref={railRef}
-        onScroll={onScroll}
-        tabIndex={0}
-        role="group"
-        aria-label={title}
-        className="swipe-row -mx-5 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-2
-          sm:-mx-8 sm:px-8
-          focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-4 rounded-sm
-          focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#0B1120]"
-        style={{ "--tw-ring-color": accent }}
-      >
-        {items.map((item, i) => (
-          <figure
-            key={i}
-            className="w-[84vw] max-w-[680px] shrink-0 snap-start sm:w-[62vw] lg:w-[640px]"
+        {!reduce && n > 1 && (
+          <button
+            type="button"
+            onClick={() => setUserPaused((p) => !p)}
+            aria-label={
+              userPaused
+                ? t("projects.gallery_play", "Play slideshow")
+                : t("projects.gallery_pause", "Pause slideshow")
+            }
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full border transition-colors
+              border-stone-200 text-stone-500 hover:bg-stone-100
+              dark:border-white/15 dark:text-slate-400 dark:hover:bg-white/10
+              focus:outline-none focus-visible:ring-2"
+            style={{ "--tw-ring-color": accent }}
           >
-            <div
-              className="overflow-hidden rounded-2xl border shadow-xl
-                border-stone-200 bg-stone-50 shadow-stone-900/5
-                dark:border-white/10 dark:bg-white/[0.03] dark:shadow-black/40"
-              style={{ borderColor: hexA(accent, 0.22) }}
-            >
-              <img
-                src={item.src}
-                alt={item.alt || item.caption}
-                loading="lazy"
-                decoding="async"
-                className="block aspect-[16/10] w-full object-cover object-top"
-              />
-            </div>
-            <figcaption className="mt-3.5 flex gap-3">
-              <span
-                aria-hidden="true"
-                className="mt-[3px] font-mono text-[11px] font-bold tabular-nums"
-                style={{ color: accent }}
-              >
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span className="max-w-[52ch] text-[13.5px] sm:text-sm leading-relaxed text-stone-600 dark:text-slate-300">
-                {item.caption}
-              </span>
-            </figcaption>
-          </figure>
-        ))}
+            {userPaused ? <Play size={12} /> : <Pause size={12} />}
+          </button>
+        )}
       </div>
 
-      {/* Position bar — a quieter stand-in for a scrollbar we hid. */}
-      <div className="mt-3 flex gap-1.5" aria-hidden="true">
+      {/* Stage. Overflow is hidden so the flanking frames run off both edges. */}
+      <div className="relative">
+        <div
+          ref={stageRef}
+          tabIndex={0}
+          onKeyDown={onKeyDown}
+          role="group"
+          aria-label={title}
+          className="relative h-[190px] sm:h-[330px] lg:h-[400px] overflow-hidden rounded-sm
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-4
+            focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#0B1120]"
+          style={{ "--tw-ring-color": accent, touchAction: "pan-y" }}
+        >
+          {items.map((item, i) => {
+            const off = offsetOf(i, index, n);
+            const { scale, opacity } = poseOf(off);
+            const far = Math.abs(off) > 2;
+            const isCurrent = off === 0;
+            return (
+              <figure
+                key={i}
+                aria-hidden={!isCurrent}
+                onClick={() => {
+                  if (Math.abs(off) === 1) manual(off);
+                }}
+                className="absolute left-1/2 top-1/2 h-full"
+                style={{
+                  aspectRatio: "16 / 10",
+                  transform: `translate(-50%, -50%) translateX(${off * 58}%) scale(${scale})`,
+                  opacity: far ? 0 : opacity,
+                  visibility: far ? "hidden" : "visible",
+                  zIndex: 30 - Math.abs(off),
+                  transition: reduce
+                    ? "none"
+                    : `transform 650ms ${EASE}, opacity 650ms ${EASE}, visibility 650ms`,
+                  cursor: Math.abs(off) === 1 ? "pointer" : "default",
+                  pointerEvents: Math.abs(off) <= 1 ? "auto" : "none",
+                  willChange: "transform, opacity",
+                }}
+              >
+                <div
+                  className="h-full w-full overflow-hidden rounded-2xl border bg-stone-50 shadow-2xl
+                    dark:bg-white/[0.03] shadow-stone-900/10 dark:shadow-black/50"
+                  style={{ borderColor: hexA(accent, isCurrent ? 0.3 : 0.15) }}
+                >
+                  <img
+                    src={item.src}
+                    alt={item.alt || item.caption || ""}
+                    loading={Math.abs(off) <= 1 ? "eager" : "lazy"}
+                    decoding="async"
+                    draggable="false"
+                    className="block h-full w-full object-cover object-top select-none"
+                  />
+                </div>
+              </figure>
+            );
+          })}
+        </div>
+
+        {/* Arrows flank the stage, sitting over the faded neighbours. */}
+        <button
+          type="button"
+          onClick={() => manual(-1)}
+          aria-label={t("projects.gallery_prev", "Previous image")}
+          className={`${btn} absolute left-0 top-1/2 z-40 -translate-y-1/2 sm:-left-2`}
+          style={{ "--tw-ring-color": accent }}
+        >
+          <ArrowLeft size={18} />
+        </button>
+        <button
+          type="button"
+          onClick={() => manual(1)}
+          aria-label={t("projects.gallery_next", "Next image")}
+          className={`${btn} absolute right-0 top-1/2 z-40 -translate-y-1/2 sm:-right-2`}
+          style={{ "--tw-ring-color": accent }}
+        >
+          <ArrowRight size={18} />
+        </button>
+      </div>
+
+      {/* Caption for the centre frame. Fixed minimum height so swapping
+          between a short and a long caption does not shift the page. */}
+      <figcaption
+        aria-live={playing ? "off" : "polite"}
+        className="mx-auto mt-5 flex min-h-[4.5rem] max-w-[58ch] gap-3 px-1 sm:min-h-[4rem]"
+      >
+        <span
+          aria-hidden="true"
+          className="mt-[3px] font-mono text-[11px] font-bold tabular-nums"
+          style={{ color: accent }}
+        >
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        <span className="text-[13.5px] sm:text-sm leading-relaxed text-stone-600 dark:text-slate-300">
+          {items[index].caption}
+        </span>
+      </figcaption>
+
+      {/* Position bar, which doubles as the autoplay progress for the set. */}
+      <div className="mt-1 flex gap-1.5" aria-hidden="true">
         {items.map((_, i) => (
-          <span
+          <button
             key={i}
-            className="h-0.5 flex-1 rounded-full transition-all duration-300"
+            type="button"
+            tabIndex={-1}
+            onClick={() => {
+              setIndex(i);
+              setUserPaused(true);
+            }}
+            className="h-1 flex-1 rounded-full transition-all duration-300"
             style={{
-              background: i <= index ? hexA(accent2 || accent, 0.85) : "currentColor",
-              opacity: i <= index ? 1 : 0.12,
+              background: i === index ? hexA(accent2 || accent, 0.95) : "currentColor",
+              opacity: i === index ? 1 : 0.12,
             }}
           />
         ))}

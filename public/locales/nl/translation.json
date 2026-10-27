@@ -339,10 +339,7 @@
           "caption": "De hele app splitst zich op één vraag. Alles daarna — route, grafieken, woorden — volgt uit dit antwoord."
         },
         {
-          "caption": "De bewonerskant begint bij de beloning: verschuif je verbruik, verdien geld. Het probleem wordt iets waarvoor je betaald krijgt om te helpen."
-        },
-        {
-          "caption": "Dezelfde foto, dezelfde opbouw, een ander argument. Voor ambtenaren is de belofte ruimte voor toekomstige ontwikkeling, geen geld."
+          "caption": "Dezelfde foto en dezelfde opbouw, met één regel verschil. Bewoners krijgen geld aangeboden, de gemeente ruimte voor toekomstige ontwikkeling."
         },
         {
           "caption": "De kerngrafiek. De donkere lijn is een gewone avondpiek; de groene lijn is dezelfde dag met een paar taken verschoven. Eén beeld, één vraag."
@@ -358,6 +355,9 @@
         },
         {
           "caption": "De uitleg waar de rest van de site op rust: wat congestie is, waarom het gebeurt en waarom het ertoe doet, in gewone woorden vóór enige data."
+        },
+        {
+          "caption": "Waar het betoog een product wordt: de app die doet wat de uitleg zojuist heeft gevraagd."
         },
         {
           "caption": "Onboarding als genummerde stappen, elk naast het scherm waar het over gaat, zodat je ziet waar je aan begint voordat je je aanmeldt."
@@ -626,7 +626,9 @@
     "case_draft": "Concept",
     "gallery_prev": "Vorige afbeelding",
     "gallery_next": "Volgende afbeelding",
-    "btn_client": "Opdrachtgever: {{name}}"
+    "btn_client": "Opdrachtgever: {{name}}",
+    "gallery_pause": "Diavoorstelling pauzeren",
+    "gallery_play": "Diavoorstelling afspelen"
   },
   "certificates": {
     "title": "Certificaten",

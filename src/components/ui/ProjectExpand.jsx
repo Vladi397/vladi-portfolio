@@ -478,6 +478,7 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
               accent={theme.accent}
               accent2={theme.accent2}
               t={t}
+              reduce={reduce}
             />
           </div>
         ) : project.galleryLayout === "model3d" ? (

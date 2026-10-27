@@ -339,10 +339,7 @@
           "caption": "The whole app forks on one question. Everything after it — route, charts, wording — follows from this answer."
         },
         {
-          "caption": "The resident side leads with the reward: shift your usage, earn money. The problem is framed as something you get paid to help with."
-        },
-        {
-          "caption": "Same photograph, same layout, different argument. For officials the promise is capacity for future development, not cash."
+          "caption": "The same photograph and the same layout, with one line changed. Residents are offered money; the municipality is offered capacity for future development."
         },
         {
           "caption": "The core chart. The dark line is an ordinary evening peak; the green line is the same day with a few tasks moved. One picture, one ask."
@@ -358,6 +355,9 @@
         },
         {
           "caption": "The explainer the rest of the site rests on: what congestion is, why it happens and why it matters, in plain words before any data."
+        },
+        {
+          "caption": "Where the argument turns into a product: the app shown doing the thing the explainer has just asked for."
         },
         {
           "caption": "Onboarding as numbered steps, each next to the screen it refers to, so the commitment is visible before anyone signs up."
@@ -626,7 +626,9 @@
     "case_draft": "Draft",
     "gallery_prev": "Previous image",
     "gallery_next": "Next image",
-    "btn_client": "Client: {{name}}"
+    "btn_client": "Client: {{name}}",
+    "gallery_pause": "Pause slideshow",
+    "gallery_play": "Play slideshow"
   },
   "certificates": {
     "title": "Certificates",
