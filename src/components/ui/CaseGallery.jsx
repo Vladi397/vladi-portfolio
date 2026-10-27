@@ -213,25 +213,40 @@ export default function CaseGallery({ items, title, accent, accent2, t, reduce =
                     : `transform 650ms ${EASE}, opacity 650ms ${EASE}, visibility 650ms`,
                   cursor: Math.abs(off) === 1 ? "pointer" : "default",
                   pointerEvents: Math.abs(off) <= 1 ? "auto" : "none",
-                  willChange: "transform, opacity",
+                  // Only the frames on screen ask for a compositor layer.
+                  // Promoting all fourteen made the browser carry fourteen
+                  // layers through every scroll of the case study for the five
+                  // that can actually be seen.
+                  willChange: far ? "auto" : "transform, opacity",
                 }}
               >
                 <div
-                  className="h-full w-full overflow-hidden rounded-2xl border bg-stone-50 shadow-2xl
-                    dark:bg-white/[0.03] shadow-stone-900/10 dark:shadow-black/50"
+                  // The big shadow is for the frame being read. The neighbours
+                  // sit at 0.4 and 0.14 opacity, where a 2xl shadow is paint
+                  // work nobody can see.
+                  className={`h-full w-full overflow-hidden rounded-2xl border bg-stone-50
+                    dark:bg-white/[0.03] shadow-stone-900/10 dark:shadow-black/50
+                    ${isCurrent ? "shadow-2xl" : "shadow-md"}`}
                   style={{ borderColor: hexA(accent, isCurrent ? 0.3 : 0.15) }}
                 >
-                  <img
-                    src={item.src}
-                    alt={item.alt || item.caption || ""}
-                    // One frame of lead was enough at 5s; at 3.5s, and with
-                    // fourteen frames rather than nine, fetch two ahead so a
-                    // slow connection never swings an empty box into centre.
-                    loading={Math.abs(off) <= 2 ? "eager" : "lazy"}
-                    decoding="async"
-                    draggable="false"
-                    className="block h-full w-full object-cover object-top select-none"
-                  />
+                  {/* <picture> with a media query rather than srcset: on a 3x
+                      phone, srcset would weigh 193 CSS px against the device
+                      pixel ratio and pick the 1400px frame anyway, which is
+                      the exact decode this is meant to avoid. */}
+                  <picture>
+                    {item.srcSmall && <source media="(max-width: 767px)" srcSet={item.srcSmall} />}
+                    <img
+                      src={item.src}
+                      alt={item.alt || item.caption || ""}
+                      // One frame of lead was enough at 5s; at 3.5s, and with
+                      // fourteen frames rather than nine, fetch two ahead so a
+                      // slow connection never swings an empty box into centre.
+                      loading={Math.abs(off) <= 2 ? "eager" : "lazy"}
+                      decoding="async"
+                      draggable="false"
+                      className="block h-full w-full object-cover object-top select-none"
+                    />
+                  </picture>
                 </div>
               </figure>
             );

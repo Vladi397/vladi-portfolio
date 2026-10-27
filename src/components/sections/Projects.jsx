@@ -6,21 +6,15 @@ import useScrollSpotlight from "../../hooks/useScrollSpotlight";
 import { useTranslation } from 'react-i18next';
 
 import ourGridImg     from "../../assets/OurGrid.webp";
-// OurGrid case-study shots, captured from the live deployment.
-import ogFrontDoor    from "../../assets/ourgrid-front-door.webp";
-import ogSplit        from "../../assets/ourgrid-split.webp";
-import ogHomeShift    from "../../assets/ourgrid-home-shift.webp";
-import ogHomeDownload from "../../assets/ourgrid-home-download.webp";
-import ogLoadCurve    from "../../assets/ourgrid-loadcurve.webp";
-import ogPeakHours    from "../../assets/ourgrid-peakhours.webp";
-import ogBeforeAfter  from "../../assets/ourgrid-before-after.webp";
-import ogEnergy       from "../../assets/ourgrid-energy.webp";
-import ogHotspots     from "../../assets/ourgrid-hotspots.webp";
-import ogExplainer    from "../../assets/ourgrid-explainer.webp";
-import ogProblem      from "../../assets/ourgrid-problem.webp";
-import ogSolution     from "../../assets/ourgrid-solution.webp";
-import ogHowItWorks   from "../../assets/ourgrid-howitworks.webp";
-import ogAppScreens   from "../../assets/ourgrid-app-screens.webp";
+// OurGrid case-study shots. Fourteen frames in two sizes is twenty-eight
+// imports to keep in step by hand, so they are resolved by filename instead:
+// adding a frame means dropping in the pair and naming it in OURGRID_SHOTS.
+const OG_FILES = import.meta.glob("../../assets/ourgrid-*.webp", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
+const ogAsset = (name, small) => OG_FILES[`../../assets/ourgrid-${name}${small ? "-sm" : ""}.webp`];
 import fitFusionImg   from "../../assets/FirFusion.webp";
 import spaceInvasionImg from "../../assets/spaceinvasion.webp";
 import brewBuddyImg   from "../../assets/brewbuddy.webp";
@@ -55,11 +49,17 @@ import devMatchLogin  from "../../assets/devmatch-login.webp";
   hero, which left out the two blocks that do the actual persuading: the ask
   itself, next to the phone it happens on, and the download block that closes
   it. A landing page represented only by its headline is not a landing page.
+
+  Each name resolves to a 1400px frame and a 700px one. A phone draws these at
+  193px: at full size the fourteen of them decode to 65MB of bitmap for 3MB of
+  visible pixels, which is memory a weak phone has no business spending on
+  decoration. The small set costs 16MB instead, and the desktop set stays as
+  it was, where the centre frame really is 640 CSS px on a 2x screen.
 */
 const OURGRID_SHOTS = [
-  ogFrontDoor, ogSplit, ogHomeShift, ogHomeDownload, ogLoadCurve,
-  ogPeakHours, ogBeforeAfter, ogEnergy, ogHotspots, ogExplainer,
-  ogProblem, ogSolution, ogHowItWorks, ogAppScreens,
+  "front-door", "split", "home-shift", "home-download", "loadcurve",
+  "peakhours", "before-after", "energy", "hotspots", "explainer",
+  "problem", "solution", "howitworks", "app-screens",
 ];
 
 const loadProjectExpand = () => import("../ui/ProjectExpand");
@@ -320,8 +320,9 @@ const Projects = () => {
       // the pictures still tell the story with the captions a beat behind.
       shots: (() => {
         const captions = t("projects.ourgrid.shots", { returnObjects: true });
-        return OURGRID_SHOTS.map((src, i) => ({
-          src,
+        return OURGRID_SHOTS.map((name, i) => ({
+          src: ogAsset(name),
+          srcSmall: ogAsset(name, true),
           caption: Array.isArray(captions) && captions[i] ? captions[i].caption : "",
         }));
       })(),

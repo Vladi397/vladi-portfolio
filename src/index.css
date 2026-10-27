@@ -207,16 +207,21 @@ html[data-theme-switching="true"] * {
 /* ------------------------------- */
 /* OurGrid card — flowing "electric current" side waves */
 /* ------------------------------- */
+/* The animation runs on the <svg> itself, not on a <g> inside it, so that it
+   composites instead of re-running layout for a page-tall strip every frame.
+   That moves the transform into CSS pixels, so the travel is written as a
+   fraction of the element's height: with "slice" on a strip much taller than
+   it is wide the scale comes from the height, making one wavelength always
+   LAMBDA/VB_H — 130/700 — of it, whatever the page's length. */
 @keyframes og-flow-up {
   from { transform: translateY(0); }
-  to   { transform: translateY(-130px); }   /* == wave wavelength → seamless loop */
+  to   { transform: translateY(-18.5714%); }   /* == one wavelength → seamless loop */
 }
 @keyframes og-flow-down {
-  from { transform: translateY(-130px); }
+  from { transform: translateY(-18.5714%); }
   to   { transform: translateY(0); }
 }
 .og-wave {
-  transform-box: view-box;
   will-change: transform;
 }
 @media (prefers-reduced-motion: reduce) {
