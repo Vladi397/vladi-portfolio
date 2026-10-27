@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { X, ExternalLink, Github } from "lucide-react";
+import { X, ExternalLink, Github, Building2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ProjectCardInner from "./ProjectCardInner";
 import OurGridMotif from "./OurGridMotif";
@@ -9,6 +9,8 @@ import DevMatchMotif from "./DevMatchMotif";
 import FanGallery from "./FanGallery";
 import VisiobalGallery from "./VisiobalGallery";
 import VisiobalModel3D from "./VisiobalModel3D";
+import CaseGallery from "./CaseGallery";
+import CaseStudy from "./CaseStudy";
 import ProjectNotebook from "./notes/ProjectNotebook";
 
 /*
@@ -442,6 +444,20 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
                 {t("projects.btn_code", "View Code")} <Github size={18} />
               </a>
             )}
+            {/* Client link — for work done for a real company, the company is
+                part of the credential, so it gets its own way out. */}
+            {project.clientUrl && (
+              <a
+                href={project.clientUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border font-bold transition-transform hover:scale-105 active:scale-95 bg-white border-stone-200 text-stone-700 hover:bg-stone-50 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700"
+              >
+                <Building2 size={18} />
+                {t("projects.btn_client", "Client: {{name}}", { name: project.clientName })}
+                <ExternalLink size={16} className="opacity-60" />
+              </a>
+            )}
           </div>
         </header>
 
@@ -454,6 +470,16 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
           </div>
         ) : project.galleryLayout === "bounce" ? (
           <VisiobalGallery images={gallery} title={project.title} aspect={project.galleryAspect} />
+        ) : project.galleryLayout === "rail" ? (
+          <div style={rv(gBase)}>
+            <CaseGallery
+              items={project.shots}
+              title={project.title}
+              accent={theme.accent}
+              accent2={theme.accent2}
+              t={t}
+            />
+          </div>
         ) : project.galleryLayout === "model3d" ? (
           <VisiobalModel3D
             fallbackImage={gallery[gallery.length - 1]}
@@ -487,6 +513,9 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
             );
           })()
         )}
+
+        {/* The design argument, then the build log. */}
+        <CaseStudy sections={project.caseStudy} theme={theme} t={t} reduce={reduce} />
 
         {/* Notebook: log, project figure, snags and build sheet */}
         <ProjectNotebook notes={project.notes} figure={project.figure} theme={theme} t={t} reduce={reduce} />

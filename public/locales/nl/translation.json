@@ -333,7 +333,84 @@
             ]
           }
         ]
-      }
+      },
+      "shots": [
+        {
+          "caption": "De hele app splitst zich op één vraag. Alles daarna — route, grafieken, woorden — volgt uit dit antwoord."
+        },
+        {
+          "caption": "De bewonerskant begint bij de beloning: verschuif je verbruik, verdien geld. Het probleem wordt iets waarvoor je betaald krijgt om te helpen."
+        },
+        {
+          "caption": "Dezelfde foto, dezelfde opbouw, een ander argument. Voor ambtenaren is de belofte ruimte voor toekomstige ontwikkeling, geen geld."
+        },
+        {
+          "caption": "De kerngrafiek. De donkere lijn is een gewone avondpiek; de groene lijn is dezelfde dag met een paar taken verschoven. Eén beeld, één vraag."
+        },
+        {
+          "caption": "Piek en dal als tijden in plaats van kilowatts, plus welke apparaten de avondpiek echt veroorzaken."
+        },
+        {
+          "caption": "Het gezamenlijke cijfer: hoeveel de wijk deze maand heeft verschoven. Vooruitgang die een bewoner ziet zonder een grafiek te lezen."
+        },
+        {
+          "caption": "Knelpunten per wijk op een echte kaart van Eindhoven — nooit per huishouden, en in de afbeelding zelf gemarkeerd als illustratief."
+        },
+        {
+          "caption": "De uitleg waar de rest van de site op rust: wat congestie is, waarom het gebeurt en waarom het ertoe doet, in gewone woorden vóór enige data."
+        },
+        {
+          "caption": "Onboarding als genummerde stappen, elk naast het scherm waar het over gaat, zodat je ziet waar je aan begint voordat je je aanmeldt."
+        }
+      ],
+      "case": [
+        {
+          "label": "de opdracht",
+          "title": "Leg het uit, en geef mensen dan een reden om iets te doen",
+          "body": [
+            "OpenRemote vroeg om twee dingen in één product: netcongestie begrijpelijk maken voor de huishoudens die de avondpiek veroorzaken, en diezelfde huishoudens een reden geven om hun verbruik te verschuiven.",
+            "Congestie is een probleem op transformatorniveau, beschreven in taal van transformatorniveau, gericht op mensen die nog nooit een transformator hebben gezien. Het haalt voortdurend het Nederlandse nieuws en blijft toch het infrastructuurprobleem van iemand anders."
+          ],
+          "points": [
+            "Leg het probleem uit zonder kennis van energie te veronderstellen",
+            "Geef bewoners een motief, niet alleen een instructie",
+            "Bedien de gemeente met dezelfde data, zonder huishoudens bloot te geven"
+          ]
+        },
+        {
+          "label": "twee doelgroepen",
+          "title": "Twee doelgroepen die een probleem delen en verder niets",
+          "body": [
+            "Bewoners veroorzaken de avondpiek, merken er zelf niets van en hebben geen reden om zich druk te maken zolang er niets tegenover staat. Gemeenten zijn verantwoordelijk voor capaciteit en planning en hebben cijfers per wijk nodig waarmee ze in een vergadering uit de voeten kunnen.",
+            "Dezelfde metingen, tegengestelde motieven, en een kloof in woordgebruik die te groot is om met één set woorden te overbruggen."
+          ]
+        },
+        {
+          "label": "testen",
+          "title": "Wat testen met studenten en coaches veranderde",
+          "body": [
+            "Ik heb de flows getest met studenten en coaches in plaats van ze te demonstreren, en zowel de woorden als de opzet van de grafieken zijn daardoor veranderd.",
+            "TODO: vervang dit door wat de sessies echt opleverden. Noem het concrete misverstand of de doodlopende weg die je zag gebeuren, en de aanpassing die je daarop maakte — twee of drie concrete bevindingen zeggen meer dan een alinea dat gebruikers het intuïtief vonden. Dit is het stuk waar een ontwerpreviewer het scherpst op leest, en het enige op deze pagina dat niemand voor je kan schrijven."
+          ]
+        },
+        {
+          "label": "de keuze",
+          "title": "Eén vraag aan de deur, geen dashboard voor iedereen",
+          "body": [
+            "In plaats van één dashboard met een filter erop stelt het eerste scherm één vraag: ben je bewoner, of werk je bij de gemeente? Het antwoord staat in een React-context en bepaalt vanaf dat moment de route, de grafieken en de teksten.",
+            "De twee landingspagina's laten dat het duidelijkst zien. Dezelfde foto, dezelfde opbouw, een andere kop en een andere belofte: “Verschuif je energieverbruik, verlaag de druk op het net en verdien er geld mee” tegenover “OurGrid helpt pieken te verlagen en capaciteit voor toekomstige ontwikkeling te beschermen.”",
+            "Dezelfde keuze bepaalde de privacygrens. Knelpunten worden per wijk op een echte kaart getekend en nooit per huishouden, en in de kaart staat “illustratief, geen echte data”, zodat een screenshot buiten zijn context niets anders kan suggereren."
+          ]
+        },
+        {
+          "label": "achteraf",
+          "title": "Wat ik nu anders zou doen",
+          "body": [
+            "In de versie die online staat is de splitsing het sterkst aan de voordeur en op de landingspagina. Daarna delen beide doelgroepen dezelfde dashboardpanelen en wijst de navigatie hoe dan ook naar de bewonersroutes, waardoor de voordeur een bredere splitsing belooft dan de rest van de app waarmaakt.",
+            "TODO: jouw eigen kijk hierop. De moeite waard om te beantwoorden: zou je het eerste scherm nog steeds aan een vraag besteden, of zou je de doelgroep afleiden en mensen laten wisselen? Wat heeft het gekost om de dashboards te delen? En wat zou je anders doen met de demodata, nu er tijdens het bouwen geen live databron was?"
+          ]
+        }
+      ]
     },
     "visiobal": {
       "title": "Visiobal (Visio)",
@@ -544,7 +621,12 @@
     "notes_example": "Voorbeeld",
     "expand_hint_touch": "Tik om te verkennen",
     "detail_swipe": "Veeg om te draaien",
-    "detail_drag": "Sleep om te draaien"
+    "detail_drag": "Sleep om te draaien",
+    "case_title": "Hoe het ontworpen is",
+    "case_draft": "Concept",
+    "gallery_prev": "Vorige afbeelding",
+    "gallery_next": "Volgende afbeelding",
+    "btn_client": "Opdrachtgever: {{name}}"
   },
   "certificates": {
     "title": "Certificaten",

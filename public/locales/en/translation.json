@@ -333,7 +333,84 @@
             ]
           }
         ]
-      }
+      },
+      "shots": [
+        {
+          "caption": "The whole app forks on one question. Everything after it — route, charts, wording — follows from this answer."
+        },
+        {
+          "caption": "The resident side leads with the reward: shift your usage, earn money. The problem is framed as something you get paid to help with."
+        },
+        {
+          "caption": "Same photograph, same layout, different argument. For officials the promise is capacity for future development, not cash."
+        },
+        {
+          "caption": "The core chart. The dark line is an ordinary evening peak; the green line is the same day with a few tasks moved. One picture, one ask."
+        },
+        {
+          "caption": "Peak and off-peak given as hours rather than kilowatts, plus which appliances actually drive the evening peak."
+        },
+        {
+          "caption": "The collective number: how much the neighbourhood shifted this month. Progress a resident can read without reading a chart."
+        },
+        {
+          "caption": "Congestion drawn per neighbourhood on a real map of Eindhoven — never per household, and labelled illustrative inside the image itself."
+        },
+        {
+          "caption": "The explainer the rest of the site rests on: what congestion is, why it happens and why it matters, in plain words before any data."
+        },
+        {
+          "caption": "Onboarding as numbered steps, each next to the screen it refers to, so the commitment is visible before anyone signs up."
+        }
+      ],
+      "case": [
+        {
+          "label": "the brief",
+          "title": "Explain it, then give people a reason to act",
+          "body": [
+            "OpenRemote asked for two things in one product: make grid congestion understandable to the households who cause the evening peak, and give those households a reason to move their usage.",
+            "Congestion is a transformer-level problem, described in transformer-level language, aimed at people who have never seen a transformer. It is constantly in the Dutch news and still lands as somebody else's infrastructure problem."
+          ],
+          "points": [
+            "Explain the problem without assuming any energy knowledge",
+            "Give residents a motive, not just an instruction",
+            "Serve the municipality from the same data without exposing households"
+          ]
+        },
+        {
+          "label": "two audiences",
+          "title": "Two audiences who share a problem and nothing else",
+          "body": [
+            "Residents cause the evening peak, experience none of it, and have no reason to care until there is something in it for them. Municipalities are accountable for capacity and planning, and need neighbourhood-level aggregates they can defend in a meeting.",
+            "The same measurements, opposite motivations, and a vocabulary gap wide enough that one set of words could not serve both."
+          ]
+        },
+        {
+          "label": "testing",
+          "title": "What testing with students and coaches changed",
+          "body": [
+            "I tested the flows with students and coaches rather than demoing them, and both the wording and the framing of the charts moved as a result.",
+            "TODO: replace this with what the sessions actually surfaced. Name the specific misreading or dead end you watched happen, and the change you made because of it — two or three concrete findings are worth more than a paragraph saying users found it intuitive. This is the part a design reviewer reads hardest, and the one thing on this page nobody can write for you."
+          ]
+        },
+        {
+          "label": "the decision",
+          "title": "One question at the door, not one dashboard for everyone",
+          "body": [
+            "Rather than a single dashboard with a filter on it, the first screen asks one question: are you a resident, or do you work with the municipality? The answer lives in a React context and decides the route, the charts and the copy from there on.",
+            "The two landing pages are the clearest evidence. Identical photograph, identical layout, different headline and different promise: “Shift energy use, reduce grid stress, and earn money as a reward” against “OurGrid helps reduce peak loads and protect capacity for future development.”",
+            "The same decision set the privacy line. Hotspots are drawn per neighbourhood on a real map and never per household, and the map carries “illustrative, not real data” inside the image, so a screenshot taken out of context cannot imply otherwise."
+          ]
+        },
+        {
+          "label": "in hindsight",
+          "title": "What I would change now",
+          "body": [
+            "In the deployed version the split is strongest at the front door and on the landing page. Past that, both audiences share one set of dashboard panels and the navigation points at the resident routes either way, so the front door promises a wider split than the rest of the app delivers.",
+            "TODO: your own read on this. Worth answering: would you still spend the first screen on a question, or infer the audience and let people switch? What did sharing the dashboards cost you? And what would you do differently about the demo data, given no live feed existed while you were building?"
+          ]
+        }
+      ]
     },
     "visiobal": {
       "title": "Visiobal (Client Visio)",
@@ -544,7 +621,12 @@
     "notes_example": "Example",
     "expand_hint_touch": "Tap to explore",
     "detail_swipe": "Swipe to spin",
-    "detail_drag": "Drag to spin"
+    "detail_drag": "Drag to spin",
+    "case_title": "How it was designed",
+    "case_draft": "Draft",
+    "gallery_prev": "Previous image",
+    "gallery_next": "Next image",
+    "btn_client": "Client: {{name}}"
   },
   "certificates": {
     "title": "Certificates",

@@ -6,6 +6,16 @@ import useScrollSpotlight from "../../hooks/useScrollSpotlight";
 import { useTranslation } from 'react-i18next';
 
 import ourGridImg     from "../../assets/OurGrid.webp";
+// OurGrid case-study shots, captured from the live deployment.
+import ogFrontDoor    from "../../assets/ourgrid-front-door.webp";
+import ogResident     from "../../assets/ourgrid-resident.webp";
+import ogMunicipality from "../../assets/ourgrid-municipality.webp";
+import ogLoadCurve    from "../../assets/ourgrid-loadcurve.webp";
+import ogPeakHours    from "../../assets/ourgrid-peakhours.webp";
+import ogEnergy       from "../../assets/ourgrid-energy.webp";
+import ogHotspots     from "../../assets/ourgrid-hotspots.webp";
+import ogExplainer    from "../../assets/ourgrid-explainer.webp";
+import ogHowItWorks   from "../../assets/ourgrid-howitworks.webp";
 import fitFusionImg   from "../../assets/FirFusion.webp";
 import spaceInvasionImg from "../../assets/spaceinvasion.webp";
 import brewBuddyImg   from "../../assets/brewbuddy.webp";
@@ -25,6 +35,15 @@ import devMatchLogin  from "../../assets/devmatch-login.webp";
   fetched as soon as the browser is idle and again on hover/focus of a card, so
   by the time anyone clicks, the chunk is there and the flip starts instantly.
 */
+/*
+  OurGrid case-study shots, in the order the argument is made. The captions
+  live in i18n (projects.ourgrid.shots) and are zipped onto these at render.
+*/
+const OURGRID_SHOTS = [
+  ogFrontDoor, ogResident, ogMunicipality, ogLoadCurve, ogPeakHours,
+  ogEnergy, ogHotspots, ogExplainer, ogHowItWorks,
+];
+
 const loadProjectExpand = () => import("../ui/ProjectExpand");
 const ProjectExpand = lazy(loadProjectExpand);
 
@@ -266,7 +285,29 @@ const Projects = () => {
       desc: t('projects.ourgrid.desc'),
       role: t('projects.ourgrid.role'),
       img: ourGridImg,
-      gallery: [ourGridImg], // TODO: add more OurGrid screenshots here
+      // The client is part of the credential on commissioned work, so the
+      // detail view links out to them.
+      clientName: "OpenRemote",
+      clientUrl: "https://openremote.io/",
+      galleryLayout: "rail", // captioned sideways gallery — see CaseGallery
+      gallery: [ourGridImg], // cover fallback if the rail is ever switched off
+      /*
+        The walk-through. Each shot is one step of the argument, so the order
+        matters: the split, then each side of it, then the resident's evidence,
+        then the municipality's, then the explainer the whole thing rests on.
+        Captions live in i18n so they translate with the rest of the site.
+      */
+      // Translations load over HTTP, so t() can hand back the raw key before
+      // they arrive or if a locale is missing this block. Zip defensively:
+      // the pictures still tell the story with the captions a beat behind.
+      shots: (() => {
+        const captions = t("projects.ourgrid.shots", { returnObjects: true });
+        return OURGRID_SHOTS.map((src, i) => ({
+          src,
+          caption: Array.isArray(captions) && captions[i] ? captions[i].caption : "",
+        }));
+      })(),
+      caseStudy: t("projects.ourgrid.case", { returnObjects: true }),
       // OurGrid brand palette — used to theme the expanded detail view.
       // grid-green primary, reward-amber accent, deep plum ink.
       theme: { accent: "#01AC51", accent2: "#F4B14A", deep: "#4F2E39" },
