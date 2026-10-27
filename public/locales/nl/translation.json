@@ -342,10 +342,19 @@
           "caption": "Dezelfde foto en dezelfde opbouw, met één regel verschil. Bewoners krijgen geld aangeboden, de gemeente ruimte voor toekomstige ontwikkeling."
         },
         {
+          "caption": "De vraag zelf, op de homepage: verschuif je verbruik, vermijd de piek, verdien punten — naast het scherm waarop dat gebeurt, zodat de vraag en het middel samen aankomen."
+        },
+        {
+          "caption": "De homepage eindigt met de enige twee dingen die een bezoeker echt kan doen: de app downloaden, of eerst uitzoeken wat congestie is. Niets anders concurreert daarmee."
+        },
+        {
           "caption": "De kerngrafiek. De donkere lijn is een gewone avondpiek; de groene lijn is dezelfde dag met een paar taken verschoven. Eén beeld, één vraag."
         },
         {
           "caption": "Piek en dal als tijden in plaats van kilowatts, plus welke apparaten de avondpiek echt veroorzaken."
+        },
+        {
+          "caption": "De opbrengst als één vergelijking: de piek van dezelfde wijk vóór en na coördinatie. Deze grafiek bestaat om één vraag te beantwoorden — helpt het eigenlijk?"
         },
         {
           "caption": "Het gezamenlijke cijfer: hoeveel de wijk deze maand heeft verschoven. Vooruitgang die een bewoner ziet zonder een grafiek te lezen."
@@ -357,10 +366,16 @@
           "caption": "De uitleg waar de rest van de site op rust: wat congestie is, waarom het gebeurt en waarom het ertoe doet, in gewone woorden vóór enige data."
         },
         {
+          "caption": "Waarom het ertoe doet, in vier gevolgen die een bewoner herkent: woningen die niet aangesloten kunnen worden, hogere kosten tijdens de piek, meer druk op het milieu, meer kans op stroomuitval. En meteen daarna: wat helpt."
+        },
+        {
           "caption": "Waar het betoog een product wordt: de app die doet wat de uitleg zojuist heeft gevraagd."
         },
         {
           "caption": "Onboarding als genummerde stappen, elk naast het scherm waar het over gaat, zodat je ziet waar je aan begint voordat je je aanmeldt."
+        },
+        {
+          "caption": "Het midden van die uitleg, waar de echte app-schermen verschijnen: het live verbruik, de melding wanneer de wijk een piek raakt, en de acties die tijdens een challenge worden aangeboden."
         }
       ],
       "case": [

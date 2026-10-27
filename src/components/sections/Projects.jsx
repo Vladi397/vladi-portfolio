@@ -9,13 +9,18 @@ import ourGridImg     from "../../assets/OurGrid.webp";
 // OurGrid case-study shots, captured from the live deployment.
 import ogFrontDoor    from "../../assets/ourgrid-front-door.webp";
 import ogSplit        from "../../assets/ourgrid-split.webp";
+import ogHomeShift    from "../../assets/ourgrid-home-shift.webp";
+import ogHomeDownload from "../../assets/ourgrid-home-download.webp";
 import ogLoadCurve    from "../../assets/ourgrid-loadcurve.webp";
 import ogPeakHours    from "../../assets/ourgrid-peakhours.webp";
+import ogBeforeAfter  from "../../assets/ourgrid-before-after.webp";
 import ogEnergy       from "../../assets/ourgrid-energy.webp";
 import ogHotspots     from "../../assets/ourgrid-hotspots.webp";
 import ogExplainer    from "../../assets/ourgrid-explainer.webp";
+import ogProblem      from "../../assets/ourgrid-problem.webp";
 import ogSolution     from "../../assets/ourgrid-solution.webp";
 import ogHowItWorks   from "../../assets/ourgrid-howitworks.webp";
+import ogAppScreens   from "../../assets/ourgrid-app-screens.webp";
 import fitFusionImg   from "../../assets/FirFusion.webp";
 import spaceInvasionImg from "../../assets/spaceinvasion.webp";
 import brewBuddyImg   from "../../assets/brewbuddy.webp";
@@ -45,10 +50,16 @@ import devMatchLogin  from "../../assets/devmatch-login.webp";
   as the same picture twice in a carousel. They are now one labelled frame
   (ourgrid-split) where the two headlines sit above each other and the
   difference is the only thing left to look at.
+
+  The home page is in here twice on purpose. The first pass only ever took its
+  hero, which left out the two blocks that do the actual persuading: the ask
+  itself, next to the phone it happens on, and the download block that closes
+  it. A landing page represented only by its headline is not a landing page.
 */
 const OURGRID_SHOTS = [
-  ogFrontDoor, ogSplit, ogLoadCurve, ogPeakHours, ogEnergy,
-  ogHotspots, ogExplainer, ogSolution, ogHowItWorks,
+  ogFrontDoor, ogSplit, ogHomeShift, ogHomeDownload, ogLoadCurve,
+  ogPeakHours, ogBeforeAfter, ogEnergy, ogHotspots, ogExplainer,
+  ogProblem, ogSolution, ogHowItWorks, ogAppScreens,
 ];
 
 const loadProjectExpand = () => import("../ui/ProjectExpand");

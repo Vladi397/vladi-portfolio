@@ -11,7 +11,7 @@ import { hexA } from "./notes/utils";
 
   The frame you are reading sits centre and full size; the one before and the
   one after flank it, smaller and faded, so there is always visible evidence
-  that the set continues in both directions. It advances itself every 5s,
+  that the set continues in both directions. It advances itself every 3.5s,
   because the captions carry an argument and the argument should start making
   itself without anyone having to find a control first.
 
@@ -25,7 +25,7 @@ import { hexA } from "./notes/utils";
   slide, which is what keeps it cheap on the weak phones this site targets.
 */
 
-const INTERVAL = 5000;
+const INTERVAL = 3500;
 const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 // Signed distance from the centre, taking the shorter way around the loop, so
@@ -51,6 +51,9 @@ export default function CaseGallery({ items, title, accent, accent2, t, reduce =
   const [held, setHeld] = useState(false); // pointer over, or focus inside
   const [tabVisible, setTabVisible] = useState(true);
   const stageRef = useRef(null);
+  // Set while a finger is dragging sideways, so the click that a touch always
+  // ends with cannot also count as "tap the neighbour to bring it to centre".
+  const draggedRef = useRef(false);
 
   const go = useCallback((dir) => setIndex((i) => (i + dir + n) % n), [n]);
 
@@ -84,6 +87,7 @@ export default function CaseGallery({ items, title, accent, accent2, t, reduce =
       const touch = e.touches[0];
       if (!touch) return;
       x0 = touch.clientX; y0 = touch.clientY; axis = null; used = false;
+      draggedRef.current = false;
     };
     const onMove = (e) => {
       const touch = e.touches[0];
@@ -96,6 +100,7 @@ export default function CaseGallery({ items, title, accent, accent2, t, reduce =
       }
       if (axis !== "x") return;
       e.preventDefault();
+      draggedRef.current = true;
       if (Math.abs(dx) > 45) {
         go(dx < 0 ? 1 : -1);
         setUserPaused(true); // they are driving now
@@ -124,8 +129,11 @@ export default function CaseGallery({ items, title, accent, accent2, t, reduce =
 
   if (!n) return null;
 
+  // Smaller and pushed further out on a phone. At 390px the centre frame is
+  // almost as wide as the column, so a desktop-sized arrow at the edge lands
+  // on the screenshot instead of beside it.
   const btn =
-    "inline-flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-sm transition-all " +
+    "inline-flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full border backdrop-blur-sm transition-all " +
     "border-stone-200 bg-white/90 text-stone-700 hover:bg-white hover:scale-105 active:scale-95 shadow-lg " +
     "dark:border-white/15 dark:bg-[#0B1120]/85 dark:text-slate-200 dark:hover:bg-[#0B1120] " +
     "focus:outline-none focus-visible:ring-2";
@@ -190,6 +198,7 @@ export default function CaseGallery({ items, title, accent, accent2, t, reduce =
                 key={i}
                 aria-hidden={!isCurrent}
                 onClick={() => {
+                  if (draggedRef.current) { draggedRef.current = false; return; }
                   if (Math.abs(off) === 1) manual(off);
                 }}
                 className="absolute left-1/2 top-1/2 h-full"
@@ -215,7 +224,10 @@ export default function CaseGallery({ items, title, accent, accent2, t, reduce =
                   <img
                     src={item.src}
                     alt={item.alt || item.caption || ""}
-                    loading={Math.abs(off) <= 1 ? "eager" : "lazy"}
+                    // One frame of lead was enough at 5s; at 3.5s, and with
+                    // fourteen frames rather than nine, fetch two ahead so a
+                    // slow connection never swings an empty box into centre.
+                    loading={Math.abs(off) <= 2 ? "eager" : "lazy"}
                     decoding="async"
                     draggable="false"
                     className="block h-full w-full object-cover object-top select-none"
@@ -231,7 +243,7 @@ export default function CaseGallery({ items, title, accent, accent2, t, reduce =
           type="button"
           onClick={() => manual(-1)}
           aria-label={t("projects.gallery_prev", "Previous image")}
-          className={`${btn} absolute left-0 top-1/2 z-40 -translate-y-1/2 sm:-left-2`}
+          className={`${btn} absolute -left-3 top-1/2 z-40 -translate-y-1/2 sm:-left-2`}
           style={{ "--tw-ring-color": accent }}
         >
           <ArrowLeft size={18} />
@@ -240,7 +252,7 @@ export default function CaseGallery({ items, title, accent, accent2, t, reduce =
           type="button"
           onClick={() => manual(1)}
           aria-label={t("projects.gallery_next", "Next image")}
-          className={`${btn} absolute right-0 top-1/2 z-40 -translate-y-1/2 sm:-right-2`}
+          className={`${btn} absolute -right-3 top-1/2 z-40 -translate-y-1/2 sm:-right-2`}
           style={{ "--tw-ring-color": accent }}
         >
           <ArrowRight size={18} />

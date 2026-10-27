@@ -342,10 +342,19 @@
           "caption": "The same photograph and the same layout, with one line changed. Residents are offered money; the municipality is offered capacity for future development."
         },
         {
+          "caption": "The ask itself, on the home page: shift your usage, avoid the peak, earn points — set beside the screen where it happens, so the request and the tool arrive together."
+        },
+        {
+          "caption": "The home page closes on the only two things a visitor can actually do: take the app, or go and find out what congestion is first. Nothing else competes with them."
+        },
+        {
           "caption": "The core chart. The dark line is an ordinary evening peak; the green line is the same day with a few tasks moved. One picture, one ask."
         },
         {
           "caption": "Peak and off-peak given as hours rather than kilowatts, plus which appliances actually drive the evening peak."
+        },
+        {
+          "caption": "The payoff as a single comparison: the same neighbourhood's peak before coordination and after it. This chart exists to answer one question — does any of it do anything?"
         },
         {
           "caption": "The collective number: how much the neighbourhood shifted this month. Progress a resident can read without reading a chart."
@@ -357,10 +366,16 @@
           "caption": "The explainer the rest of the site rests on: what congestion is, why it happens and why it matters, in plain words before any data."
         },
         {
+          "caption": "Why it matters, as four consequences a resident recognises: homes that cannot be connected, higher bills at the peak, more strain on the environment, more risk of outages. Then, immediately, what helps."
+        },
+        {
           "caption": "Where the argument turns into a product: the app shown doing the thing the explainer has just asked for."
         },
         {
           "caption": "Onboarding as numbered steps, each next to the screen it refers to, so the commitment is visible before anyone signs up."
+        },
+        {
+          "caption": "The middle of that walkthrough, where the real app screens appear: live usage, the alert when the area hits a peak, and the actions offered during a challenge."
         }
       ],
       "case": [
