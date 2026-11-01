@@ -17,6 +17,7 @@
     "location": "Eindhoven",
     "status": "Available",
     "quote": "“Modern solutions built with technical precision and clean design.”",
+    "xray_hint": "Hover to scan, click to hold",
     "xray_hint_touch": "Tap to x-ray"
   },
   "about": {

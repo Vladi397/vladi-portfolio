@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import MetaList from "../MetaList";
 import { Rise } from "./shared";
 import { hexA, useInViewOnce } from "./utils";
 
@@ -75,7 +76,7 @@ export default function JobTrace({ data, theme, t, reduce }) {
           </span>
         </div>
         <p className="mt-4 text-lg font-semibold text-stone-900 dark:text-white">{data.card_role}</p>
-        <p className="text-sm text-stone-500 dark:text-slate-400">{data.card_company}</p>
+        <MetaList className="text-sm text-stone-500 dark:text-slate-400">{data.card_company}</MetaList>
 
         <div className="mt-6 flex items-baseline gap-1" aria-live="polite">
           <span className="font-display text-5xl font-bold tabular-nums text-stone-900 dark:text-white">{score}</span>

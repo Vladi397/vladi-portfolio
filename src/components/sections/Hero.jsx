@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ArrowUpRight, CheckCircle, MapPin, ScanLine } from "lucide-react";
 import Reveal from "../ui/Reveal";
+import MetaList from "../ui/MetaList";
 import PrimaryButton from "../ui/PrimaryButton";
 import SecondaryButton from "../ui/SecondaryButton";
 import { scrollToId } from "../../utils/scrollHelpers";
@@ -182,12 +183,15 @@ const Hero = ({ theme = "dark" }) => {
       {/* Text Section */}
       <div className="flex-1 z-10 text-center md:text-left order-2 md:order-1">
         <Reveal>
-          <h3
-            className="font-bold tracking-[0.25em] text-[11px] sm:text-xs uppercase mb-4 transition-colors
+          {/* justify-* because the hero is centred on phones: MetaList lays the
+              parts out in a flex row, which text-align no longer reaches. */}
+          <MetaList
+            as="h3"
+            className="justify-center md:justify-start font-bold tracking-[0.25em] text-[11px] sm:text-xs uppercase mb-4 transition-colors
             text-lagoon-500 dark:text-sky-400"
           >
             {t('hero.role')}
-          </h3>
+          </MetaList>
         </Reveal>
 
         <Reveal delay={80}>
@@ -338,7 +342,7 @@ const Hero = ({ theme = "dark" }) => {
               >
                 <ScanLine size={13} className="text-brand-400" />
                 {canHover
-                  ? t("hero.xray_hint", "Hover to scan · click to hold")
+                  ? t("hero.xray_hint", "Hover to scan, click to hold")
                   : t("hero.xray_hint_touch", "Tap to x-ray")}
               </span>
             </div>

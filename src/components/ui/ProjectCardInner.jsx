@@ -1,5 +1,6 @@
 import React from "react";
 import { ExternalLink, Github } from "lucide-react";
+import MetaList from "./MetaList";
 
 /*
   ProjectCardInner
@@ -92,9 +93,12 @@ export default function ProjectCardInner({ project, isFlipped, urlLabel, t, inte
         {/* ── Text content ── */}
         <div className="w-full md:w-1/2 flex flex-col justify-center space-y-2.5 sm:space-y-4">
           <div className="flex flex-col items-start">
-            <span className="text-accent font-black tracking-widest uppercase text-[11px] sm:text-xs mb-2 bg-lagoon-50 dark:bg-sky-900/20 px-2.5 sm:px-3 py-1 rounded-full">
+            <MetaList
+              as="span"
+              className="text-accent font-black tracking-widest uppercase text-[11px] sm:text-xs mb-2 bg-lagoon-50 dark:bg-sky-900/20 px-2.5 sm:px-3 py-1 rounded-full"
+            >
               {project.role}
-            </span>
+            </MetaList>
             <h3 className="text-xl sm:text-2xl md:text-3xl font-black leading-tight text-stone-900 dark:text-white">
               {project.title}
             </h3>

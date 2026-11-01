@@ -1,5 +1,6 @@
 import React from "react";
 import { useInViewOnce, hexA } from "./utils";
+import BleedHeading from "../BleedHeading";
 
 const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 
@@ -21,16 +22,25 @@ export function Rise({ as = "div", reduce, delay = 0, className = "", style, chi
   );
 }
 
-// Section heading: the title, then a hairline in the project colour that runs
-// to the edge. No icon tile, no numbering.
-export function SectionHead({ children, accent, id }) {
+/*
+  Section heading: the title, with a brand-gradient rule running in from the
+  left edge of the screen and stopping where the title stops. See BleedHeading.
+
+  Half the weight of the one under a project title, which is 6px: a subhead
+  rule as heavy as the title's would compete with it on a page that carries
+  four or five of them.
+*/
+export function SectionHead({ children, accent, accent2, id }) {
   return (
-    <div className="mb-6 sm:mb-8 flex items-center gap-4">
-      {/* The title may wrap on narrow screens; the rule only needs a little room. */}
-      <h3 id={id} className="min-w-0 text-xl sm:text-2xl font-bold tracking-tight text-stone-900 dark:text-white">
-        {children}
-      </h3>
-      <span aria-hidden="true" className="h-px min-w-[2.5rem] flex-1" style={{ background: hexA(accent, 0.3) }} />
-    </div>
+    <BleedHeading
+      id={id}
+      from={hexA(accent, 0.55)}
+      to={accent2 || accent}
+      thickness={3}
+      wrapperClassName="mb-6 sm:mb-8"
+      className="pb-3 text-xl sm:text-2xl font-bold tracking-tight text-stone-900 dark:text-white"
+    >
+      {children}
+    </BleedHeading>
   );
 }

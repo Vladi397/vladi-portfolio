@@ -1,4 +1,5 @@
 import React from "react";
+import MetaList from "../MetaList";
 import { Rise, SectionHead } from "./shared";
 import { hexA } from "./utils";
 import JobTrace from "./JobTrace";
@@ -32,7 +33,7 @@ export default function ProjectNotebook({ notes, figure, theme, t, reduce }) {
       {/* 1. Log */}
       {Array.isArray(notes.log) && notes.log.length > 0 && (
         <section className="mt-14 sm:mt-24" aria-labelledby="notes-log">
-          <SectionHead accent={accent} id="notes-log">
+          <SectionHead accent={accent} accent2={theme.accent2} id="notes-log">
             {t("projects.notes_log", "From the notebook")}
           </SectionHead>
           <ol className="border-t" style={{ borderColor: rule }}>
@@ -44,7 +45,7 @@ export default function ProjectNotebook({ notes, figure, theme, t, reduce }) {
                 className="grid gap-1.5 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-10 py-6 sm:py-8 border-b"
                 style={{ borderColor: rule }}
               >
-                <p className="notes-ink font-mono text-[13px] leading-6 sm:pt-0.5 break-words">{entry.marker}</p>
+                <MetaList className="notes-ink font-mono text-[13px] leading-6 sm:pt-0.5 break-words">{entry.marker}</MetaList>
                 <div>
                   <h4 className="text-lg sm:text-xl font-semibold tracking-tight text-stone-900 dark:text-white">
                     {entry.title}
@@ -62,7 +63,7 @@ export default function ProjectNotebook({ notes, figure, theme, t, reduce }) {
       {/* 2. Project figure */}
       {Figure && notes.figure && (
         <section className="mt-14 sm:mt-24" aria-labelledby="notes-figure">
-          <SectionHead accent={accent} id="notes-figure">
+          <SectionHead accent={accent} accent2={theme.accent2} id="notes-figure">
             {notes.figure.title}
           </SectionHead>
           {notes.figure.caption && (
@@ -77,7 +78,7 @@ export default function ProjectNotebook({ notes, figure, theme, t, reduce }) {
       {/* 3. Snags */}
       {Array.isArray(notes.snags) && notes.snags.length > 0 && (
         <section className="mt-14 sm:mt-24" aria-labelledby="notes-snags">
-          <SectionHead accent={accent} id="notes-snags">
+          <SectionHead accent={accent} accent2={theme.accent2} id="notes-snags">
             {t("projects.notes_snags", "What broke, and the fix")}
           </SectionHead>
           <div className="grid gap-x-10 gap-y-8 md:grid-cols-2">
@@ -107,7 +108,7 @@ export default function ProjectNotebook({ notes, figure, theme, t, reduce }) {
       {/* 4. Build sheet */}
       {Array.isArray(notes.sheet) && notes.sheet.length > 0 && (
         <section className="mt-14 sm:mt-24" aria-labelledby="notes-sheet">
-          <SectionHead accent={accent} id="notes-sheet">
+          <SectionHead accent={accent} accent2={theme.accent2} id="notes-sheet">
             {t("projects.notes_sheet", "Build sheet")}
           </SectionHead>
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-x-12">

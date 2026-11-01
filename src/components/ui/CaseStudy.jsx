@@ -42,7 +42,7 @@ export default function CaseStudy({ sections, theme, t, reduce }) {
 
   return (
     <section className="mt-14 sm:mt-24" aria-labelledby="case-study" style={{ "--acc": accent }}>
-      <SectionHead accent={accent} id="case-study">
+      <SectionHead accent={accent} accent2={theme.accent2} id="case-study">
         {t("projects.case_title", "How it was designed")}
       </SectionHead>
 

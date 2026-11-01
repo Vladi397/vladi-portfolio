@@ -231,8 +231,11 @@ function Jukebox({ data, accent, reduce }) {
               <div className="col-span-2 sm:col-span-1 min-w-0">
                 <PianoRoll song={song} color={accent} playing={on} reduce={reduce} />
               </div>
-              <span className="hidden sm:block font-mono text-xs tabular-nums text-stone-500 dark:text-slate-400">
-                {song.melody.length} {data.notes} · {(totalMs(song) / 1000).toFixed(1)} s
+              <span className="hidden sm:flex items-center gap-x-2.5 font-mono text-xs tabular-nums text-stone-500 dark:text-slate-400">
+                <span>{song.melody.length} {data.notes}</span>
+                <span className="sr-only">, </span>
+                <span aria-hidden="true" className="h-[0.85em] w-px bg-current opacity-30" />
+                <span>{(totalMs(song) / 1000).toFixed(1)} s</span>
               </span>
             </li>
           );

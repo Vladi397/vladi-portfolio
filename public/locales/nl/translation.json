@@ -17,6 +17,7 @@
     "location": "Eindhoven",
     "status": "Beschikbaar",
     "quote": "“Moderne oplossingen gebouwd met technische precisie en strak ontwerp.”",
+    "xray_hint": "Beweeg erover om te scannen, klik om vast te zetten",
     "xray_hint_touch": "Tik voor röntgen"
   },
   "about": {

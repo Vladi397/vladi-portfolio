@@ -11,6 +11,8 @@ import VisiobalGallery from "./VisiobalGallery";
 import VisiobalModel3D from "./VisiobalModel3D";
 import CaseGallery from "./CaseGallery";
 import CaseStudy from "./CaseStudy";
+import MetaList from "./MetaList";
+import BleedHeading from "./BleedHeading";
 import ProjectNotebook from "./notes/ProjectNotebook";
 
 /*
@@ -352,8 +354,6 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
   const gallery = project.gallery && project.gallery.length ? project.gallery : [project.img];
   const gBase = 150;
 
-  // Reusable brand gradient (accent → accent2) for buttons, nodes, accents.
-  const brandGradient = `linear-gradient(135deg, ${theme.accent}, ${theme.accent2})`;
 
   const detail = (
     <div className="min-h-full text-stone-900 dark:text-white">
@@ -363,12 +363,13 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
           bg-white/75 dark:bg-[#0B1120]/75 backdrop-blur-xl border-b border-stone-200/70 dark:border-white/10"
       >
         <div className="min-w-0 flex items-center gap-3">
-          <span
-            className="hidden sm:inline font-bold tracking-[0.18em] uppercase text-[11px]"
+          <MetaList
+            as="span"
+            className="hidden sm:flex font-bold tracking-[0.18em] uppercase text-[11px]"
             style={{ color: theme.accent }}
           >
             {project.role}
-          </span>
+          </MetaList>
           <span className="font-bold truncate text-sm sm:text-base">{project.title}</span>
         </div>
         <button
@@ -400,27 +401,34 @@ export default function ProjectExpand({ project, cardEl, isFlipped = false, onCl
       <article className="relative mx-auto w-full max-w-5xl px-5 sm:px-8 pb-14 sm:pb-24">
         {/* Header — eyebrow, display title, lead, tags, actions */}
         <header className="pt-8 sm:pt-16 pb-8 sm:pb-14" style={rv(0)}>
-          <p
+          <MetaList
             className="font-bold tracking-[0.22em] uppercase text-xs sm:text-sm"
             style={{ color: theme.accent }}
           >
             {project.role}
-          </p>
-          <h2 className="font-black tracking-tight leading-[1.05] sm:leading-[1.03] text-3xl sm:text-6xl mt-3 sm:mt-4 text-stone-900 dark:text-white">
+          </MetaList>
+          {/* The same move as SectionHead, in place of the short gradient tab
+              that used to sit under the title. */}
+          <BleedHeading
+            as="h2"
+            from={theme.accent}
+            to={theme.accent2}
+            thickness={6}
+            wrapperClassName="mt-3 sm:mt-4"
+            className="font-black tracking-tight leading-[1.05] sm:leading-[1.03] text-3xl sm:text-6xl pb-4 sm:pb-5 text-stone-900 dark:text-white"
+          >
             {project.title}
-          </h2>
-          {/* Brand underline */}
-          <div
-            className="mt-4 sm:mt-5 h-1.5 w-20 sm:w-24 rounded-full"
-            style={{ background: brandGradient }}
-          />
+          </BleedHeading>
           <p className="mt-5 sm:mt-6 max-w-2xl text-base sm:text-xl leading-relaxed text-stone-600 dark:text-slate-300">
             {project.desc}
           </p>
           {Boolean(project.notes?.stack || project.tags?.length) && (
-            <p className="notes-ink mt-5 sm:mt-6 font-mono text-[13px] sm:text-sm" style={{ "--acc": theme.accent }}>
-              {project.notes?.stack || project.tags.join(" · ")}
-            </p>
+            <MetaList
+              className="notes-ink mt-5 sm:mt-6 font-mono text-[13px] sm:text-sm"
+              style={{ "--acc": theme.accent }}
+            >
+              {project.notes?.stack || project.tags}
+            </MetaList>
           )}
           <div className="mt-6 sm:mt-7 flex flex-col sm:flex-row flex-wrap gap-3">
             {project.liveUrl && project.liveUrl !== "#" && (
