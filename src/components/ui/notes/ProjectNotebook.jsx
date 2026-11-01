@@ -33,7 +33,7 @@ export default function ProjectNotebook({ notes, figure, theme, t, reduce }) {
       {/* 1. Log */}
       {Array.isArray(notes.log) && notes.log.length > 0 && (
         <section className="mt-14 sm:mt-24" aria-labelledby="notes-log">
-          <SectionHead accent={accent} accent2={theme.accent2} id="notes-log">
+          <SectionHead id="notes-log">
             {t("projects.notes_log", "From the notebook")}
           </SectionHead>
           <ol className="border-t" style={{ borderColor: rule }}>
@@ -63,7 +63,7 @@ export default function ProjectNotebook({ notes, figure, theme, t, reduce }) {
       {/* 2. Project figure */}
       {Figure && notes.figure && (
         <section className="mt-14 sm:mt-24" aria-labelledby="notes-figure">
-          <SectionHead accent={accent} accent2={theme.accent2} id="notes-figure">
+          <SectionHead id="notes-figure">
             {notes.figure.title}
           </SectionHead>
           {notes.figure.caption && (
@@ -78,7 +78,7 @@ export default function ProjectNotebook({ notes, figure, theme, t, reduce }) {
       {/* 3. Snags */}
       {Array.isArray(notes.snags) && notes.snags.length > 0 && (
         <section className="mt-14 sm:mt-24" aria-labelledby="notes-snags">
-          <SectionHead accent={accent} accent2={theme.accent2} id="notes-snags">
+          <SectionHead id="notes-snags">
             {t("projects.notes_snags", "What broke, and the fix")}
           </SectionHead>
           <div className="grid gap-x-10 gap-y-8 md:grid-cols-2">
@@ -108,7 +108,7 @@ export default function ProjectNotebook({ notes, figure, theme, t, reduce }) {
       {/* 4. Build sheet */}
       {Array.isArray(notes.sheet) && notes.sheet.length > 0 && (
         <section className="mt-14 sm:mt-24" aria-labelledby="notes-sheet">
-          <SectionHead accent={accent} accent2={theme.accent2} id="notes-sheet">
+          <SectionHead id="notes-sheet">
             {t("projects.notes_sheet", "Build sheet")}
           </SectionHead>
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-x-12">
