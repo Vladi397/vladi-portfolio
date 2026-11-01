@@ -1,7 +1,6 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Points, PointMaterial } from "@react-three/drei";
-import { EffectComposer, Bloom, Noise, Vignette } from "@react-three/postprocessing";
+import { Points } from "@react-three/drei";
 import * as THREE from "three";
 import StaticBackdrop from "./StaticBackdrop";
 
@@ -37,23 +36,208 @@ const pickStarCount = () =>
       ? 3000
       : 5000;
 
+/*
+  The vignette, lifted out of the render loop.
+
+  These alphas were not derived from the shader, they were measured off it:
+  shoot the scene with the pass running and again with nothing over it at all,
+  and the ratio between the two at each radius is the veil the pass actually
+  drew — blending, premultiplied alpha and all. Working it out on paper gave a
+  curve half again too dark through the middle.
+
+  The themes need separate curves because the pass does different things to
+  them. Over the dark ground it fades the canvas into the page, so the veil is
+  the page colour at full strength. Over paper it multiplies toward black, so
+  the corners end up BELOW paper white — a faint grey wash rather than a fade,
+  and a black veil five percent thick at its heaviest.
+
+  100% is the farthest corner, which is where a CSS ellipse gradient ends and
+  where the shader distance reaches 0.707, so the two line up without scaling.
+*/
+const VIGNETTE_DARK = [
+  [0, 0], [25, 0.01], [30, 0.046], [35, 0.09], [40, 0.141], [45, 0.202],
+  [50, 0.271], [55, 0.349], [60, 0.44], [65, 0.535], [70, 0.631], [75, 0.737],
+  [80, 0.846], [85, 0.932], [90, 0.981], [95, 1], [100, 1],
+];
+
+const VIGNETTE_LIGHT = [
+  [0, 0], [30, 0.0004], [35, 0.0016], [40, 0.003], [45, 0.0047], [50, 0.0081],
+  [55, 0.0126], [60, 0.0177], [65, 0.0232], [70, 0.0286], [75, 0.0339],
+  [80, 0.0401], [85, 0.0465], [90, 0.0505], [95, 0.0515], [100, 0.0515],
+];
+
+/*
+  Light only: the wash that bloom left behind.
+
+  On paper, bloom at threshold zero blurs a near-white frame and adds it back,
+  which saturates the middle of the screen to pure white and cancels the tint
+  the haze lays over everything. Measured the same way as the curves above —
+  the picture with the pass against the picture without it — and it comes out
+  as a broad white veil, heaviest in the middle. It sits under the vignette,
+  which is the order the two passes ran in.
+
+  It goes UNDER the canvas rather than over it. Bloom brightened the ground
+  the scene stands on; it did not flatten the scene. Laid over the top the
+  same veil washes the stars out along with everything else, and they go from
+  crisp specks to barely there. Underneath, the paper lifts to white and the
+  stars keep every bit of their contrast.
+*/
+const WASH_STOPS = [
+  [0, 1], [40, 1], [50, 0.95], [60, 0.85], [70, 0.68], [80, 0.47],
+  [90, 0.3], [100, 0.22],
+];
+
+const washOf = (stops) =>
+  "radial-gradient(ellipse farthest-corner at 50% 50%, " +
+  stops.map(([p, a]) => `rgba(255, 255, 255, ${a}) ${p}%`).join(", ") +
+  ")";
+
+const vignetteOf = ({ veil, vignette }) =>
+  "radial-gradient(ellipse farthest-corner at 50% 50%, " +
+  vignette.map(([p, a]) => `rgba(${veil}, ${a}) ${p}%`).join(", ") +
+  ")";
+
 // Scene colours per theme. Dark is the original sky/indigo space; light is the
 // warm off-white page with teal stars, lines and haze to match the light UI.
 // Haze tints line up with the HAZE entries below.
 const SPACE = {
   dark: {
     ground: "#050505",
+    veil: "5, 5, 5",
+    vignette: VIGNETTE_DARK,
+    wash: null,
     accent: "#0EA5E9",
     haze: ["#0EA5E9", "#6366f1", "#38bdf8", "#4f46e5"],
   },
   light: {
     ground: "#FAF9F6",
+    veil: "0, 0, 0",
+    vignette: VIGNETTE_LIGHT,
+    wash: WASH_STOPS,
     accent: "#0A7A85",
     // Soft, desaturated teals plus one warm sand cloud that ties the haze to
     // the off-white page. Saturated cyan here flooded the glass panels.
     haze: ["#7CC2C6", "#E3D6BC", "#9FD0CF", "#5FA8AE"],
   },
 };
+
+/*
+  What the bloom pass used to contribute, dialled back into the scene itself.
+
+  Bloom at a luminance threshold of zero did not pick out highlights, it took
+  the whole frame, blurred it and added it back — so it was brightening and
+  spreading everything at once, and most of what you see was coming from it
+  rather than from the materials. Every number here was found by shooting the
+  two builds at the same second of scene time, on the same seeded star field,
+  and comparing them ring by ring out from the middle of the screen.
+
+  Dark needed the clouds roughly four times stronger and a little wider, and
+  the wireframe three times stronger, to put back the glow that was lost.
+  Light barely moved: on paper, bloom was not making anything glow, it was
+  flooding the frame with light, which the wash above handles instead.
+*/
+const WIRE_OP_DARK = 0.1;
+const WIRE_OP_LIGHT = 0.28;
+const HAZE_OP_DARK = 0.25;
+const HAZE_OP_LIGHT = 0.34;
+const HAZE_SPREAD_DARK = 1.15;
+const HAZE_SPREAD_LIGHT = 1;
+const STAR_OP_DARK = 1;
+const STAR_OP_LIGHT = 1;
+
+/*
+  The scene drifts rather than moves: the stars turn about a degree every few
+  seconds and the haze breathes over half a minute. Nothing in it asks for
+  sixty frames a second, and a frame costs the same whether anything moved or
+  not — so the loop is driven by hand at a fixed rate instead of by the
+  display.
+
+  Nothing about the motion changes. Every animation in here is a function of
+  elapsed time, not of how many frames have gone by: the rotations accumulate
+  delta and the haze reads the clock directly, so the scene arrives in the
+  same place at the same second whatever rate it is drawn at.
+
+  Both rates divide evenly into 60Hz and 120Hz displays, so frames land on
+  real display ticks instead of beating against them.
+*/
+const FPS = LOW_END ? 20 : 30;
+
+const FrameLimiter = ({ fps, active }) => {
+  const advance = useThree((s) => s.advance);
+  // The scene time, kept across pauses. It has to be ours and it has to
+  // persist: in "never" mode the loop works the delta out as the timestamp
+  // minus the clock it already holds, so a counter that restarted at zero on
+  // resume would hand it a large NEGATIVE delta and throw the scene backwards.
+  const elapsed = useRef(0);
+
+  useEffect(() => {
+    if (!active) return undefined;
+    let raf = 0;
+    let prev = performance.now();
+    let since = 0;
+    const step = 1 / fps;
+
+    const tick = (now) => {
+      raf = requestAnimationFrame(tick);
+      since += (now - prev) / 1000;
+      prev = now;
+      // A tenth of a step of slack: without it a display tick landing a hair
+      // early is dropped and a 30fps gate on a 60Hz screen halves again to 20.
+      if (since < step * 0.9) return;
+      elapsed.current += since;
+      since = 0;
+      advance(elapsed.current);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [fps, active, advance]);
+
+  // Time spent paused is simply not counted — prev starts afresh on resume —
+  // so the scene picks up where it left off instead of lurching forward by
+  // however long the overlay was open.
+  return null;
+};
+
+/*
+  The star sprites, one per theme.
+
+  Dark gets the halo painted into the texture. That halo used to come from the
+  bloom pass, which re-rendered the scene into a stack of blurred buffers and
+  added it back every frame; a point carrying its own glow needs none of that,
+  and the stops below are that blur, baked once at startup. STAR_CORE is where
+  the core ends as a fraction of the sprite radius, so the sprite is drawn that
+  much bigger to keep the original 0.07-wide core.
+
+  Light gets a hard-edged dot instead, which is what it had: on paper there was
+  never a glow to bake, because bloom cannot brighten what is already white. A
+  halo there reads as a grey smudge rather than a star. The dot is the round
+  mask drei PointMaterial was applying, drawn once into a texture so that one
+  plain material can serve both themes.
+*/
+const STAR_CORE = 0.13;
+const STAR_SIZE_DARK = 0.07 / (STAR_CORE * 2);
+const STAR_SIZE_LIGHT = 0.07;
+
+const paintSprite = (size, stops) => {
+  const c = document.createElement("canvas");
+  c.width = c.height = size;
+  const ctx = c.getContext("2d");
+  const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  stops.forEach(([at, alpha]) => g.addColorStop(at, `rgba(255,255,255,${alpha})`));
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  return new THREE.CanvasTexture(c);
+};
+
+const STAR_TEX_DARK = typeof document !== "undefined"
+  ? paintSprite(64, [[0, 1], [STAR_CORE, 0.92], [0.3, 0.3], [0.6, 0.07], [1, 0]])
+  : null;
+
+// Solid to 0.44, gone by 0.5: a disc with one texel of feather on it.
+const STAR_TEX_LIGHT = typeof document !== "undefined"
+  ? paintSprite(32, [[0, 1], [0.44, 1], [0.5, 0], [1, 0]])
+  : null;
 
 // --- 1. THE STARS (With Mouse Repulsion) ---
 const StarField = ({ count = 5000, theme }) => {
@@ -139,14 +323,19 @@ const StarField = ({ count = 5000, theme }) => {
   return (
     <group>
       <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
-        <PointMaterial
+        {/* Plain pointsMaterial rather than drei PointMaterial: the round mask
+            that one applies is exactly what the halo texture already does, and
+            it would clip the halo back off. */}
+        <pointsMaterial
           transparent
+          map={theme === "dark" ? STAR_TEX_DARK : STAR_TEX_LIGHT}
           color={color}
-          size={0.07}
+          size={theme === "dark" ? STAR_SIZE_DARK : STAR_SIZE_LIGHT}
           sizeAttenuation={true}
           depthWrite={false}
           fog={false} /* stars stay crisp at any depth — only the wireframe fogs */
-          opacity={theme === "dark" ? 0.8 : 1.0}
+          blending={theme === "dark" ? THREE.AdditiveBlending : THREE.NormalBlending}
+          opacity={theme === "dark" ? STAR_OP_DARK : STAR_OP_LIGHT}
         />
       </Points>
     </group>
@@ -174,7 +363,7 @@ const NetworkLines = ({ theme }) => {
                     color={theme === "dark" ? SPACE.dark.accent : SPACE.light.accent}
                     transparent
                     // Teal is darker than the old sky blue, so light mode needs less.
-                    opacity={theme === "dark" ? 0.03 : 0.28}
+                    opacity={theme === "dark" ? WIRE_OP_DARK : WIRE_OP_LIGHT}
                 />
             </mesh>
         </group>
@@ -185,19 +374,31 @@ const NetworkLines = ({ theme }) => {
 // A handful of large, very low-opacity colour clouds drifting slowly far behind
 // the stars. Adds depth and richness without drawing attention. Built once from
 // a canvas radial gradient (no shaders); honours prefers-reduced-motion.
-const makeGlowTexture = () => {
+/*
+  The nebula clouds, one gradient per theme.
+
+  Dark keeps the original long, soft tail: added onto near-black it reads as
+  depth. Light needs the same core and far less tail — over paper the tail is
+  not glow but a grey cast over the whole screen, and in the original bloom
+  cancelled exactly that by flooding the frame with light. Pulling the falloff
+  in gets the clean paper back without washing the stars out with it.
+*/
+const makeGlowTexture = (stops) => {
   const c = document.createElement("canvas");
   c.width = c.height = 128;
   const ctx = c.getContext("2d");
   const g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-  g.addColorStop(0, "rgba(255,255,255,1)");
-  g.addColorStop(0.35, "rgba(255,255,255,0.35)");
-  g.addColorStop(1, "rgba(255,255,255,0)");
+  stops.forEach(([at, alpha]) => g.addColorStop(at, `rgba(255,255,255,${alpha})`));
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, 128, 128);
   return new THREE.CanvasTexture(c);
 };
-const GLOW_TEX = typeof document !== "undefined" ? makeGlowTexture() : null;
+const GLOW_TEX_DARK = typeof document !== "undefined"
+  ? makeGlowTexture([[0, 1], [0.35, 0.35], [1, 0]])
+  : null;
+const GLOW_TEX_LIGHT = typeof document !== "undefined"
+  ? makeGlowTexture([[0, 1], [0.2, 0.4], [0.45, 0.08], [1, 0]])
+  : null;
 
 // Clustered toward the upper-left so the glow is a contained accent, not a
 // full-screen wash. Hand-placed for a calm, intentional composition.
@@ -212,7 +413,8 @@ const NebulaHaze = ({ theme, reduced = false }) => {
   const spriteRefs = useRef([]);
   // Dark: faint additive glow. Light: normal-blended blue on a near-white bg needs
   // far more opacity to be visible at all (0.11 was imperceptible).
-  const baseOp = theme === "dark" ? 0.06 : 0.34;
+  const baseOp = theme === "dark" ? HAZE_OP_DARK : HAZE_OP_LIGHT;
+  const spread = theme === "dark" ? HAZE_SPREAD_DARK : HAZE_SPREAD_LIGHT;
 
   useFrame((state) => {
     if (reduced) return;
@@ -234,10 +436,10 @@ const NebulaHaze = ({ theme, reduced = false }) => {
           key={i}
           ref={(el) => (spriteRefs.current[i] = el)}
           position={[h.x, h.y, h.z]}
-          scale={[h.s, h.s, 1]}
+          scale={[h.s * spread, h.s * spread, 1]}
         >
           <spriteMaterial
-            map={GLOW_TEX}
+            map={theme === "dark" ? GLOW_TEX_DARK : GLOW_TEX_LIGHT}
             color={(theme === "dark" ? SPACE.dark : SPACE.light).haze[i]}
             transparent
             opacity={baseOp}
@@ -300,18 +502,40 @@ const UniverseBackground = ({ theme }) => {
   // fall back to the static glow instead of a blank/black background.
   if (!supported || contextLost) return <StaticBackdrop />;
 
+  const palette = theme === "dark" ? SPACE.dark : SPACE.light;
+  const running = !paused && !hidden;
+
+  /*
+    The ground colour is painted on this wrapper as well as on the page layer
+    below it. That changes nothing to look at, and it gives the grain an
+    opaque backdrop to blend against: overlay blending works on what is
+    painted beneath it inside this stacking context, and over nothing at all
+    it simply lays grey on top — which lifted the middle of the frame by about
+    seven levels in 255 and left the corners, where the veil is solid, alone.
+    The classes are the ones the page layer uses, so the two stay in step
+    through a theme change.
+  */
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none">
+    <div className="fixed inset-0 z-0 pointer-events-none bg-paper dark:bg-[#050505] transition-colors duration-300">
+      {palette.wash && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{ background: washOf(palette.wash) }}
+        />
+      )}
       <Canvas
         camera={{ position: [0, 0, 10], fov: 45 }}
-        // 1.5x pixel cap (1x on low-end): the bloom-blurred background looks the
-        // same, at roughly half the retina pixel work.
+        // 1.5x pixel cap (1x on low-end): the soft background looks the same,
+        // at roughly half the retina pixel work.
         dpr={LOW_END ? 1 : [1, 1.5]}
         // MSAA never survives the post-processing chain, so the default
         // antialias buffer was pure cost.
         gl={{ antialias: false, powerPreference: "high-performance", stencil: false }}
-        // Paused (detail overlay covering the screen) or hidden tab: no frames.
-        frameloop={paused || hidden ? "never" : "always"}
+        // The loop is ours now — see FrameLimiter. Paused (detail overlay
+        // covering the screen) or hidden tab: it stops asking for frames and
+        // the canvas keeps the last one it drew.
+        frameloop="never"
         onCreated={({ gl }) =>
           gl.domElement.addEventListener(
             "webglcontextlost",
@@ -322,30 +546,34 @@ const UniverseBackground = ({ theme }) => {
         eventSource={document.getElementById('root')}
         eventPrefix="client"
       >
+        <FrameLimiter fps={FPS} active={running} />
+
         {/* Distance fog matched to the page background: the wireframe's far
             edges dissolve into it instead of ending in a hard line. Stars and
             nebula opt out (fog={false}) so only the wireframe is affected. */}
-        <fog
-          attach="fog"
-          args={[theme === "dark" ? SPACE.dark.ground : SPACE.light.ground, 16, 50]}
-        />
+        <fog attach="fog" args={[palette.ground, 16, 50]} />
 
         {/* Re-keyed on count so the star buffer is rebuilt at the right size */}
         <StarField key={starCount} count={starCount} theme={theme} />
         <NetworkLines theme={theme} />
         <NebulaHaze theme={theme} reduced={reduced} />
 
-        <EffectComposer multisampling={0} disableNormalPass={true}>
-            <Bloom
-                luminanceThreshold={0}
-                mipmapBlur
-                intensity={theme === "dark" ? 1.5 : 0.5}
-                radius={0.6}
-            />
-            <Noise opacity={0.025} />
-            <Vignette eskil={false} offset={0.1} darkness={1.1} />
-        </EffectComposer>
       </Canvas>
+
+      {/* Both of these were full-screen GPU passes re-rendering every frame.
+          They are screen-space effects with nothing to do with the 3D scene,
+          so out here they cost nothing per frame. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{ background: vignetteOf(palette) }}
+      />
+      {/* Overlay blending is what makes one grain work for both themes: it
+          leaves the mean brightness where it was and scales the speckle with
+          whatever is underneath, so it textures the lit middle and all but
+          disappears over bare page — which is exactly what the pass it
+          replaces did, having only ever touched pixels the scene had drawn. */}
+      <div aria-hidden="true" className="ub-grain absolute" />
     </div>
   );
 };
