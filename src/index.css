@@ -207,22 +207,30 @@ html[data-theme-switching="true"] * {
 /* ------------------------------- */
 /* OurGrid card — flowing "electric current" side waves */
 /* ------------------------------- */
-/* The animation runs on the <svg> itself, not on a <g> inside it, so that it
-   composites instead of re-running layout for a page-tall strip every frame.
-   That moves the transform into CSS pixels, so the travel is written as a
-   fraction of the element's height: with "slice" on a strip much taller than
-   it is wide the scale comes from the height, making one wavelength always
-   LAMBDA/VB_H — 130/700 — of it, whatever the page's length. */
+/* The animation runs on a plain div wrapping each <svg>, not on a <g> inside
+   one, so that it composites instead of re-running layout every frame for a
+   strip as tall as the viewport. That moves the transform out of viewBox units
+   into CSS pixels, where one wavelength is however many pixels "slice" scaled
+   it to — which depends on the shape of the strip. OurGridMotif measures that
+   and sets --og-travel. A hardcoded percentage got it wrong by more than half,
+   and the loop visibly snapped back every cycle. */
 @keyframes og-flow-up {
   from { transform: translateY(0); }
-  to   { transform: translateY(-18.5714%); }   /* == one wavelength → seamless loop */
+  to   { transform: translateY(calc(-1 * var(--og-travel, 0px))); }   /* one wavelength → seamless */
 }
 @keyframes og-flow-down {
-  from { transform: translateY(-18.5714%); }
+  from { transform: translateY(calc(-1 * var(--og-travel, 0px))); }
   to   { transform: translateY(0); }
 }
 .og-wave {
   will-change: transform;
+}
+/* Let the sliced-off part of the drawing paint. The layer slides a whole
+   wavelength upward, and without this it clips to its own box and drags a bare
+   band up from the bottom of the strip behind it. The strip is overflow-hidden,
+   so nothing escapes into the page. */
+.og-wave > svg {
+  overflow: visible;
 }
 @media (prefers-reduced-motion: reduce) {
   .og-wave { animation: none !important; }
