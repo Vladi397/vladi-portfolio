@@ -64,50 +64,12 @@ const GlareHover = ({
 
       {/* Content */}
       <div className="relative z-10 h-full">{children}</div>
-
-      <style jsx>{`
-        .glare-light {
-          position: absolute;
-          top: 0;
-          left: 0;
-          height: 100%;
-          width: 150%;
-          /* METALLIC GRADIENT PROFILE:
-             Tight, sharp transition from transparent to 100% white.
-             This mimics a polished metal surface reflecting a single light source.
-          */
-          background: linear-gradient(
-            var(--glare-angle),
-            transparent 40%,
-            rgba(255, 255, 255, 0) 45%,
-            rgba(255, 255, 255, 1) 50%,
-            rgba(255, 255, 255, 0) 55%,
-            transparent 60%
-          );
-          opacity: 0;
-          transform: translateX(-150%) skewX(-15deg);
-          /* Minimal blur to keep the "polished" look */
-          filter: blur(2px);
-        }
-
-        .shine .glare-light {
-          animation: shineSweep var(--glare-duration) cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-
-        @keyframes shineSweep {
-          0% {
-            opacity: 0;
-            transform: translateX(-150%) skewX(-15deg);
-          }
-          30% {
-            opacity: var(--glare-opacity);
-          }
-          100% {
-            opacity: 0;
-            transform: translateX(150%) skewX(-15deg);
-          }
-        }
-      `}</style>
+      {/* The sweep's CSS lives in index.css (search ".glare-light"). It used to
+          sit here in a <style jsx> block, but styled-jsx is a Next.js package
+          and this is a Vite app: nothing scoped the rules, React logged a
+          non-boolean-attribute error on every render, and the identical block
+          was injected once per instance — six copies on the page. The rules
+          are unchanged; they are just defined once now. */}
     </div>
   );
 };

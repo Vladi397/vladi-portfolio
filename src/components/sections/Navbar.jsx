@@ -208,6 +208,10 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
                 <button
                   key={l.id}
                   onClick={() => handleNav(l.id)}
+                  // The active link was marked by colour alone, which a screen
+                  // reader cannot report and a colour-blind visitor may not
+                  // see. aria-current states it outright.
+                  aria-current={isActive ? "true" : undefined}
                   // --- FIX APPLIED HERE ---
                   // 1. Used 'group' relative to the button
                   // 2. Applied hover effect to span instead of button to keep button stable
@@ -244,6 +248,9 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
             <ThemeToggle />
             <button
               onClick={() => setOpen((s) => !s)}
+              aria-label={open ? t('nav.close_menu', 'Close menu') : t('nav.open_menu', 'Open menu')}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
               className="p-2 rounded-lg text-stone-900 dark:text-white hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors"
             >
               {open ? <X size={28} /> : <Menu size={28} />}
@@ -252,8 +259,19 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
         </div>
       </nav>
 
-      {/* MOBILE MENU */}
-      <div 
+      {/*
+        MOBILE MENU
+
+        inert while closed. The panel stays mounted so it can animate, and
+        opacity-0 + pointer-events-none hide it from the eye and the mouse —
+        but neither takes it out of the tab order, so tabbing past the burger
+        walked through all six invisible controls with the focus ring landing
+        on nothing. inert removes them from both the tab order and the
+        accessibility tree without touching a single painted pixel.
+      */}
+      <div
+        id="mobile-menu"
+        inert={!open}
         className={`fixed inset-0 z-40 md:hidden bg-white/95 dark:bg-[#0B1120]/95 backdrop-blur-xl transition-all duration-300 ease-in-out
           ${open ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"}
         `}
@@ -265,6 +283,7 @@ const Navbar = ({ activeId, theme, toggleTheme }) => {
               <button
                 key={l.id}
                 onClick={() => handleNav(l.id)}
+                aria-current={isActive ? "true" : undefined}
                 style={{ transitionDelay: `${idx * 50}ms` }}
                 className={`text-3xl font-black tracking-tight uppercase transition-all duration-500 transform
                   ${open ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}

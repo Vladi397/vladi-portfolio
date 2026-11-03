@@ -151,10 +151,66 @@ html[data-theme-switching="true"] .glass {
 }
 .modal-in { animation: modal-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 
+/* ...and the exit they never had. Both modals animated in over 240ms and then
+   vanished on close, which reads as a snap: the panel is gone before the eye
+   has followed it anywhere. Shorter than the entrance, as exits should be —
+   nobody wants to wait to leave. */
+@keyframes modal-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.98); }
+}
+.modal-out { animation: modal-out 180ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Contact form: the result panel that replaced a native alert(), the
+   validation messages, and the tick on the copy button. All of them short —
+   none may delay the text underneath being readable, and the error text in
+   particular is in the DOM whatever the opacity is doing. */
+@keyframes form-result-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.form-result-in { animation: form-result-in 300ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@keyframes field-error-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.field-error-in { animation: field-error-in 150ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@keyframes copied-in {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.copied-in { animation: copied-in 160ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* The dimmer behind a modal. It fades with the panel rather than being cut
+   away under it, which is what made the close feel abrupt even once the panel
+   itself animated. Opacity only — scaling a full-screen backdrop would be
+   wrong, and expensive. */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+.backdrop-in { animation: fade-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.backdrop-out { animation: fade-out 180ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
 @media (prefers-reduced-motion: reduce) {
   .animate-scan,
   .animate-spin-slow,
   .modal-in { animation: none !important; }
+
+  /* Gentler, not nothing: the fade still bridges the change, the movement
+     goes. These keep a real duration on purpose — the modals unmount on a
+     timer that matches the exit, so cancelling the animation outright would
+     only desynchronise the two. */
+  .form-result-in,
+  .field-error-in,
+  .copied-in { animation-name: fade-in; }
+  .modal-out { animation-name: fade-out; }
 }
 
 /* --- CUSTOM CURSOR (desktop / precise pointer only) --- */
@@ -414,4 +470,51 @@ html.dark .intro-stroke {
 }
 @media (prefers-reduced-motion: reduce) {
   .ub-grain { animation: none; }
+}
+
+/* GlareHover's metallic sweep. Moved out of a <style jsx> block in
+   GlareHover.jsx: styled-jsx is a Next.js package that this Vite app does not
+   have, so the block was never scoped — it injected one identical copy per
+   instance and made React warn about a non-boolean `jsx` attribute on every
+   render. The rules below are byte-for-byte what was there. */
+.glare-light {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 150%;
+  /* METALLIC GRADIENT PROFILE:
+     Tight, sharp transition from transparent to 100% white.
+     This mimics a polished metal surface reflecting a single light source.
+  */
+  background: linear-gradient(
+    var(--glare-angle),
+    transparent 40%,
+    rgba(255, 255, 255, 0) 45%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0) 55%,
+    transparent 60%
+  );
+  opacity: 0;
+  transform: translateX(-150%) skewX(-15deg);
+  /* Minimal blur to keep the "polished" look */
+  filter: blur(2px);
+}
+
+.shine .glare-light {
+  animation: shineSweep var(--glare-duration) cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes shineSweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-150%) skewX(-15deg);
+  }
+  30% {
+    opacity: var(--glare-opacity);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(150%) skewX(-15deg);
+  }
 }

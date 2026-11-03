@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Check, Copy, ExternalLink, Github, Mail, Loader2, AlertCircle } from "lucide-react";
+import { Check, CheckCircle2, Copy, ExternalLink, Github, Mail, Loader2, AlertCircle } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import emailjs from '@emailjs/browser';
 import { useTranslation } from 'react-i18next';
@@ -9,9 +9,25 @@ const Contact = () => {
   const email = "vladi.georgiev.14@gmail.com";
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+
   // New state for form errors
   const [errors, setErrors] = useState({});
+
+  /*
+    How the send finished: "idle" | "sent" | "error".
+
+    This used to be two alert() calls. A native dialog is the wrong ending for
+    the one moment on the site that actually matters — it blocks the page, it
+    is styled by the OS rather than by anything here, and on a phone it looks
+    indistinguishable from a browser error.
+
+    The two outcomes are not symmetrical. A send that worked is finished, so
+    the panel replaces the form. A send that failed is not: the message is
+    still sitting in the fields and the one thing the visitor must not lose is
+    what they wrote, so the failure is a banner above the button and the form
+    stays exactly as it was.
+  */
+  const [status, setStatus] = useState("idle");
 
   const form = useRef();
 
@@ -31,7 +47,7 @@ const Contact = () => {
     const name = formData.get("user_name");
     const emailValue = formData.get("user_email");
     const message = formData.get("message");
-    
+
     const newErrors = {};
 
     // 1. Name Validation (letters in any script — Cyrillic, accents, etc. —
@@ -67,11 +83,13 @@ const Contact = () => {
       return; // Stop if there are errors
     }
 
+    // Clear a previous failure, so a retry does not sit under a stale banner.
+    setStatus("idle");
     setLoading(true);
 
-    const SERVICE_ID = "service_cpwm64l";   
-    const TEMPLATE_ID = "template_w6f41ai"; 
-    const PUBLIC_KEY = "tweMi9zagYlpsXvjC"; 
+    const SERVICE_ID = "service_cpwm64l";
+    const TEMPLATE_ID = "template_w6f41ai";
+    const PUBLIC_KEY = "tweMi9zagYlpsXvjC";
 
     emailjs
       .sendForm(SERVICE_ID, TEMPLATE_ID, form.current, {
@@ -80,14 +98,14 @@ const Contact = () => {
       .then(
         () => {
           setLoading(false);
-          alert(t('contact.success'));
-          e.target.reset(); 
-          setErrors({}); // Clear errors on success
+          setErrors({});
+          form.current?.reset();
+          setStatus("sent");
         },
         (error) => {
           setLoading(false);
           console.error('FAILED...', error.text);
-          alert(t('contact.fail'));
+          setStatus("error");
         },
       );
   };
@@ -97,7 +115,7 @@ const Contact = () => {
       <Reveal>
         <div className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-brand-600 to-brand2-600 rounded-[40px] blur opacity-25 dark:opacity-40 transition duration-1000 group-hover:opacity-60"></div>
-          
+
           <div className="glass relative rounded-[20px] sm:rounded-[32px] p-5 sm:p-12 md:p-16 flex flex-col lg:flex-row gap-6 sm:gap-10 lg:gap-20 items-start overflow-hidden">
             <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))] pointer-events-none" />
 
@@ -129,23 +147,26 @@ const Contact = () => {
                     </span>
                   </div>
                   {copied ? (
-                    <Check size={18} className="text-emerald-500 shrink-0" />
+                    /* The tick is present the instant the copy lands — only
+                       its scale is animated, so the confirmation is never
+                       held back by the animation. */
+                    <Check size={18} className="copied-in text-emerald-500 shrink-0" />
                   ) : (
                     <Copy size={18} className="text-ngray-400 group-hover:text-brand-500 transition-colors shrink-0" />
                   )}
                 </button>
 
                 <div className="flex gap-3 sm:gap-4">
-                  <a 
-                    href="https://www.linkedin.com/in/vladi-georgiev-b68761295" 
+                  <a
+                    href="https://www.linkedin.com/in/vladi-georgiev-b68761295"
                     target="_blank"
                     rel="noreferrer"
                     className="flex-1 flex items-center justify-center gap-2 p-3 sm:p-4 rounded-xl sm:rounded-2xl border font-bold text-sm sm:text-base transition-all bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100 dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
                   >
                     LinkedIn <ExternalLink size={16} />
                   </a>
-                  <a 
-                    href="https://github.com/Vladi397/vladi-portfolio" 
+                  <a
+                    href="https://github.com/Vladi397/vladi-portfolio"
                     target="_blank"
                     rel="noreferrer"
                     className="flex-1 flex items-center justify-center gap-2 p-4 rounded-2xl border font-bold transition-all bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100 dark:bg-white/5 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
@@ -157,63 +178,122 @@ const Contact = () => {
             </div>
 
             {/* FORM SIDE */}
+            {/*
+              noValidate hands every error to validateForm below. With the
+              browser's own checks left on, an address like "name.com" never
+              reached this component: the submit was cancelled and Chrome drew
+              its own tooltip instead — OS-styled, and written in the browser's
+              language rather than the one the visitor picked on this page.
+              That is the same reason the alert() calls went; the three
+              messages here are translated, so they should own every path.
+            */}
             <form
               ref={form}
               onSubmit={sendEmail}
+              noValidate
               className="glass-inset flex-1 w-full relative z-10 p-5 sm:p-8 rounded-[20px] sm:rounded-[24px]"
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-slate-400">{t('contact.label_name')}</label>
-                  <input
-                    type="text"
-                    name="user_name"
-                    placeholder={t('contact.ph_name')}
-                    // Error styling logic
-                    className={`w-full p-3.5 sm:p-4 rounded-xl outline-none font-medium transition-all text-base
-                      ${errors.name ? "border-red-500 focus:ring-red-500/20 bg-red-50 dark:bg-red-900/10" : "bg-white border-stone-200 dark:bg-[#0B1120] dark:border-white/10 focus:border-brand-500 focus:ring-brand-500/10"}
-                      text-stone-900 placeholder:text-stone-300 border focus:ring-4
-                      dark:text-white dark:placeholder:text-slate-600`}
-                  />
-                  {errors.name && <p className="text-xs text-red-500 font-bold flex items-center gap-1"><AlertCircle size={12} /> {errors.name}</p>}
+              {status === "sent" ? (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className="form-result-in flex flex-col items-center justify-center gap-4 text-center py-10 sm:py-16"
+                >
+                  <div className="p-3 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
+                    <CheckCircle2 size={30} />
+                  </div>
+                  <p className="text-lg sm:text-xl font-bold text-stone-900 dark:text-white max-w-xs">
+                    {t('contact.success')}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setStatus("idle")}
+                    className="mt-1 px-5 py-2.5 rounded-xl border font-bold text-sm transition-[transform,background-color] duration-150 active:scale-[0.97] motion-reduce:transition-none
+                      bg-white border-stone-200 text-stone-700 hover:bg-stone-50
+                      dark:bg-white/5 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10"
+                  >
+                    {t('contact.send_another')}
+                  </button>
                 </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div className="space-y-2">
+                      <label htmlFor="contact-name" className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-slate-400">{t('contact.label_name')}</label>
+                      <input
+                        type="text"
+                        id="contact-name"
+                        name="user_name"
+                        autoComplete="name"
+                        aria-invalid={errors.name ? "true" : undefined}
+                        aria-describedby={errors.name ? "contact-name-error" : undefined}
+                        placeholder={t('contact.ph_name')}
+                        // Error styling logic
+                        className={`w-full p-3.5 sm:p-4 rounded-xl outline-none font-medium transition-all text-base
+                          ${errors.name ? "border-red-500 focus:ring-red-500/20 bg-red-50 dark:bg-red-900/10" : "bg-white border-stone-200 dark:bg-[#0B1120] dark:border-white/10 focus:border-brand-500 focus:ring-brand-500/10"}
+                          text-stone-900 placeholder:text-stone-400 border focus:ring-4
+                          dark:text-white dark:placeholder:text-slate-500`}
+                      />
+                      {errors.name && <p id="contact-name-error" className="field-error-in text-xs text-red-500 font-bold flex items-center gap-1"><AlertCircle size={12} /> {errors.name}</p>}
+                    </div>
 
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-slate-400">{t('contact.label_email')}</label>
-                  <input
-                    type="email"
-                    name="user_email"
-                    placeholder={t('contact.ph_email')}
-                    className={`w-full p-3.5 sm:p-4 rounded-xl outline-none font-medium transition-all text-base
-                      ${errors.email ? "border-red-500 focus:ring-red-500/20 bg-red-50 dark:bg-red-900/10" : "bg-white border-stone-200 dark:bg-[#0B1120] dark:border-white/10 focus:border-brand-500 focus:ring-brand-500/10"}
-                      text-stone-900 placeholder:text-stone-300 border focus:ring-4
-                      dark:text-white dark:placeholder:text-slate-600`}
-                  />
-                  {errors.email && <p className="text-xs text-red-500 font-bold flex items-center gap-1"><AlertCircle size={12} /> {errors.email}</p>}
-                </div>
-              </div>
+                    <div className="space-y-2">
+                      <label htmlFor="contact-email" className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-slate-400">{t('contact.label_email')}</label>
+                      <input
+                        type="email"
+                        id="contact-email"
+                        name="user_email"
+                        autoComplete="email"
+                        aria-invalid={errors.email ? "true" : undefined}
+                        aria-describedby={errors.email ? "contact-email-error" : undefined}
+                        placeholder={t('contact.ph_email')}
+                        className={`w-full p-3.5 sm:p-4 rounded-xl outline-none font-medium transition-all text-base
+                          ${errors.email ? "border-red-500 focus:ring-red-500/20 bg-red-50 dark:bg-red-900/10" : "bg-white border-stone-200 dark:bg-[#0B1120] dark:border-white/10 focus:border-brand-500 focus:ring-brand-500/10"}
+                          text-stone-900 placeholder:text-stone-400 border focus:ring-4
+                          dark:text-white dark:placeholder:text-slate-500`}
+                      />
+                      {errors.email && <p id="contact-email-error" className="field-error-in text-xs text-red-500 font-bold flex items-center gap-1"><AlertCircle size={12} /> {errors.email}</p>}
+                    </div>
+                  </div>
 
-              <div className="space-y-2 mb-5 sm:mb-6">
-                <label className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-slate-400">{t('contact.label_message')}</label>
-                <textarea
-                  name="message"
-                  placeholder={t('contact.ph_message')}
-                  rows="3"
-                  className={`w-full p-3.5 sm:p-4 rounded-xl outline-none resize-none font-medium transition-all text-base
-                    ${errors.message ? "border-red-500 focus:ring-red-500/20 bg-red-50 dark:bg-red-900/10" : "bg-white border-stone-200 dark:bg-[#0B1120] dark:border-white/10 focus:border-brand-500 focus:ring-brand-500/10"}
-                    text-stone-900 placeholder:text-stone-300 border focus:ring-4
-                    dark:text-white dark:placeholder:text-slate-600`}
-                ></textarea>
-                {errors.message && <p className="text-xs text-red-500 font-bold flex items-center gap-1"><AlertCircle size={12} /> {errors.message}</p>}
-              </div>
+                  <div className="space-y-2 mb-5 sm:mb-6">
+                    <label htmlFor="contact-message" className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-slate-400">{t('contact.label_message')}</label>
+                    <textarea
+                      id="contact-message"
+                      name="message"
+                      aria-invalid={errors.message ? "true" : undefined}
+                      aria-describedby={errors.message ? "contact-message-error" : undefined}
+                      placeholder={t('contact.ph_message')}
+                      rows="3"
+                      className={`w-full p-3.5 sm:p-4 rounded-xl outline-none resize-none font-medium transition-all text-base
+                        ${errors.message ? "border-red-500 focus:ring-red-500/20 bg-red-50 dark:bg-red-900/10" : "bg-white border-stone-200 dark:bg-[#0B1120] dark:border-white/10 focus:border-brand-500 focus:ring-brand-500/10"}
+                        text-stone-900 placeholder:text-stone-400 border focus:ring-4
+                        dark:text-white dark:placeholder:text-slate-500`}
+                    ></textarea>
+                    {errors.message && <p id="contact-message-error" className="field-error-in text-xs text-red-500 font-bold flex items-center gap-1"><AlertCircle size={12} /> {errors.message}</p>}
+                  </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3.5 sm:py-4 rounded-xl font-bold text-white shadow-lg shadow-brand-500/30 transition-all hover:brightness-110 hover:scale-[1.02] active:scale-95 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed bg-accent"
-              >
-                {loading ? <Loader2 className="animate-spin" /> : t('contact.btn_send')}
-              </button>
+                  {status === "error" && (
+                    <div
+                      role="alert"
+                      className="field-error-in mb-4 flex items-start gap-2 rounded-xl border p-3 text-sm font-bold
+                        border-red-200 bg-red-50 text-red-600
+                        dark:border-red-500/30 dark:bg-red-900/15 dark:text-red-400"
+                    >
+                      <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                      <span>{t('contact.fail')}</span>
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-3.5 sm:py-4 rounded-xl font-bold text-white shadow-lg shadow-brand-500/30 transition-all hover:brightness-110 hover:scale-[1.02] active:scale-95 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed bg-accent"
+                  >
+                    {loading ? <Loader2 className="animate-spin" /> : t('contact.btn_send')}
+                  </button>
+                </>
+              )}
             </form>
           </div>
         </div>

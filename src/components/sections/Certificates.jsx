@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { CheckCircle, X, ExternalLink, FileText } from "lucide-react";
 import Reveal from "../ui/Reveal";
 import SectionTitle from "../ui/SectionTitle";
@@ -14,9 +15,36 @@ import HtmlCssDepthPdf from "../../assets/html-css.pdf";
 import ReactBasicsPdf from "../../assets/react-basics.pdf";
 import AdvReactPdf from "../../assets/advanced-react.pdf";
 
+// Matches .modal-out / .backdrop-out in index.css.
+const EXIT_MS = 180;
+
 const Certificates = () => {
   const { t } = useTranslation(); // <--- Init hook
   const [selectedCert, setSelectedCert] = useState(null);
+  const [closingCert, setClosingCert] = useState(false);
+
+  /*
+    Closing plays the exit before clearing the cert, so the panel still has
+    something to draw on its way out. The unmount runs off a timer rather than
+    animationend, because the animation can legitimately never fire — reduced
+    motion, a backgrounded tab — and a viewer that will not close is a worse
+    bug than one that closes abruptly.
+  */
+  const closingRef = useRef(false);
+  const exitTimer = useRef(0);
+
+  const closeCert = useCallback(() => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+    setClosingCert(true);
+    exitTimer.current = setTimeout(() => {
+      setSelectedCert(null);
+      setClosingCert(false);
+      closingRef.current = false;
+    }, EXIT_MS);
+  }, []);
+
+  useEffect(() => () => clearTimeout(exitTimer.current), []);
 
   // Phone-only swipe row: which card it has landed on, for the dots.
   const trackRef = useRef(null);
@@ -36,21 +64,70 @@ const Certificates = () => {
 
   useEffect(() => () => cancelAnimationFrame(scrollRaf.current), []);
 
-  // While a certificate is open: lock scroll and let Escape close it. The
-  // previous overflow is restored rather than forced to "unset".
+  // The open viewer and its close button, for focus handling below.
+  const panelRef = useRef(null);
+  const closeBtnRef = useRef(null);
+
+  /*
+    While a certificate is open: lock scroll, let Escape close it, and keep the
+    keyboard inside the panel. The previous overflow is restored rather than
+    forced to "unset".
+
+    Tab is trapped because the viewer covers the page — without it, tabbing
+    walks onto the navbar and the cards behind the backdrop, which are visually
+    unreachable. Focus moves to the close button on open and returns to the
+    card that opened it on close, so a keyboard visitor lands back where they
+    were rather than at the top of the document.
+  */
   useEffect(() => {
     if (!selectedCert) return;
+    const opener = document.activeElement;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
+    const raf = requestAnimationFrame(() => closeBtnRef.current?.focus());
+
+    const trapTab = (e) => {
+      const root = panelRef.current;
+      if (!root) return;
+      /*
+        Visible ones only. The panel carries both layouts at once — the desktop
+        iframe and the phone's "open the PDF" links — and whichever is not in
+        use is display:none, not unmounted. Counting those as focusable put the
+        last stop on a hidden link that can never hold focus, so the wrap never
+        fired and Tab walked straight out of the dialog onto the navbar.
+      */
+      const f = [
+        ...root.querySelectorAll(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input, select, textarea'
+        ),
+      ].filter((el) => el.offsetParent !== null || el === document.activeElement);
+      if (!f.length) return;
+      const first = f[0];
+      const last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
     const onKey = (e) => {
-      if (e.key === "Escape") setSelectedCert(null);
+      if (e.key === "Escape") closeCert();
+      else if (e.key === "Tab") trapTab(e);
     };
     window.addEventListener("keydown", onKey);
     return () => {
+      cancelAnimationFrame(raf);
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", onKey);
+      // The panel is already unmounted by the time this runs, so focus has
+      // fallen to <body>; put it back on the card that opened the viewer.
+      if (opener?.isConnected) opener.focus?.();
     };
-  }, [selectedCert]);
+  }, [selectedCert, closeCert]);
 
   // MOVED ARRAY INSIDE
   const certs = [
@@ -165,9 +242,13 @@ const Certificates = () => {
 
                     {/* Title */}
                     <div className="mb-4">
-                      <h4 className="font-black text-base sm:text-xl leading-snug transition-colors text-stone-900 dark:text-slate-100">
+                      {/* h3, not h4: the section heading above is an h2, so an
+                          h4 here skipped a level and broke the outline a
+                          screen reader navigates by. Styling is all explicit
+                          classes, so nothing moves. */}
+                      <h3 className="font-black text-base sm:text-xl leading-snug transition-colors text-stone-900 dark:text-slate-100">
                         {cert.title}
-                      </h4>
+                      </h3>
                       <p className="text-[13px] sm:text-sm font-medium mt-1.5 sm:mt-2 leading-relaxed transition-colors text-stone-500 dark:text-slate-400">
                         {t('certificates.completed_on')} {cert.date}
                       </p>
@@ -223,15 +304,29 @@ const Certificates = () => {
         </p>
       </section>
 
-      {/* --- CERTIFICATE MODAL --- */}
-      {selectedCert && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+      {/* --- CERTIFICATE MODAL ---
+          Portalled to <body>: rendered in place it sat inside <main>, whose
+          `relative z-10` opens a stacking context the viewer cannot escape, so
+          the fixed z-50 navbar painted over the panel and stayed clickable —
+          the nav links scrolled the page behind an open certificate. */}
+      {selectedCert && createPortal(
+        <div
+          className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6"
+          role="dialog"
+          aria-modal="true"
+          aria-label={selectedCert.title}
+          ref={panelRef}
+        >
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-            onClick={() => setSelectedCert(null)}
+            className={`absolute inset-0 bg-black/60 backdrop-blur-sm ${
+              closingCert ? "backdrop-out" : "backdrop-in"
+            }`}
+            onClick={closeCert}
           ></div>
 
-          <div className="relative w-full max-w-5xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl flex flex-col overflow-hidden modal-in border border-stone-100 dark:border-slate-800">
+          <div className={`relative w-full max-w-5xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-stone-100 dark:border-slate-800 ${
+            closingCert ? "modal-out" : "modal-in"
+          }`}>
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100 dark:border-slate-800 bg-white dark:bg-slate-900 z-10">
               <h3 className="text-xl font-bold text-stone-800 dark:text-slate-100 truncate pr-4">
@@ -249,7 +344,9 @@ const Certificates = () => {
                 </a>
                 
                 <button
-                  onClick={() => setSelectedCert(null)}
+                  ref={closeBtnRef}
+                  onClick={closeCert}
+                  aria-label={t('certificates.btn_close', 'Close certificate')}
                   className="p-2 text-stone-500 hover:text-stone-700 dark:text-gray-400 dark:hover:text-white bg-stone-100 dark:bg-slate-800 rounded-lg transition-colors"
                 >
                   <X size={20} />
@@ -297,7 +394,8 @@ const Certificates = () => {
 
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

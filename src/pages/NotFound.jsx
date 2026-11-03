@@ -1,10 +1,26 @@
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Home } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const NotFound = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const canvasRef = useRef(null);
+
+  /*
+    This page was the one corner of the site that stayed in English whatever
+    language was picked, and it kept the homepage's title — so a wrong URL
+    announced itself in the tab as the portfolio's front page. The title is
+    restored on unmount, because leaving via "Go Back" keeps the same document.
+  */
+  useEffect(() => {
+    const prevTitle = document.title;
+    document.title = t("notfound.doc_title");
+    return () => {
+      document.title = prevTitle;
+    };
+  }, [t]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -76,11 +92,10 @@ const NotFound = () => {
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
-          Page Not Found
+          {t("notfound.title")}
         </h1>
         <p className="text-slate-400 text-lg mb-10 leading-relaxed">
-          Looks like you wandered into the void. This page doesn&apos;t exist&nbsp;—
-          but my portfolio does.
+          {t("notfound.desc")}
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -89,7 +104,7 @@ const NotFound = () => {
             className="group flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 text-slate-300 hover:text-white hover:border-white/30 transition-all font-semibold"
           >
             <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
-            Go Back
+            {t("notfound.btn_back")}
           </button>
           <button
             onClick={() => navigate("/")}
@@ -99,7 +114,7 @@ const NotFound = () => {
             }}
           >
             <Home size={18} />
-            Back to Home
+            {t("notfound.btn_home")}
           </button>
         </div>
       </div>

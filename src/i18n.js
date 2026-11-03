@@ -13,6 +13,17 @@ i18n
   // init i18next
   .init({
     fallbackLng: 'en',
+    /*
+      Ask for "en", never "en-US". The detector reports the browser's full
+      locale, and only the three base languages exist under /public/locales —
+      so a first visit fetched /locales/en-US/translation.json, which the host
+      answers with the SPA's index.html at 200 rather than a 404. i18next then
+      fails to parse it as JSON, warns, and only then falls back to "en". That
+      is a wasted round trip during first paint for nearly every visitor
+      (en-US, en-GB, nl-NL, bg-BG all hit it). languageOnly trims the region
+      before the request, so the right file is asked for the first time.
+    */
+    load: 'languageOnly',
     debug: import.meta.env.DEV, // chatty in the console, and only useful here
 
     interpolation: {

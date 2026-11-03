@@ -132,7 +132,7 @@ export default function App() {
           <Contact />
         </main>
 
-        <footer className="text-center py-12 text-sm font-semibold theme-color-transition transition-colors duration-500 text-stone-400 dark:text-slate-600 relative z-10">
+        <footer className="text-center py-12 text-sm font-semibold theme-color-transition transition-colors duration-500 text-stone-500 dark:text-slate-500 relative z-10">
           © 2025 Vladi Georgiev.
         </footer>
 

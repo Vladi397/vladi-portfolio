@@ -5,7 +5,10 @@
     "projects": "Projecten",
     "certificates": "Certificaten",
     "journey": "Ervaring",
-    "contact": "Contact"
+    "contact": "Contact",
+    "open_menu": "Menu openen",
+    "close_menu": "Menu sluiten",
+    "toggle_theme": "Thema wisselen"
   },
   "hero": {
     "role": "Front-End Developer • UI/UX",
@@ -30,7 +33,8 @@
     "modal_title": "CV-voorbeeld",
     "download": "Downloaden",
     "mobile_msg": "Open het bestand direct voor de beste ervaring op mobiel.",
-    "btn_open": "Open CV"
+    "btn_open": "Open CV",
+    "btn_close": "CV sluiten"
   },
   "skills": {
     "title": "Vaardigheden",
@@ -663,7 +667,8 @@
     "c3_title": "Version Control",
     "c4_title": "HTML and CSS in depth",
     "c5_title": "React Basics",
-    "c6_title": "Advanced React"
+    "c6_title": "Advanced React",
+    "btn_close": "Certificaat sluiten"
   },
   "journey": {
     "title": "Ervaring",
@@ -687,6 +692,7 @@
     "status": "Beschikbaar voor nieuwe projecten",
     "copy_fail": "Kopiëren mislukt. Kopieer handmatig.",
     "success": "Bericht succesvol verzonden!",
+    "send_another": "Nog een bericht sturen",
     "fail": "Verzenden mislukt. Probeer het opnieuw.",
     "label_name": "Naam",
     "label_email": "E-mail",
@@ -699,5 +705,12 @@
     "error_name_invalid": "Gebruik alleen letters voor je naam.",
     "error_email_invalid": "Ik heb een geldig e-mailadres nodig om je te kunnen antwoorden.",
     "error_message_short": "Vertel me iets meer over je project (minimaal 10 tekens)."
+  },
+  "notfound": {
+    "title": "Pagina niet gevonden",
+    "desc": "Je bent blijkbaar in de leegte beland. Deze pagina bestaat niet — mijn portfolio wel.",
+    "btn_back": "Terug",
+    "btn_home": "Naar de homepagina",
+    "doc_title": "404 — Pagina niet gevonden | Vladi Georgiev"
   }
 }

@@ -5,7 +5,10 @@
     "projects": "Projects",
     "certificates": "Certificates",
     "journey": "Journey",
-    "contact": "Let’s Talk"
+    "contact": "Let’s Talk",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu",
+    "toggle_theme": "Toggle theme"
   },
   "hero": {
     "role": "Front-End Developer • UI/UX",
@@ -30,7 +33,8 @@
     "modal_title": "Resume Preview",
     "download": "Download",
     "mobile_msg": "For the best experience on mobile, please open the file directly.",
-    "btn_open": "Open Resume"
+    "btn_open": "Open Resume",
+    "btn_close": "Close resume"
   },
   "skills": {
     "title": "Skills",
@@ -663,7 +667,8 @@
     "c3_title": "Version Control",
     "c4_title": "HTML and CSS in depth",
     "c5_title": "React Basics",
-    "c6_title": "Advanced React"
+    "c6_title": "Advanced React",
+    "btn_close": "Close certificate"
   },
   "journey": {
     "title": "Journey",
@@ -687,6 +692,7 @@
     "status": "Available for new projects",
     "copy_fail": "Copy failed. Please copy manually.",
     "success": "Message sent successfully!",
+    "send_another": "Send another message",
     "fail": "Failed to send message. Please try again.",
     "label_name": "Name",
     "label_email": "Email",
@@ -699,5 +705,12 @@
     "error_name_invalid": "Please use only letters for your name.",
     "error_email_invalid": "I need a valid email to reply to you.",
     "error_message_short": "Please tell me a bit more (at least 10 characters)."
+  },
+  "notfound": {
+    "title": "Page Not Found",
+    "desc": "Looks like you wandered into the void. This page doesn’t exist — but my portfolio does.",
+    "btn_back": "Go Back",
+    "btn_home": "Back to Home",
+    "doc_title": "404 — Page Not Found | Vladi Georgiev"
   }
 }
